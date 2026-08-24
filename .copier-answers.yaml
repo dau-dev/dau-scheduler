@@ -1,0 +1,13 @@
+# Changes here will be overwritten by Copier
+_commit: 2f83523
+_src_path: https://github.com/python-project-templates/base.git
+add_docs: false
+add_extension: python
+add_wiki: true
+email: dev@dau.dev
+github: dau-dev
+project_description: Split row-parallel dataframe work across two compute engines
+    and merge the partial results
+project_name: dau scheduler
+python_version_primary: '3.12'
+team: the dau-scheduler authors
