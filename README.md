@@ -43,6 +43,108 @@ the machine it was measured on.
 The library is engine-agnostic. Both arms are injected as callables, and nothing
 here knows what is on the other end.
 
-## Status
+## Usage
 
-Early. This repository is a scaffold; the placement logic has not landed yet.
+An arm is a callable. It is handed the query, the rows it owns, and the
+broadcast side of a join if there is one, and it returns the partial result an
+unsplit run would have produced for those rows. Both arms below are the same
+plain-Python function, because the executor never learns what is on either end
+of the seam.
+
+```python
+from dau_scheduler import ADDITIVE, MergeRule, execute_split, merge_totals, plan_split
+
+query = {"filter": lambda row: row["day"] < 30}
+rows = [{"revenue": (seed * 31) % 1000, "day": seed % 60} for seed in range(100_000)]
+
+
+def arm(query, rows, build):
+    kept = [row for row in rows.values() if query["filter"](row)]
+    return {"revenue": sum(row["revenue"] for row in kept), "len": len(kept)}
+
+
+# how much each engine gets, from one whole-query estimate per engine
+split = plan_split("collaborative", cpu_seconds=0.0276, device_seconds=0.0186)
+split.device_share  # 0.597...
+split.predicted_speedup  # 2.48...
+
+# how the two partial answers become one
+merge = MergeRule(
+    terminal="reductions",
+    combine=lambda partials: merge_totals(partials, ("revenue", "len")),
+    mergeable=ADDITIVE,
+)
+
+execution = execute_split(
+    query,
+    rows,
+    split,
+    merge,
+    device=arm,
+    host=arm,
+    aggregates=[("revenue", "sum"), ("len", "count")],
+)
+execution.result  # the same object an unsplit run returns
+execution.overlap_seconds  # how long both arms were in flight together
+```
+
+`aggregates` is what makes the refusal possible. Ask for something that cannot
+be reassembled and it is refused before either engine starts:
+
+```python
+execute_split(query, rows, split, merge, device=arm, host=arm, aggregates=[("average", "mean")])
+# SplitError: average: a mean is not row-partitionable; carry the sum and the
+# count as separate outputs and divide after the merge
+```
+
+### Rows an arm never reads
+
+An engine running against data it already holds needs one number, not a list of
+rows: a row **count** if it holds its own copy, an **offset** if it holds a
+resident frame. `RowRange` is exactly that, and it costs two integers however
+many rows it names — so a share sweep over six million rows allocates nothing
+per call. An arm that does need the values asks for them and gets a typed
+refusal from a range rather than a table materialized behind the caller's back.
+
+```python
+from dau_scheduler import RowRange
+
+execute_split(query, RowRange(0, 6_000_000), split, merge, device=resident_arm, host=resident_arm)
+```
+
+### Measured host cost
+
+`plan_split` refuses to guess. The host figure can come from a measurement
+instead: profile the first run — which has nothing to split onto anyway — and
+price every later run from it.
+
+```python
+from dau_scheduler import ProfileCache, plan_split, profile_from_spans
+
+profile = profile_from_spans(
+    engine_timings,  # (start_us, end_us, node name) per plan node
+    rows=1_000,
+    plan_key="revenue-by-day",
+    is_fixed=lambda node: node.startswith("optimization"),
+    engine_version="1.42.1",
+)
+ProfileCache("~/profiles").put(profile)
+
+if profile.is_stale_for(6_000_000, engine_version="1.42.1"):
+    ...  # re-measure rather than extrapolate
+plan_split("collaborative", device_seconds=0.0186, profile=profile, rows=6_000_000)
+```
+
+Plan-time cost is kept separate from per-row cost, because a query engine's
+optimizer does not get slower with more rows and folding it into a per-row rate
+over-estimates a large query by orders of magnitude.
+
+## What is here
+
+| module    | what it decides                                                     |
+| --------- | ------------------------------------------------------------------- |
+| `posture` | the share of rows each engine gets, and how that share is delivered |
+| `merge`   | which results survive a row split, and how the partials combine     |
+| `rows`    | which rows an arm owns, by offset and optionally by value           |
+| `split`   | running both arms at once and merging what comes back               |
+| `profile` | measured host cost, keyed by plan and machine, with staleness       |
