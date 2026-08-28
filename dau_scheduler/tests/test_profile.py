@@ -67,6 +67,10 @@ def test_a_profile_goes_stale_under_a_different_engine() -> None:
     guesswork."""
     assert _profile().is_stale_for(1_000, engine_version="1.43.2")
     assert not _profile().is_stale_for(1_000, engine_version="1.42.1")
+    # exact, not major.minor: a patch release can change a kernel, and the
+    # cost of being wrong is a split, while the cost of re-measuring is one
+    # host-only run that was going to happen anyway
+    assert _profile().is_stale_for(1_000, engine_version="1.42.2")
 
 
 def test_an_unrecorded_engine_version_is_unknown_and_therefore_stale() -> None:
