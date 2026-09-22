@@ -50,6 +50,17 @@ def _run(query, rows, build):
     return {"total": sum(row["value"] for row in kept), "len": len(kept)}
 
 
+class _GriddedArm:
+    """An arm that can only take row counts on a grid, the way a device whose
+    job length must sit on a DMA grid can."""
+
+    def __init__(self, row_granularity: int) -> None:
+        self.row_granularity = row_granularity
+
+    def __call__(self, query, rows, build):
+        return _run(query, rows, build)
+
+
 def _execute(rows, split, **kwargs):
     kwargs.setdefault("device", _run)
     kwargs.setdefault("host", _run)
@@ -263,3 +274,51 @@ def test_a_failed_arm_reports_its_failure_rather_than_a_short_answer() -> None:
 
     execution = execute_split(QUERY, ROWS, _split(0.5), rule, device=failing, host=working)
     assert execution.result == {"total": 0, "error": "capacity exceeded"}
+
+
+def test_the_boundary_snaps_to_the_device_granularity() -> None:
+    """A device whose job length must sit on a DMA grid can only take a row
+    count that divides it. 0.5975 of 500 rows is 298.75 -> 299, which a
+    granularity of 4 snaps to 300; the merged answer is unchanged and the
+    count reported is the one the arm was given."""
+    whole = _run(QUERY, RowBatch(ROWS), None)
+    execution = _execute(ROWS, _split(0.5975), device=_GriddedArm(4))
+    assert execution.device_rows == 300
+    assert execution.host_rows == 200
+    assert execution.device_granularity == 4
+    assert execution.result == whole
+
+
+def test_the_degenerate_shares_survive_a_granularity() -> None:
+    """0.0 still launches no device arm, and 1.0 still hands the device
+    everything -- when the table is on the grid. 500 rows on a granularity
+    of 8 is NOT: the device can take at most 496, the host gets the 4-row
+    tail, and the merged answer is still the unsplit one. That is the
+    device's limit being respected rather than a share being mis-served."""
+    whole = _run(QUERY, RowBatch(ROWS), None)
+    on_grid = ROWS[:496]
+    assert _execute(on_grid, _split(1.0), device=_GriddedArm(8)).device_rows == 496
+    assert _execute(ROWS, _split(0.0), device=_GriddedArm(8)).device_rows == 0
+
+    off_grid = _execute(ROWS, _split(1.0), device=_GriddedArm(8))
+    assert off_grid.device_rows == 496 and off_grid.host_rows == 4
+    assert off_grid.result == whole
+
+    # the clamp is to the grid, not the table: 501 rows at share 1.0 must not
+    # snap UP to 504 and then clamp back to an off-grid 501
+    plus_one = ROWS + [{"key": 1, "value": 7, "day": 3}]
+    beyond = _execute(plus_one, _split(1.0), device=_GriddedArm(8))
+    assert beyond.device_rows == 496 and beyond.host_rows == 5
+    assert beyond.result == _run(QUERY, RowBatch(plus_one), None)
+
+    with pytest.raises(ValueError, match="row_granularity must be at least 1"):
+        _execute(ROWS, _split(0.5), device=_GriddedArm(0))
+
+
+def test_an_invalid_granularity_is_refused_before_the_rows_are_consumed() -> None:
+    """A one-shot iterable must survive a refused call, or the retry with a
+    corrected argument runs over nothing."""
+    rows = iter(ROWS)
+    with pytest.raises(ValueError, match="row_granularity must be at least 1"):
+        _execute(rows, _split(0.5), device=_GriddedArm(0))
+    assert next(rows) is ROWS[0], "the refusal consumed nothing"
