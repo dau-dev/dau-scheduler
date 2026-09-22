@@ -52,6 +52,11 @@ __all__ = ("SplitArm", "SplitExecution", "execute_split")
 # being split, and halving it would drop every match whose build row landed
 # in the other arm while the totals still looked like totals.
 SplitArm = Callable[[Any, RowSource, "RowSource | None"], Any]
+#: An arm may carry ``row_granularity``: the row multiple it can accept, for
+#: a device whose job length must sit on a DMA grid. The executor reads it off
+#: the arm rather than taking it as a parameter, so the fact travels with the
+#: engine that has it and cannot be omitted by a caller. A plain function has
+#: none and is taken at 1.
 
 
 class SplitExecution(BaseModel):
@@ -80,6 +85,8 @@ class SplitExecution(BaseModel):
     overlap_seconds: float
     materialize_seconds: float
     merge_seconds: float
+    # the row multiple the leading arm's count was snapped to (1 = none)
+    device_granularity: int = 1
     result: Any = None
 
 
@@ -103,8 +110,9 @@ def execute_split(
     rest. That order is part of the contract, not an implementation detail:
     a grouped ``first``/``last`` and a top-k's earliest-arrival tie-break are
     defined by it. An arm with no rows is not launched at all -- a share of
-    0.0 or 1.0 runs exactly the unsplit path, which is what makes the
-    degenerate ends of a share sweep meaningful.
+    0.0 or 1.0 runs exactly the unsplit path (given a table on the device's
+    granularity), which is what makes the degenerate ends of a share sweep
+    meaningful.
 
     ``rows`` is the whole table as a :class:`~dau_scheduler.rows.RowSource` --
     a :class:`~dau_scheduler.rows.RowRange` when both arms run from data they
@@ -115,10 +123,22 @@ def execute_split(
     ``aggregates`` are ``(output name, aggregate kind)`` pairs checked against
     ``merge`` before anything runs (see
     :func:`dau_scheduler.merge.check_split`).
+
+    A ``device`` arm carrying ``row_granularity`` (see :data:`SplitArm`) can
+    only take a row count that divides it -- a device whose job length must
+    sit on a DMA grid. The boundary is snapped to the nearest such multiple
+    and the count actually given is reported as ``device_rows``. It is an
+    execution fact about the engine, not part of the share the planner
+    chose, which is why it rides the arm rather than the
+    :class:`~dau_scheduler.posture.WorkSplit`.
     """
     started = time.perf_counter()
     # refuse BEFORE running anything: a refusal that arrives after the work
-    # is a refusal that already cost the work
+    # is a refusal that already cost the work -- and before touching the
+    # rows, which may be a one-shot iterable a retry could not replay
+    device_granularity = int(getattr(device, "row_granularity", 1))
+    if device_granularity < 1:
+        raise ValueError(f"the device arm's row_granularity must be at least 1, got {device_granularity}")
     check_split(merge, aggregates)
     # everything done TO the rows before an arm starts is one term, because
     # cutting a materialized batch at the boundary costs the same kind of
@@ -127,7 +147,7 @@ def execute_split(
     marshalled = time.perf_counter()
     source = as_row_source(rows)
     build = None if build_rows is None else as_row_source(build_rows)
-    boundary = _device_row_count(split.device_share, len(source))
+    boundary = _device_row_count(split.device_share, len(source), device_granularity)
 
     arms: list[tuple[str, SplitArm, RowSource]] = []
     if boundary:
@@ -164,15 +184,23 @@ def execute_split(
         overlap_seconds=_overlap(list(spans.values())),
         materialize_seconds=materialize,
         merge_seconds=merged,
+        device_granularity=device_granularity,
         result=result,
     )
 
 
-def _device_row_count(share: float, rows: int) -> int:
-    """The leading arm's row count for a share. Rounded, then clamped: a
-    share of 1.0 must leave the other arm nothing rather than one row
-    short."""
-    return min(rows, max(0, round(share * rows)))
+def _device_row_count(share: float, rows: int, granularity: int = 1) -> int:
+    """The leading arm's row count for a share. Rounded to the nearest
+    multiple of ``granularity``, then clamped to the table. A share of 0.0
+    launches no device arm; a share of 1.0 leaves the other arm nothing
+    when the table is on the grid, and otherwise leaves it the tail the
+    device cannot take -- the device's limit, not a short-changed share."""
+    if granularity < 1:
+        raise ValueError(f"device_granularity must be at least 1, got {granularity}")
+    snapped = round(share * rows / granularity) * granularity
+    # clamp to the largest count on the grid, not to the table: a table that
+    # is itself off the grid must leave its ragged tail to the other arm
+    return min(rows - rows % granularity, max(0, snapped))
 
 
 def _timed(arm: SplitArm, query: Any, rows: RowSource, build: RowSource | None) -> tuple[Any, float, float]:
