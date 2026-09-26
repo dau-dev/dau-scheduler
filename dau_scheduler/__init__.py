@@ -15,7 +15,7 @@ from .merge import (
     merge_totals,
 )
 from .posture import POSTURES, HostCost, Posture, WorkSplit, batch_count, plan_split
-from .profile import NodeCost, ProfileCache, QueryProfile, host_identity, profile_from_spans
+from .profile import LinkRate, NodeCost, ProfileCache, QueryProfile, host_identity, profile_from_spans
 from .rows import RowBatch, RowRange, RowSource, as_row_source
 from .split import SplitArm, SplitExecution, execute_split
 
@@ -26,6 +26,7 @@ __all__ = (
     "DEFERRED_MEAN",
     "POSTURES",
     "HostCost",
+    "LinkRate",
     "MergeRule",
     "NodeCost",
     "Posture",

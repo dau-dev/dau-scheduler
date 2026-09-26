@@ -6,7 +6,7 @@ import json
 
 import pytest
 
-from dau_scheduler import NodeCost, ProfileCache, QueryProfile, host_identity, plan_split, profile_from_spans
+from dau_scheduler import LinkRate, NodeCost, ProfileCache, QueryProfile, host_identity, plan_split, profile_from_spans
 
 
 def _profile(**overrides) -> QueryProfile:
@@ -162,3 +162,34 @@ def test_the_engine_version_is_not_part_of_the_key(tmp_path) -> None:
     assert len(list(cache.entries())) == 1
     stored = cache.get("q", "bench/arm64")
     assert stored.engine_version == "1.43.2"
+
+
+def test_a_link_rate_is_keyed_by_host_and_device_and_round_trips(tmp_path) -> None:
+    """The rate the cut model prices every byte crossing with is a measured
+    fact about one host's link to one device, kept beside the host profiles
+    and deletable by hand like them."""
+    cache = ProfileCache(tmp_path)
+    rate = LinkRate(host="bench/x86_64", device="DPV1/xdma0", bytes_per_second=3.2e9, transfer_bytes=8 << 20, samples=(3.1e9, 3.2e9, 3.3e9))
+    assert cache.get_link_rate("DPV1/xdma0", "bench/x86_64") is None
+    path = cache.put_link_rate(rate)
+    assert path.name.endswith(".rate.json") and path.parent == tmp_path
+    assert cache.get_link_rate("DPV1/xdma0", "bench/x86_64") == rate
+    assert cache.get_link_rate("DPV1/xdma0", "other/arm64") is None, "another host's link is another measurement"
+    assert cache.get_link_rate("DPV2/xdma0", "bench/x86_64") is None, "and so is another device's"
+    assert list(cache.entries()) == [], "a link rate is not a plan profile"
+
+
+@pytest.mark.parametrize(
+    "bad",
+    [
+        {"bytes_per_second": 0.0},
+        {"bytes_per_second": float("nan")},
+        {"bytes_per_second": float("inf")},
+        {"transfer_bytes": 0},
+        {"samples": (1.0, 0.0)},
+    ],
+)
+def test_a_link_rate_refuses_numbers_it_cannot_price_with(bad) -> None:
+    fields = {"host": "h", "device": "d", "bytes_per_second": 1e9, "transfer_bytes": 64, "samples": (1e9,)}
+    with pytest.raises(ValueError):
+        LinkRate(**{**fields, **bad})
