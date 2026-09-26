@@ -164,19 +164,30 @@ def test_the_engine_version_is_not_part_of_the_key(tmp_path) -> None:
     assert stored.engine_version == "1.43.2"
 
 
-def test_a_link_rate_is_keyed_by_host_and_device_and_round_trips(tmp_path) -> None:
+def test_a_link_rate_is_keyed_by_host_device_and_transfer_size_and_round_trips(tmp_path) -> None:
     """The rate the cut model prices every byte crossing with is a measured
-    fact about one host's link to one device, kept beside the host profiles
-    and deletable by hand like them."""
+    fact about one host's link to one device at one transfer size, kept
+    beside the host profiles and deletable by hand like them."""
     cache = ProfileCache(tmp_path)
-    rate = LinkRate(host="bench/x86_64", device="DPV1/xdma0", bytes_per_second=3.2e9, transfer_bytes=8 << 20, samples=(3.1e9, 3.2e9, 3.3e9))
-    assert cache.get_link_rate("DPV1/xdma0", "bench/x86_64") is None
+    rate = LinkRate(
+        host="bench/x86_64", device="DPV1/xdma0", bytes_per_second=3.2e9, transfer_bytes=8 << 20, samples=(3.1e9, 3.2e9, 3.3e9), measured_at=1.0e9
+    )
+    assert cache.get_link_rate("DPV1/xdma0", 8 << 20, "bench/x86_64") is None
     path = cache.put_link_rate(rate)
     assert path.name.endswith(".rate.json") and path.parent == tmp_path
-    assert cache.get_link_rate("DPV1/xdma0", "bench/x86_64") == rate
-    assert cache.get_link_rate("DPV1/xdma0", "other/arm64") is None, "another host's link is another measurement"
-    assert cache.get_link_rate("DPV2/xdma0", "bench/x86_64") is None, "and so is another device's"
+    assert cache.get_link_rate("DPV1/xdma0", 8 << 20, "bench/x86_64") == rate
+    assert cache.get_link_rate("DPV1/xdma0", 8 << 20, "other/arm64") is None, "another host's link is another measurement"
+    assert cache.get_link_rate("DPV2/xdma0", 8 << 20, "bench/x86_64") is None, "and so is another device's"
+    assert cache.get_link_rate("DPV1/xdma0", 64 << 10, "bench/x86_64") is None, "and so is another transfer size's"
     assert list(cache.entries()) == [], "a link rate is not a plan profile"
+
+
+def test_a_link_rate_goes_stale_by_age_and_an_undated_one_is_stale() -> None:
+    fields = {"host": "h", "device": "d", "bytes_per_second": 1e9, "transfer_bytes": 64}
+    dated = LinkRate(**fields, measured_at=1_000.0)
+    assert not dated.is_stale(now=1_500.0, max_age_seconds=600.0)
+    assert dated.is_stale(now=1_601.0, max_age_seconds=600.0)
+    assert LinkRate(**fields).is_stale(now=1.0, max_age_seconds=1e12), "never dated: re-measure"
 
 
 @pytest.mark.parametrize(
@@ -187,6 +198,8 @@ def test_a_link_rate_is_keyed_by_host_and_device_and_round_trips(tmp_path) -> No
         {"bytes_per_second": float("inf")},
         {"transfer_bytes": 0},
         {"samples": (1.0, 0.0)},
+        {"measured_at": -1.0},
+        {"measured_at": float("nan")},
     ],
 )
 def test_a_link_rate_refuses_numbers_it_cannot_price_with(bad) -> None:
