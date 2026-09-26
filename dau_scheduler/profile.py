@@ -39,7 +39,7 @@ from typing import ClassVar
 
 from pydantic import BaseModel, model_validator
 
-__all__ = ("NodeCost", "ProfileCache", "QueryProfile", "host_identity", "profile_from_spans")
+__all__ = ("LinkRate", "NodeCost", "ProfileCache", "QueryProfile", "host_identity", "profile_from_spans")
 
 
 def host_identity() -> str:
@@ -204,8 +204,54 @@ def _union_seconds(spans: Sequence[tuple[int, int]]) -> float:
     return total / 1e6
 
 
+class LinkRate(BaseModel):
+    """The measured host-to-device transfer rate of one link: the term the
+    adaptive cut model and a streamed split price every byte crossing with.
+
+    Measured, not declared: a platform states its bus width and lane count,
+    but what a transfer actually sustains depends on the host, the slot, the
+    driver and the transfer size, and the sweeps of record put the same card
+    at different rates in different hosts. So the rate is keyed by (host,
+    device), like a host profile, and measured where it will be used.
+    ``transfer_bytes`` is part of the identity, not a note: a link's rate at
+    one transfer size says little about another (per-transfer setup makes
+    small transfers materially slower), so a rate is measured at the size
+    the caller will move and cached under it. ``samples`` keeps the
+    individual rates so the spread is visible beside the figure the model
+    uses. ``measured_at`` (seconds since the epoch) is what staleness is
+    judged by: a driver change, a link renegotiation or a reboot cannot
+    invalidate an entry, so an old one is re-measured rather than trusted.
+    """
+
+    model_config: ClassVar = {"frozen": True}
+
+    host: str
+    device: str
+    bytes_per_second: float
+    transfer_bytes: int
+    samples: tuple[float, ...] = ()
+    measured_at: float = 0.0
+
+    def is_stale(self, *, now: float, max_age_seconds: float) -> bool:
+        """Older than ``max_age_seconds`` at ``now``, or never dated."""
+        return self.measured_at <= 0.0 or now - self.measured_at > max_age_seconds
+
+    @model_validator(mode="after")
+    def _rate_is_usable(self) -> LinkRate:
+        if not math.isfinite(self.bytes_per_second) or self.bytes_per_second <= 0:
+            raise ValueError(f"link {self.host}/{self.device}: bytes_per_second must be finite and positive, got {self.bytes_per_second}")
+        if self.transfer_bytes <= 0:
+            raise ValueError(f"link {self.host}/{self.device}: transfer_bytes must be positive, got {self.transfer_bytes}")
+        if any(not math.isfinite(sample) or sample <= 0 for sample in self.samples):
+            raise ValueError(f"link {self.host}/{self.device}: every sample must be finite and positive")
+        if not math.isfinite(self.measured_at) or self.measured_at < 0.0:
+            raise ValueError(f"link {self.host}/{self.device}: measured_at must be a finite non-negative time, got {self.measured_at}")
+        return self
+
+
 class ProfileCache:
-    """Profiles on disk, keyed by plan and host.
+    """Profiles on disk, keyed by plan and host, and link rates keyed by
+    device and host.
 
     Deliberately a plain directory of JSON rather than anything cleverer: a
     profile is small, human-readable, and worth being able to delete by hand
@@ -239,3 +285,19 @@ class ProfileCache:
 
     def entries(self) -> Iterable[Path]:
         return sorted(self.root.glob("*.profile.json")) if self.root.is_dir() else ()
+
+    def _link_path(self, device: str, host: str, transfer_bytes: int) -> Path:
+        safe = host.replace("/", "_")
+        return self.root / f"link.{device.replace('/', '_')}.{safe}.{transfer_bytes}.rate.json"
+
+    def get_link_rate(self, device: str, transfer_bytes: int, host: str | None = None) -> LinkRate | None:
+        path = self._link_path(device, host or host_identity(), transfer_bytes)
+        if not path.is_file():
+            return None
+        return LinkRate(**json.loads(path.read_text()))
+
+    def put_link_rate(self, rate: LinkRate) -> Path:
+        self.root.mkdir(parents=True, exist_ok=True)
+        path = self._link_path(rate.device, rate.host, rate.transfer_bytes)
+        path.write_text(json.dumps(rate.model_dump(), indent=2, sort_keys=True))
+        return path
