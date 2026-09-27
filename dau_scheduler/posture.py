@@ -85,6 +85,7 @@ def plan_split(
     device_seconds: float | None = None,
     profile: HostCost | None = None,
     rows: int | None = None,
+    device_fixed_seconds: float = 0.0,
 ) -> WorkSplit:
     """Resolve a posture into a row split.
 
@@ -103,6 +104,15 @@ def plan_split(
     ``collaborative`` declines to invent one, because a fabricated number
     underneath a real decision is worse than no decision: the split changes
     which engine runs which rows, so an error in it is self-reinforcing.
+
+    ``device_fixed_seconds`` is what one device job costs before it has
+    processed a row -- launching it, polling it, reading its records -- a
+    per-invocation term the proportional form omitted and one measurement
+    put at a few milliseconds beside a 13 ms host time (2026-09-27). With it
+    the balance is ``(1 - s) * cpu = fixed + s * device``, and a share that
+    cannot beat the host alone (the fixed cost is already most of the host
+    time) is a ``cpu`` split that says why, not a split predicted to win by
+    a margin the fixed cost eats.
     """
     if cpu_seconds is None and profile is not None:
         if rows is None:
@@ -137,11 +147,26 @@ def plan_split(
             )
         if cpu_seconds <= 0 or device_seconds <= 0:
             raise PostureError(f"estimates must be positive, got cpu={cpu_seconds}, device={device_seconds}")
+        if device_fixed_seconds < 0:
+            raise PostureError(f"device_fixed_seconds must be non-negative, got {device_fixed_seconds}")
+        share = (cpu_seconds - device_fixed_seconds) / (cpu_seconds + device_seconds)
+        if share <= 0:
+            return WorkSplit(
+                posture="cpu",
+                device_share=0.0,
+                rationale=(
+                    f"no share beats the host alone: one device job costs {device_fixed_seconds * 1e3:.2f} ms before its first row "
+                    f"and the host finishes in {cpu_seconds * 1e3:.2f} ms"
+                ),
+                predicted_speedup=1.0,
+            )
+        wall = device_fixed_seconds + share * device_seconds
+        fixed_note = f" after {device_fixed_seconds * 1e3:.2f} ms of device fixed cost" if device_fixed_seconds else ""
         return WorkSplit(
             posture=posture,
-            device_share=cpu_seconds / (cpu_seconds + device_seconds),
-            rationale=(f"balance point: host {cpu_seconds * 1e3:.2f} ms, device {device_seconds * 1e3:.2f} ms, both finish together"),
-            predicted_speedup=1.0 + cpu_seconds / device_seconds,
+            device_share=share,
+            rationale=(f"balance point: host {cpu_seconds * 1e3:.2f} ms, device {device_seconds * 1e3:.2f} ms{fixed_note}, both finish together"),
+            predicted_speedup=cpu_seconds / wall,
         )
 
     if posture == "adaptive":

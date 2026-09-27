@@ -190,3 +190,25 @@ def test_the_knee_has_no_default() -> None:
     wrong for every link that is not the one it was measured on."""
     with pytest.raises(TypeError):
         batch_count(1 << 20, resident=False)  # type: ignore[call-arg]
+
+
+def test_the_device_fixed_cost_moves_the_balance_and_can_rule_the_split_out() -> None:
+    """A device job costs something before its first row. The balance point
+    hands the device less by exactly that much, the predicted speedup is
+    against the wall that includes it, and when the fixed cost is most of
+    the host's whole time no share can win and the answer is host-only."""
+    plain = plan_split("collaborative", cpu_seconds=0.013, device_seconds=0.100)
+    fixed = plan_split("collaborative", cpu_seconds=0.013, device_seconds=0.100, device_fixed_seconds=0.002)
+    assert fixed.device_share == pytest.approx((0.013 - 0.002) / 0.113)
+    assert fixed.device_share < plain.device_share
+    wall = 0.002 + fixed.device_share * 0.100
+    assert wall == pytest.approx(0.013 * (1 - fixed.device_share)), "both engines still finish together"
+    assert fixed.predicted_speedup == pytest.approx(0.013 / wall)
+    assert fixed.predicted_speedup < plain.predicted_speedup
+    assert "fixed cost" in fixed.rationale
+
+    ruled_out = plan_split("collaborative", cpu_seconds=0.013, device_seconds=0.100, device_fixed_seconds=0.013)
+    assert ruled_out.posture == "cpu" and ruled_out.device_share == 0.0 and ruled_out.predicted_speedup == 1.0
+    assert "no share beats the host alone" in ruled_out.rationale
+    with pytest.raises(PostureError, match="non-negative"):
+        plan_split("collaborative", cpu_seconds=0.013, device_seconds=0.100, device_fixed_seconds=-0.001)
