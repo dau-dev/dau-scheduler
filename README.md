@@ -20,15 +20,19 @@ three questions:
 
 - **Should this be split, and by how much?** A closed form over each engine's
   measured throughput gives the share of rows that finishes both arms at the
-  same time. When the engines are comparable it approaches a 2x speedup; when
-  one is far faster than the other it correctly declines to bother.
+  same time. When the engines are comparable the predicted gain approaches
+  2x; when one is far faster than the other it shrinks toward 1x, and the
+  split reports that figure rather than hiding it. A device job's fixed cost
+  can rule a split out entirely, in which case the answer is host-only and
+  says why.
 - **Can this query survive being split?** Splitting rows means each engine
   computes a partial answer, and not every result can be reassembled from
   partials. Sums and counts add. A mean needs its sum and count carried
   separately rather than averaged. A top-k merges two k-lists. A grouped
   aggregation needs a key merge with the group straddling the boundary folded
-  back together. A distinct count cannot be combined at all without the
-  elements themselves. This library writes that taxonomy down and enforces it.
+  back together. An exact distinct count cannot be combined without the
+  elements themselves. This library writes that taxonomy down and refuses
+  any aggregate the caller has not declared mergeable under it.
 - **What if it can't?** Refusal is by name and default-deny. A result the merge
   step does not know how to combine is refused, explicitly and with a reason,
   rather than silently mis-merged into a wrong answer.
@@ -42,6 +46,16 @@ the machine it was measured on.
 
 The library is engine-agnostic. Both arms are injected as callables, and nothing
 here knows what is on the other end.
+
+## Install
+
+Python 3.12 or newer, and pydantic; nothing else.
+
+```bash
+pip install git+https://github.com/dau-dev/dau-scheduler
+```
+
+(The `dau-scheduler` name on PyPI is a placeholder until the first release.)
 
 ## Usage
 
@@ -92,9 +106,14 @@ execution.overlap_seconds  # how long both arms were in flight together
 be reassembled and it is refused before either engine starts:
 
 ```python
-execute_split(query, rows, split, merge, device=arm, host=arm, aggregates=[("average", "mean")])
-# SplitError: average: a mean is not row-partitionable; carry the sum and the
-# count as separate outputs and divide after the merge
+from dau_scheduler import SplitError
+
+try:
+    execute_split(query, rows, split, merge, device=arm, host=arm, aggregates=[("average", "mean")])
+except SplitError as refusal:
+    print(refusal)
+# average: a mean is not row-partitionable; carry the sum and the count as
+# separate outputs and divide after the merge
 ```
 
 ### Rows an arm never reads
@@ -102,12 +121,20 @@ execute_split(query, rows, split, merge, device=arm, host=arm, aggregates=[("ave
 An engine running against data it already holds needs one number, not a list of
 rows: a row **count** if it holds its own copy, an **offset** if it holds a
 resident frame. `RowRange` is exactly that, and it costs two integers however
-many rows it names — so a share sweep over six million rows allocates nothing
-per call. An arm that does need the values asks for them and gets a typed
-refusal from a range rather than a table materialized behind the caller's back.
+many rows it names, so a share sweep over six million rows allocates nothing
+proportional to the row count. An arm that does need the values asks for them
+and gets a typed refusal from a range rather than a table materialized behind
+the caller's back.
 
 ```python
 from dau_scheduler import RowRange
+
+
+def resident_arm(query, rows, build):
+    # an engine that holds the table: it reads the offset and the length,
+    # never a row
+    return {"revenue": 0, "len": len(rows)}
+
 
 execute_split(query, RowRange(0, 6_000_000), split, merge, device=resident_arm, host=resident_arm)
 ```
@@ -121,17 +148,19 @@ price every later run from it.
 ```python
 from dau_scheduler import ProfileCache, plan_split, profile_from_spans
 
+# (start_us, end_us, node name) per plan node, as the engine reported them
+engine_timings = [(0, 11_200, "optimization"), (11_200, 12_900, "scan"), (12_900, 14_600, "filter")]
 profile = profile_from_spans(
-    engine_timings,  # (start_us, end_us, node name) per plan node
+    engine_timings,
     rows=1_000,
     plan_key="revenue-by-day",
     is_fixed=lambda node: node.startswith("optimization"),
     engine_version="1.42.1",
 )
-ProfileCache("~/profiles").put(profile)
+ProfileCache("profiles").put(profile)
 
 if profile.is_stale_for(6_000_000, engine_version="1.42.1"):
-    ...  # re-measure rather than extrapolate
+    pass  # re-measure rather than extrapolate across orders of magnitude
 plan_split("collaborative", device_seconds=0.0186, profile=profile, rows=6_000_000)
 ```
 

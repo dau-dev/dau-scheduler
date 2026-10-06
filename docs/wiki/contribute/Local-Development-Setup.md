@@ -1,14 +1,14 @@
 ## Table of Contents
 
 - [Table of Contents](#table-of-contents)
-- [Step 1: Build from Source](#step-1-build-from-source)
-- [Step 2: Configuring Git and GitHub for Development](#step-2-configuring-git-and-github-for-development)
+- [Build from source](#build-from-source)
+- [Configure Git and GitHub for development](#configure-git-and-github-for-development)
   - [Create your fork](#create-your-fork)
   - [Configure remotes](#configure-remotes)
   - [Authenticating with GitHub](#authenticating-with-github)
 - [Guidelines](#guidelines)
 
-## Step 1: Build from Source
+## Build from source
 
 To work on `dau-scheduler`, you are going to need to build it from source. See
 [Build from Source](Build-from-Source) for
@@ -17,7 +17,7 @@ detailed build instructions.
 Once you've built `dau-scheduler` from a `git` clone, you will also need to
 configure `git` and your GitHub account for `dau-scheduler` development.
 
-## Step 2: Configuring Git and GitHub for Development
+## Configure Git and GitHub for development
 
 ### Create your fork
 

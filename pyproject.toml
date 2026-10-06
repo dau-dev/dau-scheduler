@@ -20,11 +20,8 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "Programming Language :: Python",
     "Programming Language :: Python :: Implementation :: CPython",
-    "Programming Language :: Python :: Implementation :: PyPy",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Programming Language :: Python :: 3.14",
 ]
 
 dependencies = [
@@ -73,9 +70,6 @@ replace = 'version = "{new_version}"'
 
 [tool.coverage.run]
 branch = true
-omit = [
-    "dau_scheduler/tests/integration/",
-]
 
 [tool.coverage.report]
 exclude_also = [
@@ -116,6 +110,7 @@ line-length = 150
 
 [tool.ruff.lint]
 extend-select = [
+    "ARG",
     "I",
 ]
 
@@ -137,4 +132,8 @@ section-order = [
 "__init__.py" = [
     "F401",
     "F403",
+]
+# test doubles conform to real interfaces, so unused parameters are the point
+"dau_scheduler/tests/*" = [
+    "ARG",
 ]

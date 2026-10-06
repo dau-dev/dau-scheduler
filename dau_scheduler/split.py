@@ -32,15 +32,16 @@ contribution to that; the rest belongs to whoever allocated the rows.
 
 from __future__ import annotations
 
+import math
 import time
 from collections.abc import Callable, Iterable
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any, ClassVar
 
-from pydantic import BaseModel
+from pydantic import BaseModel, model_validator
 
 from .merge import MergeRule, check_split
-from .posture import WorkSplit
+from .posture import POSTURES, WorkSplit
 from .rows import RowSource, as_row_source
 
 __all__ = ("SplitArm", "SplitExecution", "execute_split")
@@ -53,7 +54,8 @@ __all__ = ("SplitArm", "SplitExecution", "execute_split")
 # in the other arm while the totals still looked like totals.
 SplitArm = Callable[[Any, RowSource, "RowSource | None"], Any]
 #: An arm may carry ``row_granularity``: the row multiple it can accept, for
-#: a device whose job length must sit on a DMA grid. The executor reads it off
+#: an engine whose job length must sit on a fixed row grid (a transfer unit,
+#: a lane width). The executor reads it off
 #: the arm rather than taking it as a parameter, so the fact travels with the
 #: engine that has it and cannot be omitted by a caller. A plain function has
 #: none and is taken at 1.
@@ -88,6 +90,24 @@ class SplitExecution(BaseModel):
     # the row multiple the leading arm's count was snapped to (1 = none)
     device_granularity: int = 1
     result: Any = None
+
+    @model_validator(mode="after")
+    def _figures_are_sane(self) -> SplitExecution:
+        if self.posture not in POSTURES:
+            raise ValueError(f"unknown posture {self.posture!r}; known: {POSTURES}")
+        if not math.isfinite(self.device_share) or not 0.0 <= self.device_share <= 1.0:
+            raise ValueError(f"device_share {self.device_share} is not a fraction")
+        for name in ("device_rows", "host_rows", "device_granularity"):
+            value = getattr(self, name)
+            if value < 0 or (name == "device_granularity" and value < 1):
+                raise ValueError(f"{name} must be non-negative, got {value}")
+        for name in ("device_seconds", "host_seconds", "wall_seconds", "overlap_seconds", "materialize_seconds", "merge_seconds"):
+            value = getattr(self, name)
+            if not math.isfinite(value) or value < 0:
+                raise ValueError(f"{name} must be finite and non-negative, got {value}")
+        if self.overlap_seconds > min(self.device_seconds, self.host_seconds) + 1e-9 and self.device_rows and self.host_rows:
+            raise ValueError("overlap_seconds cannot exceed the shorter arm")
+        return self
 
 
 def execute_split(
@@ -125,8 +145,8 @@ def execute_split(
     :func:`dau_scheduler.merge.check_split`).
 
     A ``device`` arm carrying ``row_granularity`` (see :data:`SplitArm`) can
-    only take a row count that divides it -- a device whose job length must
-    sit on a DMA grid. The boundary is snapped to the nearest such multiple
+    only take a row count that divides it -- an engine whose job length must
+    sit on a fixed row grid. The boundary is snapped to the nearest such multiple
     and the count actually given is reported as ``device_rows``. It is an
     execution fact about the engine, not part of the share the planner
     chose, which is why it rides the arm rather than the
@@ -136,6 +156,7 @@ def execute_split(
     # refuse BEFORE running anything: a refusal that arrives after the work
     # is a refusal that already cost the work -- and before touching the
     # rows, which may be a one-shot iterable a retry could not replay
+    split.check()
     device_granularity = int(getattr(device, "row_granularity", 1))
     if device_granularity < 1:
         raise ValueError(f"the device arm's row_granularity must be at least 1, got {device_granularity}")

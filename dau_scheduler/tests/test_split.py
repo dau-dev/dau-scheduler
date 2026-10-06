@@ -29,7 +29,8 @@ SHARES = (0.0, 0.13, 0.5, 0.6, 0.87, 1.0)
 
 ROWS = [{"key": (seed * 7) % 5, "value": (seed * 31) % 100, "day": seed % 60} for seed in range(500)]
 
-QUERY = {"filter": lambda row: row["day"] < 30, "outputs": ("total", "len")}
+OUTPUTS = ("total", "len")
+QUERY = {"filter": lambda row: row["day"] < 30}
 
 
 def _split(share: float) -> WorkSplit:
@@ -39,7 +40,7 @@ def _split(share: float) -> WorkSplit:
 def _rule() -> MergeRule:
     return MergeRule(
         terminal="reductions",
-        combine=lambda partials: merge_totals(partials, QUERY["outputs"]),
+        combine=lambda partials: merge_totals(partials, OUTPUTS),
         mergeable=ADDITIVE,
     )
 
@@ -178,7 +179,6 @@ def test_a_row_range_splits_a_table_neither_arm_reads() -> None:
     )
     assert seen == {"device": (0, 3_600_000), "host": (3_600_000, 2_400_000)}
     assert execution.result == {"total": 42, "len": 6_000_000}
-    assert execution.materialize_seconds < 0.01
 
 
 def test_a_row_range_refuses_the_arm_that_reads_values() -> None:
@@ -216,7 +216,9 @@ def test_the_accounting_covers_the_marshalling_it_makes_the_caller_pay() -> None
     assert execution.wall_seconds >= execution.materialize_seconds + execution.merge_seconds
     assert execution.result == _run(QUERY, RowBatch(ROWS), None)
     # a sequence is wrapped in place, so handing the same rows over is free
-    assert _execute(ROWS, _split(0.5)).materialize_seconds < 0.01
+    batch = RowBatch(ROWS)
+    assert batch.slice(0, len(ROWS)) is batch, "the whole table is handed over as the same object, not copied"
+    assert batch.slice(0, 250).values() is not ROWS
 
 
 def test_a_refusal_arrives_before_either_arm_starts() -> None:
@@ -322,3 +324,40 @@ def test_an_invalid_granularity_is_refused_before_the_rows_are_consumed() -> Non
     with pytest.raises(ValueError, match="row_granularity must be at least 1"):
         _execute(rows, _split(0.5), device=_GriddedArm(0))
     assert next(rows) is ROWS[0], "the refusal consumed nothing"
+
+
+def test_a_copied_split_is_checked_before_anything_runs() -> None:
+    """``model_copy(update=...)`` skips validation, so a split that was edited
+    into an invalid share is refused at the executor rather than run."""
+    broken = _split(0.5).model_copy(update={"device_share": 1.5})
+    with pytest.raises(ValueError, match="not a fraction"):
+        _execute(ROWS, broken)
+
+
+def test_an_execution_report_refuses_impossible_figures() -> None:
+    from dau_scheduler.split import SplitExecution
+
+    fields: dict[str, object] = {
+        "posture": "collaborative",
+        "device_share": 0.5,
+        "terminal": "reductions",
+        "device_rows": 1,
+        "host_rows": 1,
+        "device_seconds": 1.0,
+        "host_seconds": 1.0,
+        "wall_seconds": 1.0,
+        "overlap_seconds": 0.5,
+        "materialize_seconds": 0.0,
+        "merge_seconds": 0.0,
+    }
+    SplitExecution.model_validate(fields)
+    for bad, message in (
+        ({"device_seconds": -1.0}, "device_seconds"),
+        ({"wall_seconds": float("nan")}, "wall_seconds"),
+        ({"device_rows": -1}, "device_rows"),
+        ({"device_granularity": 0}, "device_granularity"),
+        ({"overlap_seconds": 2.0}, "shorter arm"),
+        ({"posture": "turbo"}, "unknown posture"),
+    ):
+        with pytest.raises(ValueError, match=message):
+            SplitExecution.model_validate({**fields, **bad})

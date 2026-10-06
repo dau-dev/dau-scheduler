@@ -11,10 +11,10 @@ changing data, and the first execution has nothing to split onto anyway** --
 so profiling it is free and turns the estimate into a measurement.
 
 **Fixed cost is separated from per-row cost, and this is not a nicety.** A
-query engine does plan-time work that does not scale with data -- one
-measurement had it at 11.2 ms of a 14.6 ms total on a 1,000-row frame.
-Folding that into a per-row rate would over-estimate a six-million-row query
-by orders of magnitude. So a profile carries ``fixed_seconds`` and
+query engine does plan-time work that does not scale with data, and on a
+frame of a few hundred rows it is most of the total. Folding that into a
+per-row rate would over-estimate a six-million-row query by orders of
+magnitude. So a profile carries ``fixed_seconds`` and
 ``per_row_seconds`` separately and estimates ``fixed + per_row * rows``.
 
 A single profile cannot fully separate the two -- it attributes the nodes
@@ -23,9 +23,9 @@ counts would fit the line properly, and the shape here supports that later
 without changing callers.
 
 A profile is keyed by ``(plan, host)`` because it is not portable between
-machines: two hosts running the same query differed by ~1.6x in one
-measurement, so a profile keyed by plan alone silently steers a split on the
-wrong machine.
+machines: two hosts running the same kernel differed by 1.41x when measured
+side by side (the benchmarks ledger, 2026-08-16), so a profile keyed by plan
+alone silently steers a split on the wrong machine.
 """
 
 from __future__ import annotations
@@ -36,6 +36,7 @@ import platform as _platform
 from collections.abc import Callable, Iterable, Sequence
 from pathlib import Path
 from typing import ClassVar
+from urllib.parse import quote
 
 from pydantic import BaseModel, model_validator
 
@@ -50,17 +51,21 @@ def host_identity() -> str:
 class NodeCost(BaseModel):
     """One plan node's measured cost, and whether it scales with rows."""
 
-    model_config: ClassVar = {"frozen": True}
+    model_config: ClassVar = {"frozen": True, "extra": "forbid"}
 
     node: str
     seconds: float
     scales_with_rows: bool
 
-    @model_validator(mode="after")
-    def _seconds_is_finite(self) -> NodeCost:
+    def check(self) -> NodeCost:
+        """Re-run the invariants and return ``self`` (see :meth:`QueryProfile.check`)."""
         if not math.isfinite(self.seconds) or self.seconds < 0:
             raise ValueError(f"node {self.node!r}: seconds must be finite and non-negative, got {self.seconds}")
         return self
+
+    @model_validator(mode="after")
+    def _seconds_is_finite(self) -> NodeCost:
+        return self.check()
 
 
 class QueryProfile(BaseModel):
@@ -88,8 +93,13 @@ class QueryProfile(BaseModel):
     selectivity: float | None = None
     engine_version: str = ""
 
-    @model_validator(mode="after")
-    def _costs_are_sane(self) -> QueryProfile:
+    def check(self) -> QueryProfile:
+        """Re-run the invariants and return ``self``.
+
+        Construction validates, but ``model_copy(update=...)`` does not, so
+        every use site (``estimate``, ``is_stale_for``, the cache) calls this
+        rather than trusting that the instance went through ``__init__``.
+        """
         if self.rows <= 0:
             raise ValueError(f"profile over {self.rows} rows carries no information")
         for name, value in (("fixed_seconds", self.fixed_seconds), ("per_row_seconds", self.per_row_seconds)):
@@ -97,12 +107,19 @@ class QueryProfile(BaseModel):
             # it then propagates silently through every downstream estimate
             if not math.isfinite(value) or value < 0:
                 raise ValueError(f"{name} must be finite and non-negative, got {value}")
-        if self.selectivity is not None and not 0.0 <= self.selectivity <= 1.0:
+        if self.selectivity is not None and not (math.isfinite(self.selectivity) and 0.0 <= self.selectivity <= 1.0):
             raise ValueError(f"selectivity {self.selectivity} is not a fraction")
+        for node in self.nodes:
+            node.check()
         return self
+
+    @model_validator(mode="after")
+    def _costs_are_sane(self) -> QueryProfile:
+        return self.check()
 
     def estimate(self, rows: int) -> float:
         """Host seconds for ``rows``, as ``fixed + per_row * rows``."""
+        self.check()
         if rows < 0:
             raise ValueError(f"negative rows {rows}")
         return self.fixed_seconds + self.per_row_seconds * rows
@@ -122,7 +139,7 @@ class QueryProfile(BaseModel):
         runs which rows, so the error is self-reinforcing.
 
         *Engine version.* The argument for keying on the host -- two machines
-        measured ~1.6x apart, so a profile keyed by plan alone steers the
+        measured 1.41x apart, so a profile keyed by plan alone steers the
         split on the wrong one -- applies verbatim to the engine being
         measured, and this module exists BECAUSE an analytic model of that
         engine would be guesswork. A measurement taken under one build says
@@ -132,6 +149,7 @@ class QueryProfile(BaseModel):
         stale for the same reason a guessed selectivity is refused: it may
         have been measured under anything.
         """
+        self.check()
         if not self.engine_version or self.engine_version != engine_version:
             return True
         if rows <= 0:
@@ -146,7 +164,7 @@ def profile_from_spans(
     rows: int,
     plan_key: str,
     host: str | None = None,
-    is_fixed: Callable[[str], bool] = lambda node: False,
+    is_fixed: Callable[[str], bool] = lambda _node: False,
     selectivity: float | None = None,
     engine_version: str = "",
 ) -> QueryProfile:
@@ -171,6 +189,12 @@ def profile_from_spans(
     records = [(int(start), int(end), str(node)) for start, end, node in spans]
     if not records:
         raise ValueError("profile produced no timing rows")
+    for start, end, node in records:
+        # a reversed or negative span is a reporting fault, not a cheap node:
+        # priced as zero it would hide real cost, and as a negative width it
+        # would shrink the elapsed total
+        if start < 0 or end < start:
+            raise ValueError(f"node {node!r}: span [{start}, {end}) is not a valid microsecond interval")
     elapsed = (max(end for _start, end, _node in records) - min(start for start, _end, _node in records)) / 1e6
 
     fixed = _union_seconds(sorted((start, end) for start, end, node in records if is_fixed(node)))
@@ -223,7 +247,7 @@ class LinkRate(BaseModel):
     invalidate an entry, so an old one is re-measured rather than trusted.
     """
 
-    model_config: ClassVar = {"frozen": True}
+    model_config: ClassVar = {"frozen": True, "extra": "forbid"}
 
     host: str
     device: str
@@ -234,10 +258,15 @@ class LinkRate(BaseModel):
 
     def is_stale(self, *, now: float, max_age_seconds: float) -> bool:
         """Older than ``max_age_seconds`` at ``now``, or never dated."""
+        self.check()
         return self.measured_at <= 0.0 or now - self.measured_at > max_age_seconds
 
     @model_validator(mode="after")
     def _rate_is_usable(self) -> LinkRate:
+        return self.check()
+
+    def check(self) -> LinkRate:
+        """Re-run the invariants and return ``self`` (see :meth:`QueryProfile.check`)."""
         if not math.isfinite(self.bytes_per_second) or self.bytes_per_second <= 0:
             raise ValueError(f"link {self.host}/{self.device}: bytes_per_second must be finite and positive, got {self.bytes_per_second}")
         if self.transfer_bytes <= 0:
@@ -265,11 +294,26 @@ class ProfileCache:
     """
 
     def __init__(self, root: Path | str) -> None:
-        self.root = Path(root)
+        self.root = Path(root).expanduser()
+
+    def _under_root(self, name: str) -> Path:
+        """A file directly under the cache root. Every key component is
+        percent-encoded with no safe characters, so a plan key or host that
+        contains a slash, ``..`` or a space becomes one flat, reversible file
+        name and cannot name a path outside the root. The check is kept
+        anyway: a cache that writes where it is told is the failure mode
+        this guards."""
+        path = self.root / name
+        if path.parent != self.root or "/" in name or name in {".", ".."}:
+            raise ValueError(f"cache entry {name!r} is not a file directly under {self.root}")
+        return path
+
+    @staticmethod
+    def _component(text: str) -> str:
+        return quote(text, safe="")
 
     def _path(self, plan_key: str, host: str) -> Path:
-        safe = host.replace("/", "_")
-        return self.root / f"{plan_key}.{safe}.profile.json"
+        return self._under_root(f"{self._component(plan_key)}.{self._component(host)}.profile.json")
 
     def get(self, plan_key: str, host: str | None = None) -> QueryProfile | None:
         path = self._path(plan_key, host or host_identity())
@@ -278,6 +322,7 @@ class ProfileCache:
         return QueryProfile(**json.loads(path.read_text()))
 
     def put(self, profile: QueryProfile) -> Path:
+        profile.check()
         self.root.mkdir(parents=True, exist_ok=True)
         path = self._path(profile.plan_key, profile.host)
         path.write_text(json.dumps(profile.model_dump(), indent=2, sort_keys=True))
@@ -287,8 +332,7 @@ class ProfileCache:
         return sorted(self.root.glob("*.profile.json")) if self.root.is_dir() else ()
 
     def _link_path(self, device: str, host: str, transfer_bytes: int) -> Path:
-        safe = host.replace("/", "_")
-        return self.root / f"link.{device.replace('/', '_')}.{safe}.{transfer_bytes}.rate.json"
+        return self._under_root(f"link.{self._component(device)}.{self._component(host)}.{int(transfer_bytes)}.rate.json")
 
     def get_link_rate(self, device: str, transfer_bytes: int, host: str | None = None) -> LinkRate | None:
         path = self._link_path(device, host or host_identity(), transfer_bytes)
@@ -297,6 +341,7 @@ class ProfileCache:
         return LinkRate(**json.loads(path.read_text()))
 
     def put_link_rate(self, rate: LinkRate) -> Path:
+        rate.check()
         self.root.mkdir(parents=True, exist_ok=True)
         path = self._link_path(rate.device, rate.host, rate.transfer_bytes)
         path.write_text(json.dumps(rate.model_dump(), indent=2, sort_keys=True))

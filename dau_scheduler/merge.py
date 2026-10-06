@@ -15,9 +15,11 @@ The aggregates:
   carry sum and count SEPARATELY and the division happens after the merge --
   which is a property of what the engines emit, not something a merge step
   can recover.
-* **A distinct count cannot be combined at all** without the elements it
-  counted. Two ranges that each saw 100 distinct keys may between them have
-  seen 100 or 200, and nothing in the partials says which.
+* **An exact distinct count cannot be combined** without the elements it
+  counted. Two ranges that each saw ``n`` distinct keys may between them have
+  seen anywhere from ``n`` to ``2n``, and nothing in the partials says
+  which. (A mergeable sketch would combine, as an approximation; it is not
+  what these engines emit, so it is not what this taxonomy admits.)
 * **Variance and standard deviation** merge only from count, sum and
   sum-of-squares carried separately, for the same reason as the mean.
 * **A median, or any order statistic of the whole**, needs the values rather
@@ -94,14 +96,14 @@ BOUNDARY_STATS: frozenset[str] = frozenset({"min", "max", "first", "last"})
 # aggregate and the result shape it was asked of.
 AGGREGATE_REFUSALS: dict[str, str] = {
     "mean": "a mean is not row-partitionable; carry the sum and the count as separate outputs and divide after the merge",
-    "n_unique": "a distinct count is not row-partitionable: counts over disjoint ranges cannot be combined without the elements themselves",
+    "n_unique": "an exact distinct count is not row-partitionable: counts over disjoint ranges cannot be combined without the elements themselves",
     "median": "a median is not row-partitionable: an order statistic of the whole needs the values, not two partial answers",
     "std": "a standard deviation is not row-partitionable; carry count, sum and sum-of-squares and derive it after the merge",
     "var": "a variance is not row-partitionable; carry count, sum and sum-of-squares and derive it after the merge",
 }
 
 
-def _no_combine(partials: Sequence[Any]) -> Any:
+def _no_combine(_partials: Sequence[Any]) -> Any:
     raise SplitError("this merge rule carries no combine step, so its partials cannot be reassembled")
 
 

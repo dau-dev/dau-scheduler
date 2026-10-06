@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+from typing import Any, cast
+
 import pytest
 
-from dau_scheduler import POSTURES, PostureError, WorkSplit, batch_count, plan_split
+from dau_scheduler import POSTURES, Posture, PostureError, WorkSplit, batch_count, plan_split
 
 # One measured pairing, used throughout: the same query took 27.63 ms on the
 # host alone and 18.60 ms on the second engine alone, and a share sweep found
@@ -45,6 +47,7 @@ def test_the_closed_form_lands_on_a_measured_optimum() -> None:
     """
     split = plan_split("collaborative", cpu_seconds=HOST_SECONDS, device_seconds=DEVICE_SECONDS)
     assert split.device_share == pytest.approx(MEASURED_SHARE, abs=0.01)
+    assert split.predicted_speedup is not None
     relative_error = abs(split.predicted_speedup - MEASURED_SPEEDUP) / MEASURED_SPEEDUP
     assert relative_error <= CLAIMED_ERROR, f"model error {relative_error:.1%} exceeds the claimed {CLAIMED_ERROR:.0%}"
 
@@ -56,6 +59,7 @@ def test_a_split_pays_least_when_one_engine_dominates() -> None:
     parity = plan_split("collaborative", cpu_seconds=0.01, device_seconds=0.01)
     lopsided = plan_split("collaborative", cpu_seconds=0.01, device_seconds=0.001)
     assert parity.predicted_speedup == pytest.approx(2.0)
+    assert lopsided.predicted_speedup is not None
     assert lopsided.predicted_speedup / (0.01 / 0.001) == pytest.approx(1.1)
 
 
@@ -103,7 +107,7 @@ def test_adaptive_refuses_instead_of_falling_back() -> None:
     """A silent fall back to collaborative would answer a different question
     than the caller asked -- adaptive chooses a boundary in the plan, not a
     row share."""
-    with pytest.raises(NotImplementedError, match="not a row split"):
+    with pytest.raises(PostureError, match="not a row split"):
         plan_split("adaptive")
 
 
@@ -113,13 +117,14 @@ def test_offload_is_not_the_wall_clock_optimum() -> None:
     reaches 1.49x where collaborative reaches 2.49x, and buys back the host."""
     off = plan_split("offload", cpu_seconds=HOST_SECONDS, device_seconds=DEVICE_SECONDS)
     collab = plan_split("collaborative", cpu_seconds=HOST_SECONDS, device_seconds=DEVICE_SECONDS)
+    assert off.predicted_speedup is not None and collab.predicted_speedup is not None
     assert off.predicted_speedup < collab.predicted_speedup
     assert off.device_share > collab.device_share  # more device, less speed
 
 
 def test_unknown_posture_is_refused() -> None:
     with pytest.raises(PostureError, match="unknown posture"):
-        plan_split("turbo")  # type: ignore[arg-type]
+        plan_split(cast(Posture, "turbo"))
 
 
 def test_split_validates_its_own_fields() -> None:
@@ -129,17 +134,18 @@ def test_split_validates_its_own_fields() -> None:
         WorkSplit(posture="nope", device_share=0.5, rationale="x")
 
 
-def test_every_posture_is_reachable_or_explicitly_unimplemented() -> None:
+def test_every_posture_is_reachable_or_refused_by_name() -> None:
     """No posture may be silently absent -- a name in POSTURES that nothing
     handles would fall through to the unknown-posture branch and read as a
-    typo rather than a gap."""
+    typo rather than a gap. ``adaptive`` is refused by name, as a decision
+    this signature cannot make, and the refusal must not be the
+    unknown-posture one."""
     for posture in POSTURES:
         try:
-            plan_split(posture, cpu_seconds=0.02, device_seconds=0.01)  # type: ignore[arg-type]
-        except NotImplementedError:
-            assert posture == "adaptive"
-        except PostureError as error:  # pragma: no cover - would be a gap
-            pytest.fail(f"posture {posture!r} is declared but unhandled: {error}")
+            plan_split(cast(Posture, posture), cpu_seconds=0.02, device_seconds=0.01)
+        except PostureError as error:
+            assert posture == "adaptive", f"posture {posture!r} is declared but unhandled: {error}"
+            assert "unknown posture" not in str(error)
 
 
 def test_resident_wants_one_batch_at_any_size() -> None:
@@ -188,8 +194,9 @@ def test_batch_count_rejects_impossible_inputs() -> None:
 def test_the_knee_has_no_default() -> None:
     """It is a measurement of one link, and a library-wide constant would be
     wrong for every link that is not the one it was measured on."""
+    without_knee: dict[str, Any] = {"payload_bytes": 1 << 20, "resident": False}
     with pytest.raises(TypeError):
-        batch_count(1 << 20, resident=False)  # type: ignore[call-arg]
+        batch_count(**without_knee)
 
 
 def test_the_device_fixed_cost_moves_the_balance_and_can_rule_the_split_out() -> None:
@@ -204,6 +211,7 @@ def test_the_device_fixed_cost_moves_the_balance_and_can_rule_the_split_out() ->
     wall = 0.002 + fixed.device_share * 0.100
     assert wall == pytest.approx(0.013 * (1 - fixed.device_share)), "both engines still finish together"
     assert fixed.predicted_speedup == pytest.approx(0.013 / wall)
+    assert fixed.predicted_speedup is not None and plain.predicted_speedup is not None
     assert fixed.predicted_speedup < plain.predicted_speedup
     assert "fixed cost" in fixed.rationale
 
