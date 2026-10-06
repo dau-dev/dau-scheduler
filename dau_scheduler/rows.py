@@ -84,7 +84,17 @@ class RowRange(RowSource):
             raise SplitError(f"a row range needs 0 <= start <= stop, got [{self.start}, {self.stop})")
 
     def slice(self, start: int, stop: int) -> RowRange:
+        _check_bounds(start, stop, len(self))
         return RowRange(self.start + start, self.start + stop)
+
+
+def _check_bounds(start: int, stop: int, length: int) -> None:
+    """A sub-range must lie inside its parent. Python slicing would clamp a
+    stop past the end and accept a negative start as counting from the back,
+    both of which turn an arithmetic error in a boundary into a silently
+    different row set."""
+    if not 0 <= start <= stop <= length:
+        raise SplitError(f"a sub-range needs 0 <= start <= stop <= {length}, got [{start}, {stop})")
 
 
 @dataclass(frozen=True, slots=True)
@@ -99,6 +109,10 @@ class RowBatch(RowSource):
     rows: Sequence[Any]
     start: int = 0
 
+    def __post_init__(self) -> None:
+        if self.start < 0:
+            raise SplitError(f"a row batch needs a non-negative start offset, got {self.start}")
+
     @property
     def stop(self) -> int:
         return self.start + len(self.rows)
@@ -109,6 +123,7 @@ class RowBatch(RowSource):
         return f"RowBatch(len={len(self.rows)}, start={self.start})"
 
     def slice(self, start: int, stop: int) -> RowBatch:
+        _check_bounds(start, stop, len(self.rows))
         if start == 0 and stop == len(self.rows):
             # a degenerate share hands one arm the whole table; copying the
             # caller's sequence to say so is the same cost in miniature

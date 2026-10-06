@@ -269,7 +269,7 @@ def test_check_split_refuses_a_mean_by_name() -> None:
 
 
 def test_check_split_refuses_a_distinct_count_by_name() -> None:
-    with pytest.raises(SplitError, match="kinds: a distinct count is not row-partitionable"):
+    with pytest.raises(SplitError, match="kinds: an exact distinct count is not row-partitionable"):
         check_split(_reductions(), [("kinds", "n_unique")])
 
 

@@ -9,8 +9,8 @@ import pytest
 from dau_scheduler import LinkRate, NodeCost, ProfileCache, QueryProfile, host_identity, plan_split, profile_from_spans
 
 
-def _profile(**overrides) -> QueryProfile:
-    fields = {
+def _profile(**overrides: object) -> QueryProfile:
+    fields: dict[str, object] = {
         "plan_key": "q",
         "host": "bench/arm64",
         "rows": 1_000,
@@ -18,7 +18,7 @@ def _profile(**overrides) -> QueryProfile:
         "per_row_seconds": 3.4e-6,
         "engine_version": "1.42.1",
     }
-    return QueryProfile(**{**fields, **overrides})
+    return QueryProfile.model_validate({**fields, **overrides})
 
 
 def test_fixed_cost_is_not_scaled_by_the_row_count() -> None:
@@ -161,7 +161,7 @@ def test_the_engine_version_is_not_part_of_the_key(tmp_path) -> None:
     cache.put(_profile(engine_version="1.43.2"))
     assert len(list(cache.entries())) == 1
     stored = cache.get("q", "bench/arm64")
-    assert stored.engine_version == "1.43.2"
+    assert stored is not None and stored.engine_version == "1.43.2"
 
 
 def test_a_link_rate_is_keyed_by_host_device_and_transfer_size_and_round_trips(tmp_path) -> None:
@@ -170,24 +170,29 @@ def test_a_link_rate_is_keyed_by_host_device_and_transfer_size_and_round_trips(t
     beside the host profiles and deletable by hand like them."""
     cache = ProfileCache(tmp_path)
     rate = LinkRate(
-        host="bench/x86_64", device="DPV1/xdma0", bytes_per_second=3.2e9, transfer_bytes=8 << 20, samples=(3.1e9, 3.2e9, 3.3e9), measured_at=1.0e9
+        host="bench/x86_64",
+        device="engine-a/link-0",
+        bytes_per_second=3.2e9,
+        transfer_bytes=8 << 20,
+        samples=(3.1e9, 3.2e9, 3.3e9),
+        measured_at=1.0e9,
     )
-    assert cache.get_link_rate("DPV1/xdma0", 8 << 20, "bench/x86_64") is None
+    assert cache.get_link_rate("engine-a/link-0", 8 << 20, "bench/x86_64") is None
     path = cache.put_link_rate(rate)
     assert path.name.endswith(".rate.json") and path.parent == tmp_path
-    assert cache.get_link_rate("DPV1/xdma0", 8 << 20, "bench/x86_64") == rate
-    assert cache.get_link_rate("DPV1/xdma0", 8 << 20, "other/arm64") is None, "another host's link is another measurement"
-    assert cache.get_link_rate("DPV2/xdma0", 8 << 20, "bench/x86_64") is None, "and so is another device's"
-    assert cache.get_link_rate("DPV1/xdma0", 64 << 10, "bench/x86_64") is None, "and so is another transfer size's"
+    assert cache.get_link_rate("engine-a/link-0", 8 << 20, "bench/x86_64") == rate
+    assert cache.get_link_rate("engine-a/link-0", 8 << 20, "other/arm64") is None, "another host's link is another measurement"
+    assert cache.get_link_rate("engine-b/link-0", 8 << 20, "bench/x86_64") is None, "and so is another device's"
+    assert cache.get_link_rate("engine-a/link-0", 64 << 10, "bench/x86_64") is None, "and so is another transfer size's"
     assert list(cache.entries()) == [], "a link rate is not a plan profile"
 
 
 def test_a_link_rate_goes_stale_by_age_and_an_undated_one_is_stale() -> None:
-    fields = {"host": "h", "device": "d", "bytes_per_second": 1e9, "transfer_bytes": 64}
-    dated = LinkRate(**fields, measured_at=1_000.0)
+    fields: dict[str, object] = {"host": "h", "device": "d", "bytes_per_second": 1e9, "transfer_bytes": 64}
+    dated = LinkRate.model_validate({**fields, "measured_at": 1_000.0})
     assert not dated.is_stale(now=1_500.0, max_age_seconds=600.0)
     assert dated.is_stale(now=1_601.0, max_age_seconds=600.0)
-    assert LinkRate(**fields).is_stale(now=1.0, max_age_seconds=1e12), "never dated: re-measure"
+    assert LinkRate.model_validate(fields).is_stale(now=1.0, max_age_seconds=1e12), "never dated: re-measure"
 
 
 @pytest.mark.parametrize(
@@ -203,6 +208,66 @@ def test_a_link_rate_goes_stale_by_age_and_an_undated_one_is_stale() -> None:
     ],
 )
 def test_a_link_rate_refuses_numbers_it_cannot_price_with(bad) -> None:
-    fields = {"host": "h", "device": "d", "bytes_per_second": 1e9, "transfer_bytes": 64, "samples": (1e9,)}
+    fields: dict[str, object] = {"host": "h", "device": "d", "bytes_per_second": 1e9, "transfer_bytes": 64, "samples": (1e9,)}
     with pytest.raises(ValueError):
-        LinkRate(**{**fields, **bad})
+        LinkRate.model_validate({**fields, **bad})
+
+
+def test_a_copied_profile_is_checked_where_it_is_used(tmp_path) -> None:
+    """``model_copy(update=...)`` skips validation, so an invalid copy must
+    be caught at the use site rather than priced: estimating with it,
+    asking whether it is stale, and caching it all refuse."""
+    broken = _profile().model_copy(update={"per_row_seconds": float("nan")})
+    with pytest.raises(ValueError, match="per_row_seconds"):
+        broken.estimate(10)
+    with pytest.raises(ValueError, match="per_row_seconds"):
+        broken.is_stale_for(10, engine_version="1.42.1")
+    with pytest.raises(ValueError, match="per_row_seconds"):
+        ProfileCache(tmp_path).put(broken)
+    empty = _profile().model_copy(update={"rows": 0})
+    with pytest.raises(ValueError, match="carries no information"):
+        empty.estimate(10)
+
+
+def test_a_copied_link_rate_is_checked_where_it_is_used(tmp_path) -> None:
+    rate = LinkRate(host="h", device="d", bytes_per_second=1e9, transfer_bytes=64, measured_at=1.0)
+    zero = rate.model_copy(update={"bytes_per_second": 0.0})
+    with pytest.raises(ValueError, match="bytes_per_second"):
+        zero.is_stale(now=2.0, max_age_seconds=10.0)
+    with pytest.raises(ValueError, match="bytes_per_second"):
+        ProfileCache(tmp_path).put_link_rate(zero)
+
+
+def test_models_refuse_fields_they_do_not_declare() -> None:
+    for build in (
+        lambda: QueryProfile.model_validate({"plan_key": "q", "host": "h", "rows": 1, "fixed_seconds": 0.0, "per_row_seconds": 0.0, "extra": 1}),
+        lambda: NodeCost.model_validate({"node": "n", "seconds": 0.0, "scales_with_rows": True, "extra": 1}),
+        lambda: LinkRate.model_validate({"host": "h", "device": "d", "bytes_per_second": 1.0, "transfer_bytes": 1, "extra": 1}),
+    ):
+        with pytest.raises(ValueError, match="extra"):
+            build()
+
+
+@pytest.mark.parametrize("spans", [[(10, 5, "reversed")], [(-1, 5, "negative")]])
+def test_a_reversed_or_negative_span_is_a_reporting_fault_not_a_cheap_node(spans) -> None:
+    with pytest.raises(ValueError, match="not a valid microsecond interval"):
+        profile_from_spans(spans, rows=10, plan_key="k")
+
+
+def test_cache_entries_stay_directly_under_the_root(tmp_path) -> None:
+    """A plan key or host is caller text. One containing a slash or ``..``
+    must not name a file outside the cache, and two keys that differ only
+    in such characters must not collide."""
+    cache = ProfileCache(tmp_path)
+    for plan_key, host in (("../escape", "h"), ("a/b", "x/y"), ("a_b", "x_y"), ("..", "..")):
+        path = cache.put(_profile(plan_key=plan_key, host=host))
+        assert path.parent == tmp_path and path.is_file()
+        assert cache.get(plan_key, host) == _profile(plan_key=plan_key, host=host)
+    assert cache.get("a_b", "x_y") != cache.get("a/b", "x/y") or _profile(plan_key="a_b", host="x_y") == _profile(plan_key="a/b", host="x/y")
+    assert len(list(cache.entries())) == 4, "distinct keys are distinct files"
+    assert tmp_path.parent.joinpath("escape.h.profile.json").exists() is False
+
+
+def test_the_cache_root_expands_a_home_directory(tmp_path, monkeypatch) -> None:
+    monkeypatch.setenv("HOME", str(tmp_path))
+    assert ProfileCache("~/profiles").root == tmp_path / "profiles"

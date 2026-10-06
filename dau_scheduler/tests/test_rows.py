@@ -76,3 +76,25 @@ def test_an_iterator_is_drained_because_it_cannot_serve_two_arms() -> None:
     source = as_row_source(rows)
     assert len(source) == 10
     assert len(source.slice(0, 4)) == 4
+
+
+@pytest.mark.parametrize("bounds", [(-1, 2), (3, 2), (0, 11), (11, 11)])
+def test_a_sub_range_must_lie_inside_its_parent(bounds) -> None:
+    """Python slicing would clamp or wrap these; a boundary that arithmetic
+    got wrong must refuse rather than hand an arm a different row set."""
+    start, stop = bounds
+    with pytest.raises(SplitError, match="sub-range"):
+        RowRange(100, 110).slice(start, stop)
+    with pytest.raises(SplitError, match="sub-range"):
+        RowBatch(list(range(10))).slice(start, stop)
+
+
+def test_a_sub_range_may_be_empty_or_the_whole_parent() -> None:
+    assert RowRange(100, 110).slice(0, 10) == RowRange(100, 110)
+    assert RowRange(100, 110).slice(4, 4) == RowRange(104, 104)
+    assert len(RowBatch(list(range(10))).slice(10, 10)) == 0
+
+
+def test_a_row_batch_refuses_a_negative_start() -> None:
+    with pytest.raises(SplitError, match="non-negative start"):
+        RowBatch([1, 2], start=-1)

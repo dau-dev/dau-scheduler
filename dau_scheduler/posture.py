@@ -4,11 +4,12 @@ A caller with two engines has one number to choose: the fraction of rows the
 second engine runs. Everything else follows from it.
 
 **The postures optimize different things and are not quality tiers.** On a
-measured pairing where one engine alone finished in 27.6 ms and the other in
-18.6 ms, running it entirely on the second engine costs about 40% of the wall
-clock that splitting reaches -- and hands back the first engine entirely in
-exchange. A planner that only minimized wall time would pick wrongly for a
-caller whose processors have other work to do.
+measured pairing (the collaborative sweep of 2026-08-12 in the benchmarks
+ledger) the host alone took 27.6 ms and the device alone 18.6 ms; the split
+finished in 11.9 ms. Running everything on the device therefore takes 1.57x
+the wall clock of splitting, and in exchange hands the host back entirely.
+A planner that only minimized wall time would pick wrongly for a caller whose
+processors have other work to do.
 
 The closed form under ``collaborative`` is the balance point where both
 engines finish together::
@@ -20,7 +21,8 @@ which needs no search -- one cost estimate per side and the share follows.
 
 The speedup expression is also the reason to check whether a split is worth
 building at all: **collaborative placement pays most when the engines are
-comparable.** At parity it returns 2x. Against an engine ten times faster
+comparable.** From the form above (these are analytic values, not
+measurements): at parity it returns 2x; against an engine ten times faster
 than the host it buys 1.1x over simply handing the whole query over, which
 is unlikely to repay the machinery.
 
@@ -34,6 +36,7 @@ first rather than running beside it.
 
 from __future__ import annotations
 
+import math
 from typing import ClassVar, Literal, Protocol, runtime_checkable
 
 from pydantic import BaseModel, model_validator
@@ -62,20 +65,31 @@ class HostCost(Protocol):
 class WorkSplit(BaseModel):
     """How one query's rows divide between the two engines."""
 
-    model_config: ClassVar = {"frozen": True}
+    model_config: ClassVar = {"frozen": True, "extra": "forbid"}
 
     posture: str
     device_share: float
     rationale: str
     predicted_speedup: float | None = None
 
-    @model_validator(mode="after")
-    def _share_is_a_fraction(self) -> WorkSplit:
-        if not 0.0 <= self.device_share <= 1.0:
+    def check(self) -> WorkSplit:
+        """Re-run the invariants and return ``self``.
+
+        Construction validates, but ``model_copy(update=...)`` does not, so
+        every consumer calls this before acting on a split rather than
+        trusting that the instance it was handed went through ``__init__``.
+        """
+        if not math.isfinite(self.device_share) or not 0.0 <= self.device_share <= 1.0:
             raise ValueError(f"device_share {self.device_share} is not a fraction")
         if self.posture not in POSTURES:
             raise ValueError(f"unknown posture {self.posture!r}; known: {POSTURES}")
+        if self.predicted_speedup is not None and (not math.isfinite(self.predicted_speedup) or self.predicted_speedup <= 0):
+            raise ValueError(f"predicted_speedup must be finite and positive, got {self.predicted_speedup}")
         return self
+
+    @model_validator(mode="after")
+    def _share_is_a_fraction(self) -> WorkSplit:
+        return self.check()
 
 
 def plan_split(
@@ -108,7 +122,7 @@ def plan_split(
     ``device_fixed_seconds`` is what one device job costs before it has
     processed a row -- launching it, polling it, reading its records -- a
     per-invocation term the proportional form omitted and one measurement
-    put at a few milliseconds beside a 13 ms host time (2026-09-27). With it
+    put at a few milliseconds beside a 12.3 ms host time (2026-09-27). With it
     the balance is ``(1 - s) * cpu = fixed + s * device``, and a share that
     cannot beat the host alone (the fixed cost is already most of the host
     time) is a ``cpu`` split that says why, not a split predicted to win by
@@ -170,14 +184,15 @@ def plan_split(
         )
 
     if posture == "adaptive":
-        # A refusal, and not because it is unfinished: adaptive chooses a
-        # BOUNDARY in the plan rather than a row share, so it cannot be
-        # expressed as a WorkSplit and needs inputs this signature does not
-        # carry -- candidate cuts and a per-node cost. Answering it with a
-        # row split would silently substitute a different decision.
-        raise NotImplementedError(
+        # A refusal, not an unfinished branch: adaptive chooses a BOUNDARY
+        # in the plan rather than a row share, so it cannot be expressed as
+        # a WorkSplit and needs inputs this signature does not carry
+        # (candidate cuts and a per-node cost). The consumer that holds the
+        # plan answers it; answering it here with a row split would silently
+        # substitute a different decision.
+        raise PostureError(
             "adaptive is not a row split: it chooses where to cut the plan, which needs candidate cuts and a "
-            "profiled per-node cost rather than two whole-query figures"
+            "profiled per-node cost rather than two whole-query figures; plan it where the plan is"
         )
 
     raise PostureError(f"unknown posture {posture!r}; known: {POSTURES}")
