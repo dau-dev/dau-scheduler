@@ -1,9 +1,9 @@
 # Changes here will be overwritten by Copier
-_commit: 5ff720b
+_commit: f6a9056
 _src_path: https://github.com/python-project-templates/base.git
-add_docs: false
+add_docs: true
 add_extension: python
-add_wiki: true
+add_wiki: false
 email: dev@dau.dev
 github: dau-dev
 project_description: Split row-parallel dataframe work across two compute engines

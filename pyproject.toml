@@ -39,6 +39,7 @@ develop = [
     "codespell",
     "hatchling",
     "mdformat",
+    "mdformat-frontmatter",
     "mdformat-tables>=1",
     "pytest",
     "pytest-cov",
@@ -143,3 +144,18 @@ section-order = [
 "dau_scheduler/tests/*" = [
     "ARG",
 ]
+
+[tool.yardang]
+title = "dau scheduler"
+root = "README.md"
+pages = [
+    "docs/src/tutorial/split-a-query.md",
+    "docs/src/how-to/measure-host-cost.md",
+    "docs/src/how-to/choose-a-merge-rule.md",
+    "docs/src/how-to/develop.md",
+    "docs/src/reference/postures.md",
+    "docs/src/reference/merge-rules.md",
+    "docs/src/reference/rows-and-execution.md",
+    "docs/src/explanation/design.md",
+]
+use-autoapi = true

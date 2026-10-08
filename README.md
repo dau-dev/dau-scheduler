@@ -52,10 +52,8 @@ here knows what is on the other end.
 Python 3.12 or newer, and pydantic; nothing else.
 
 ```bash
-pip install git+https://github.com/dau-dev/dau-scheduler
+pip install dau-scheduler
 ```
-
-(The `dau-scheduler` name on PyPI is a placeholder until the first release.)
 
 ## Usage
 
@@ -167,6 +165,16 @@ plan_split("collaborative", device_seconds=0.0186, profile=profile, rows=6_000_0
 Plan-time cost is kept separate from per-row cost, because a query engine's
 optimizer does not get slower with more rows and folding it into a per-row rate
 over-estimates a large query by orders of magnitude.
+
+## Documentation
+
+The full documentation is at
+[dau-dev.github.io/dau-scheduler](https://dau-dev.github.io/dau-scheduler/).
+
+- **Tutorial**: [Split a query across two engines](docs/src/tutorial/split-a-query.md).
+- **How-to**: [Measure host cost](docs/src/how-to/measure-host-cost.md) · [Choose a merge rule](docs/src/how-to/choose-a-merge-rule.md) · [Develop and contribute](docs/src/how-to/develop.md).
+- **Reference**: [Postures and work splits](docs/src/reference/postures.md) · [Merge rules](docs/src/reference/merge-rules.md) · [Row sources and execution](docs/src/reference/rows-and-execution.md).
+- **Explanation**: [Why rows, measured costs and refusals](docs/src/explanation/design.md).
 
 ## What is here
 
