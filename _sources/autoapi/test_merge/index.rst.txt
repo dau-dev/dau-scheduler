@@ -1,0 +1,263 @@
+test_merge
+==========
+
+.. py:module:: test_merge
+
+.. autoapi-nested-parse::
+
+   The merge algebra: what combines from two partial answers, and what does not.
+
+   Each merge is checked against the same query run over the WHOLE table, which
+   is the only assertion that means anything here -- a merge that agrees with
+   itself proves nothing. The refusals are tested as carefully as the successes,
+   because an aggregate that combines wrongly answers confidently rather than
+   failing.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   test_merge.ROWS
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   test_merge.Group
+   test_merge.Stats
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   test_merge._totals
+   test_merge._groups
+   test_merge._stats
+   test_merge._runs
+   test_merge._fold_groups
+   test_merge._fold_stats
+   test_merge._halves
+   test_merge.test_sums_and_counts_add
+   test_merge.test_a_derived_output_is_recomputed_from_the_merged_totals
+   test_merge.test_a_mean_survives_only_as_a_sum_and_a_count
+   test_merge.test_ordered_groups_fold_the_group_that_straddles_the_boundary
+   test_merge.test_boundary_stats_come_from_the_ranges_that_own_them
+   test_merge.test_unsorted_rows_refuse_the_ordered_merge
+   test_merge.test_arms_that_arrive_out_of_order_refuse_the_ordered_merge
+   test_merge.test_keyed_groups_merge_over_the_whole_key_set
+   test_merge.test_a_top_k_merges_two_k_lists
+   test_merge.test_a_merged_top_k_keeps_the_earliest_arrival_tie_break
+   test_merge.test_a_negative_limit_is_refused
+   test_merge.test_sorted_runs_merge_stably
+   test_merge.test_an_empty_merge_answers
+   test_merge._reductions
+   test_merge.test_check_split_refuses_a_mean_by_name
+   test_merge.test_check_split_refuses_a_distinct_count_by_name
+   test_merge.test_the_order_statistics_and_moments_are_refused_by_name
+   test_merge.test_an_unknown_aggregate_is_refused_rather_than_summed
+   test_merge.test_a_declared_mean_passes_when_the_partials_carry_it
+   test_merge.test_boundary_stats_are_declarable_too
+   test_merge.test_a_shape_that_cannot_split_refuses_before_any_aggregate
+   test_merge.test_a_rule_with_no_combine_says_so
+   test_merge.test_one_partial_is_the_answer
+   test_merge.test_a_failed_arm_is_not_merged_into_a_short_answer
+
+
+Module Contents
+---------------
+
+.. py:data:: ROWS
+
+.. py:class:: Group
+
+   .. py:attribute:: key
+      :type:  int
+
+
+   .. py:attribute:: total
+      :type:  int
+
+
+   .. py:attribute:: count
+      :type:  int
+
+
+.. py:class:: Stats
+
+   .. py:attribute:: key
+      :type:  int
+
+
+   .. py:attribute:: first
+      :type:  int
+
+
+   .. py:attribute:: last
+      :type:  int
+
+
+   .. py:attribute:: minimum
+      :type:  int
+
+
+   .. py:attribute:: maximum
+      :type:  int
+
+
+   .. py:attribute:: count
+      :type:  int
+
+
+.. py:function:: _totals(rows)
+
+.. py:function:: _groups(rows)
+
+   Per-key records from an ordered engine: a group CLOSES when the key
+   changes, which is what makes the boundary pair the only shared group.
+
+
+.. py:function:: _stats(rows)
+
+.. py:function:: _runs(rows)
+
+.. py:function:: _fold_groups(earlier: Group, later: Group) -> Group
+
+.. py:function:: _fold_stats(earlier: Stats, later: Stats) -> Stats
+
+.. py:function:: _halves(rows)
+
+.. py:function:: test_sums_and_counts_add() -> None
+
+.. py:function:: test_a_derived_output_is_recomputed_from_the_merged_totals() -> None
+
+   An output that is an EXPRESSION over the aggregates is not an aggregate:
+   combining the arms' ratios would produce a number that is not a ratio of
+   anything, and it would look exactly like a total.
+
+
+.. py:function:: test_a_mean_survives_only_as_a_sum_and_a_count() -> None
+
+   The remedy the refusal names, tested: a mean asked for as an expression
+   over two additive outputs splits exactly, while the mean of the arms'
+   means does not.
+
+
+.. py:function:: test_ordered_groups_fold_the_group_that_straddles_the_boundary() -> None
+
+   The hazard an ordered engine makes concrete: the group the boundary
+   lands inside closes in BOTH arms, and the merge has to fold those two
+   partial records rather than emit the key twice.
+
+
+.. py:function:: test_boundary_stats_come_from_the_ranges_that_own_them() -> None
+
+   ``first`` and ``last`` are defined by position, which is why the arms'
+   order is part of the contract: the straddling group opens in the earlier
+   range and closes in the later one.
+
+
+.. py:function:: test_unsorted_rows_refuse_the_ordered_merge() -> None
+
+   The conditional merge, checked rather than assumed. An ordered engine
+   closes a group when the key changes, so on unsorted rows it emits several
+   records per key -- merging those by key would collapse them into an answer
+   no run produced.
+
+
+.. py:function:: test_arms_that_arrive_out_of_order_refuse_the_ordered_merge() -> None
+
+   Each arm ascends, but the later arm reopens a key the earlier one
+   closed -- so the two do not meet on one boundary key and the fold is not
+   the merge this is.
+
+
+.. py:function:: test_keyed_groups_merge_over_the_whole_key_set() -> None
+
+   The contrast with the ordered merge: an engine holding one accumulator
+   per distinct key can meet a key anywhere, so a key appears in both arms
+   and there is no boundary pair.
+
+
+.. py:function:: test_a_top_k_merges_two_k_lists() -> None
+
+   Every row of the whole query's top k is in the top k of the range it
+   arrived in, so the two k-lists are the complete candidate set.
+
+
+.. py:function:: test_a_merged_top_k_keeps_the_earliest_arrival_tie_break() -> None
+
+   The fixture's keys repeat, so the answer is decided by ties rather than
+   by keys alone: a stable re-rank with the leading range first keeps
+   earliest-arrival ties true of the whole table.
+
+
+.. py:function:: test_a_negative_limit_is_refused() -> None
+
+.. py:function:: test_sorted_runs_merge_stably() -> None
+
+   Equal keys take the earlier range first, which is what keeps a stable
+   sort's arrival-order ties true of the whole table rather than of each
+   half.
+
+
+.. py:function:: test_an_empty_merge_answers() -> None
+
+.. py:function:: _reductions(mergeable=ADDITIVE) -> dau_scheduler.MergeRule
+
+.. py:function:: test_check_split_refuses_a_mean_by_name() -> None
+
+   The aggregate that looks additive and is not.
+
+
+.. py:function:: test_check_split_refuses_a_distinct_count_by_name() -> None
+
+.. py:function:: test_the_order_statistics_and_moments_are_refused_by_name(kind: str) -> None
+
+.. py:function:: test_an_unknown_aggregate_is_refused_rather_than_summed() -> None
+
+   Default-deny: an aggregate nobody has heard of is not added on the
+   assumption that every aggregate is additive.
+
+
+.. py:function:: test_a_declared_mean_passes_when_the_partials_carry_it() -> None
+
+   Whether a mean survives is a property of what the ENGINES emit, not
+   something the merge step can recover -- so a caller whose partials carry
+   sum and count separately says so, and the check believes it.
+
+
+.. py:function:: test_boundary_stats_are_declarable_too() -> None
+
+.. py:function:: test_a_shape_that_cannot_split_refuses_before_any_aggregate() -> None
+
+   A windowed result whose window spans the boundary reads rows from both
+   ranges, so no aggregate list makes it mergeable.
+
+
+.. py:function:: test_a_rule_with_no_combine_says_so() -> None
+
+   The default is not a silent identity. A rule declared without a combine
+   step has nothing to reassemble partials with, and saying that beats
+   returning one arm's answer.
+
+
+.. py:function:: test_one_partial_is_the_answer() -> None
+
+   A degenerate share ran the whole query on one engine, so no merge is
+   involved and none is attempted.
+
+
+.. py:function:: test_a_failed_arm_is_not_merged_into_a_short_answer() -> None
+
+   An engine that invalidated its own work returns a partial that says so.
+   Merging that into the other arm's would produce a plausible answer missing
+   half the rows, so the failure is what reaches the caller.
+
+

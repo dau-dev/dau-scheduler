@@ -1,0 +1,171 @@
+test_posture
+============
+
+.. py:module:: test_posture
+
+.. autoapi-nested-parse::
+
+   Resolving a posture into a share, and delivering that share.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   test_posture.KNEE_BYTES
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   test_posture.test_cpu_and_offload_need_no_estimates
+   test_posture.test_collaborative_balances_the_engines
+   test_posture.test_the_closed_form_lands_on_a_measured_optimum
+   test_posture.test_a_split_pays_least_when_one_engine_dominates
+   test_posture.test_collaborative_refuses_rather_than_inventing_a_cost_model
+   test_posture.test_collaborative_rejects_nonpositive_estimates
+   test_posture.test_a_measured_profile_supplies_the_host_figure
+   test_posture.test_a_profile_prices_a_row_count
+   test_posture.test_adaptive_refuses_instead_of_falling_back
+   test_posture.test_offload_is_not_the_wall_clock_optimum
+   test_posture.test_unknown_posture_is_refused
+   test_posture.test_split_validates_its_own_fields
+   test_posture.test_every_posture_is_reachable_or_refused_by_name
+   test_posture.test_resident_wants_one_batch_at_any_size
+   test_posture.test_streamed_reproduces_the_measured_optimum
+   test_posture.test_the_two_optima_are_opposite
+   test_posture.test_small_payloads_are_not_split_below_the_knee
+   test_posture.test_batches_are_never_split_below_the_knee
+   test_posture.test_batch_count_rejects_impossible_inputs
+   test_posture.test_the_knee_has_no_default
+   test_posture.test_the_device_fixed_cost_moves_the_balance_and_can_rule_the_split_out
+
+
+Module Contents
+---------------
+
+.. py:data:: KNEE_BYTES
+   :value: 15728640
+
+
+.. py:function:: test_cpu_and_offload_need_no_estimates() -> None
+
+   The definitional postures are the point of offering them: a caller who
+   will not pay for cost estimation can still state an intent.
+
+
+.. py:function:: test_collaborative_balances_the_engines() -> None
+
+   The share is where both finish together, so neither waits.
+
+
+.. py:function:: test_the_closed_form_lands_on_a_measured_optimum() -> None
+
+   Constrained against the MEASUREMENT, not against the formula restated.
+
+   Asserting the formula's own output would pass against any formula, so the
+   assertions are that the predicted SHARE lands on the measured optimum and
+   that the predicted speedup is within the error this model claims.
+
+
+.. py:function:: test_a_split_pays_least_when_one_engine_dominates() -> None
+
+   The reason to check before building any of this: at parity a split
+   returns 2x, and against a ten-times-faster engine it buys 1.1x over
+   simply handing the whole query over.
+
+
+.. py:function:: test_collaborative_refuses_rather_than_inventing_a_cost_model() -> None
+
+   A host cost may be measured, but it is never guessed: with neither a
+   figure nor a profile, a fabricated number would sit underneath a real
+   decision.
+
+
+.. py:function:: test_collaborative_rejects_nonpositive_estimates() -> None
+
+.. py:function:: test_a_measured_profile_supplies_the_host_figure() -> None
+
+   The measurement closes the loop the closed form leaves open: a caller
+   that profiled its host does not also have to price it by hand.
+
+
+.. py:function:: test_a_profile_prices_a_row_count() -> None
+
+.. py:function:: test_adaptive_refuses_instead_of_falling_back() -> None
+
+   A silent fall back to collaborative would answer a different question
+   than the caller asked -- adaptive chooses a boundary in the plan, not a
+   row share.
+
+
+.. py:function:: test_offload_is_not_the_wall_clock_optimum() -> None
+
+   Recorded because it is counterintuitive and a planner that only
+   minimized wall time would pick wrongly: on the measured pairing offload
+   reaches 1.49x where collaborative reaches 2.49x, and buys back the host.
+
+
+.. py:function:: test_unknown_posture_is_refused() -> None
+
+.. py:function:: test_split_validates_its_own_fields() -> None
+
+.. py:function:: test_every_posture_is_reachable_or_refused_by_name() -> None
+
+   No posture may be silently absent -- a name in POSTURES that nothing
+   handles would fall through to the unknown-posture branch and read as a
+   typo rather than a gap. ``adaptive`` is refused by name, as a decision
+   this signature cannot make, and the refusal must not be the
+   unknown-posture one.
+
+
+.. py:function:: test_resident_wants_one_batch_at_any_size() -> None
+
+   With no transfer to hide, every batch is pure per-call overhead.
+   Measured: 5.27 ms at one batch against 5.91 at three.
+
+
+.. py:function:: test_streamed_reproduces_the_measured_optimum() -> None
+
+   45.8 MiB measured fastest at 3 batches (18.78 ms), against 22.08 at one
+   and 22.59 at twelve. Targeting the link's knee lands there.
+
+
+.. py:function:: test_the_two_optima_are_opposite() -> None
+
+   Which is the entire reason the batch count depends on residency: a
+   single tuned constant would be wrong for one of them.
+
+
+.. py:function:: test_small_payloads_are_not_split_below_the_knee() -> None
+
+   Splitting below the knee costs transfer rate for a tail that is already
+   short.
+
+
+.. py:function:: test_batches_are_never_split_below_the_knee() -> None
+
+   Rounding up contradicted the measurement this targets: at 1.5x the knee
+   it produced two batches of 0.75x each, in the degraded region.
+
+
+.. py:function:: test_batch_count_rejects_impossible_inputs() -> None
+
+.. py:function:: test_the_knee_has_no_default() -> None
+
+   It is a measurement of one link, and a library-wide constant would be
+   wrong for every link that is not the one it was measured on.
+
+
+.. py:function:: test_the_device_fixed_cost_moves_the_balance_and_can_rule_the_split_out() -> None
+
+   A device job costs something before its first row. The balance point
+   hands the device less by exactly that much, the predicted speedup is
+   against the wall that includes it, and when the fixed cost is most of
+   the host's whole time no share can win and the answer is host-only.
+
+

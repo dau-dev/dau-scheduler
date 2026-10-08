@@ -1,0 +1,378 @@
+dau_scheduler.profile
+=====================
+
+.. py:module:: dau_scheduler.profile
+
+.. autoapi-nested-parse::
+
+   Measured host cost: profile the first run instead of modelling it.
+
+   The closed form in :mod:`dau_scheduler.posture` needs one number for each
+   engine. For an engine whose work is analytic -- a fixed rate over a known
+   number of rows -- that number can be derived. For a general-purpose query
+   engine on a general-purpose processor it cannot, and an analytic model of one
+   would be guesswork.
+
+   It does not need to be modelled. **Callers run the same query many times over
+   changing data, and the first execution has nothing to split onto anyway** --
+   so profiling it is free and turns the estimate into a measurement.
+
+   **Fixed cost is separated from per-row cost, and this is not a nicety.** A
+   query engine does plan-time work that does not scale with data, and on a
+   frame of a few hundred rows it is most of the total. Folding that into a
+   per-row rate would over-estimate a six-million-row query by orders of
+   magnitude. So a profile carries ``fixed_seconds`` and
+   ``per_row_seconds`` separately and estimates ``fixed + per_row * rows``.
+
+   A single profile cannot fully separate the two -- it attributes the nodes
+   known to be plan-time and treats the rest as scaling. Profiling at two row
+   counts would fit the line properly, and the shape here supports that later
+   without changing callers.
+
+   A profile is keyed by ``(plan, host)`` because it is not portable between
+   machines: two hosts running the same kernel differed by 1.41x when measured
+   side by side (the benchmarks ledger, 2026-08-16), so a profile keyed by plan
+   alone silently steers a split on the wrong machine.
+
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   dau_scheduler.profile.NodeCost
+   dau_scheduler.profile.QueryProfile
+   dau_scheduler.profile.LinkRate
+   dau_scheduler.profile.ProfileCache
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   dau_scheduler.profile.host_identity
+   dau_scheduler.profile.profile_from_spans
+
+
+Module Contents
+---------------
+
+.. py:function:: host_identity() -> str
+
+   A name for the machine a profile was measured on.
+
+
+.. py:class:: NodeCost(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   One plan node's measured cost, and whether it scales with rows.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. py:attribute:: model_config
+      :type:  ClassVar
+
+      Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+
+   .. py:attribute:: node
+      :type:  str
+
+
+   .. py:attribute:: seconds
+      :type:  float
+
+
+   .. py:attribute:: scales_with_rows
+      :type:  bool
+
+
+   .. py:method:: check() -> NodeCost
+
+      Re-run the invariants and return ``self`` (see :meth:`QueryProfile.check`).
+
+
+
+   .. py:method:: _seconds_is_finite() -> NodeCost
+
+
+.. py:class:: QueryProfile(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   A measured host cost for one plan on one host.
+
+   ``selectivity`` is the fraction of rows surviving the query's filters when
+   the caller measured it. It is left ``None`` rather than inferred: nothing
+   in a timing profile reveals row counts, and a guessed selectivity poisons
+   everything downstream that prices bytes.
+
+   ``engine_version`` records which build of the engine was measured. It
+   defaults to ``""`` -- unknown -- and NOT to whatever is installed, which
+   would let a hand-written profile claim to have been measured under an
+   engine it never ran on.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. py:attribute:: model_config
+      :type:  ClassVar
+
+      Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+
+   .. py:attribute:: plan_key
+      :type:  str
+
+
+   .. py:attribute:: host
+      :type:  str
+
+
+   .. py:attribute:: rows
+      :type:  int
+
+
+   .. py:attribute:: fixed_seconds
+      :type:  float
+
+
+   .. py:attribute:: per_row_seconds
+      :type:  float
+
+
+   .. py:attribute:: nodes
+      :type:  tuple[NodeCost, ...]
+      :value: ()
+
+
+
+   .. py:attribute:: selectivity
+      :type:  float | None
+      :value: None
+
+
+
+   .. py:attribute:: engine_version
+      :type:  str
+      :value: ''
+
+
+
+   .. py:method:: check() -> QueryProfile
+
+      Re-run the invariants and return ``self``.
+
+      Construction validates, but ``model_copy(update=...)`` does not, so
+      every use site (``estimate``, ``is_stale_for``, the cache) calls this
+      rather than trusting that the instance went through ``__init__``.
+
+
+
+   .. py:method:: _costs_are_sane() -> QueryProfile
+
+
+   .. py:method:: estimate(rows: int) -> float
+
+      Host seconds for ``rows``, as ``fixed + per_row * rows``.
+
+
+
+   .. py:method:: is_stale_for(rows: int, *, engine_version: str, factor: float = 10.0) -> bool
+
+      Whether this measurement can still price ``rows`` on the engine here
+      now.
+
+      Two things invalidate a measurement, and **both are answered by this
+      one predicate on purpose**: a caller that has to remember to ask a
+      second question is how a version stamp comes to be recorded on every
+      profile and consulted by nothing.
+
+      *Row count.* Extrapolating one measurement across orders of magnitude
+      is where a profile-guided split goes confidently wrong, and
+      confidently wrong is worse than absent: the split decides which engine
+      runs which rows, so the error is self-reinforcing.
+
+      *Engine version.* The argument for keying on the host -- two machines
+      measured 1.41x apart, so a profile keyed by plan alone steers the
+      split on the wrong one -- applies verbatim to the engine being
+      measured, and this module exists BECAUSE an analytic model of that
+      engine would be guesswork. A measurement taken under one build says
+      nothing about another.
+
+      A profile with no recorded version is **unknown, not current**, and is
+      stale for the same reason a guessed selectivity is refused: it may
+      have been measured under anything.
+
+
+
+.. py:function:: profile_from_spans(spans: collections.abc.Iterable[tuple[int, int, str]], *, rows: int, plan_key: str, host: str | None = None, is_fixed: collections.abc.Callable[[str], bool] = lambda _node: False, selectivity: float | None = None, engine_version: str = '') -> QueryProfile
+
+   Build a profile from an engine's per-node timings.
+
+   ``spans`` are ``(start, end, node name)`` in MICROSECONDS, as a profiling
+   query engine reports them. ``is_fixed`` names the plan-time nodes -- the
+   ones that must not be divided by the row count.
+
+   **Nodes overlap (an engine runs some in parallel) and leave gaps, so
+   summing ``end - start`` is NOT elapsed time.** It double-counts the
+   overlap and drops the gaps entirely: with optimization 0-1000, scan
+   1000-11000 and filter 5000-15000, the true elapsed cost is 15 ms and the
+   sum reports 21 ms.
+
+   So the span is taken as elapsed wall time, the fixed nodes are measured as
+   a UNION of their intervals, and everything else -- including the gaps,
+   which are real elapsed cost -- is attributed to scaling work.
+
+
+.. py:class:: LinkRate(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   The measured host-to-device transfer rate of one link: the term the
+   adaptive cut model and a streamed split price every byte crossing with.
+
+   Measured, not declared: a platform states its bus width and lane count,
+   but what a transfer actually sustains depends on the host, the slot, the
+   driver and the transfer size, and the sweeps of record put the same card
+   at different rates in different hosts. So the rate is keyed by (host,
+   device), like a host profile, and measured where it will be used.
+   ``transfer_bytes`` is part of the identity, not a note: a link's rate at
+   one transfer size says little about another (per-transfer setup makes
+   small transfers materially slower), so a rate is measured at the size
+   the caller will move and cached under it. ``samples`` keeps the
+   individual rates so the spread is visible beside the figure the model
+   uses. ``measured_at`` (seconds since the epoch) is what staleness is
+   judged by: a driver change, a link renegotiation or a reboot cannot
+   invalidate an entry, so an old one is re-measured rather than trusted.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. py:attribute:: model_config
+      :type:  ClassVar
+
+      Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+
+   .. py:attribute:: host
+      :type:  str
+
+
+   .. py:attribute:: device
+      :type:  str
+
+
+   .. py:attribute:: bytes_per_second
+      :type:  float
+
+
+   .. py:attribute:: transfer_bytes
+      :type:  int
+
+
+   .. py:attribute:: samples
+      :type:  tuple[float, ...]
+      :value: ()
+
+
+
+   .. py:attribute:: measured_at
+      :type:  float
+      :value: 0.0
+
+
+
+   .. py:method:: is_stale(*, now: float, max_age_seconds: float) -> bool
+
+      Older than ``max_age_seconds`` at ``now``, or never dated.
+
+
+
+   .. py:method:: _rate_is_usable() -> LinkRate
+
+
+   .. py:method:: check() -> LinkRate
+
+      Re-run the invariants and return ``self`` (see :meth:`QueryProfile.check`).
+
+
+
+.. py:class:: ProfileCache(root: pathlib.Path | str)
+
+   Profiles on disk, keyed by plan and host, and link rates keyed by
+   device and host.
+
+   Deliberately a plain directory of JSON rather than anything cleverer: a
+   profile is small, human-readable, and worth being able to delete by hand
+   when it goes stale.
+
+   The engine version is deliberately **not** part of the key. A host is a
+   key because you cannot re-measure on a machine you are not on; an engine
+   version is not, because you can always re-measure under the one you have.
+   So it is staleness (:meth:`QueryProfile.is_stale_for`), handled exactly as
+   a row count that has moved too far, rather than a second slot on disk.
+
+
+   .. py:attribute:: root
+
+
+   .. py:method:: _under_root(name: str) -> pathlib.Path
+
+      A file directly under the cache root. Every key component is
+      percent-encoded with no safe characters, so a plan key or host that
+      contains a slash, ``..`` or a space becomes one flat, reversible file
+      name and cannot name a path outside the root. The check is kept
+      anyway: a cache that writes where it is told is the failure mode
+      this guards.
+
+
+
+   .. py:method:: _component(text: str) -> str
+      :staticmethod:
+
+
+
+   .. py:method:: _path(plan_key: str, host: str) -> pathlib.Path
+
+
+   .. py:method:: get(plan_key: str, host: str | None = None) -> QueryProfile | None
+
+
+   .. py:method:: put(profile: QueryProfile) -> pathlib.Path
+
+
+   .. py:method:: entries() -> collections.abc.Iterable[pathlib.Path]
+
+
+   .. py:method:: _link_path(device: str, host: str, transfer_bytes: int) -> pathlib.Path
+
+
+   .. py:method:: get_link_rate(device: str, transfer_bytes: int, host: str | None = None) -> LinkRate | None
+
+
+   .. py:method:: put_link_rate(rate: LinkRate) -> pathlib.Path
+
+

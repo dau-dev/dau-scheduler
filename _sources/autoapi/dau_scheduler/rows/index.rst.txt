@@ -1,0 +1,182 @@
+dau_scheduler.rows
+==================
+
+.. py:module:: dau_scheduler.rows
+
+.. autoapi-nested-parse::
+
+   One contiguous stretch of rows, handed to one engine.
+
+   Both engines run the whole query over disjoint stretches of the same table,
+   so each arm needs to be told which stretch is its own. Every source names
+   that the same way -- ``start``, ``stop``, and a length -- because that is
+   all an arm needs: an engine holding its own copy of the table runs
+   ``len(source)`` rows, and an engine holding a resident frame slices it at
+   ``source.start``. Neither dereferences a row.
+
+   Whether the VALUES come along is what separates the two concrete sources,
+   and it is a type distinction rather than a flag so that an arm which cannot
+   work from offsets alone says so at the seam. :class:`RowRange` is two
+   integers and costs nothing at any row count; :class:`RowBatch` also carries
+   the rows, which is what an in-process arm reads.
+
+   The distinction is not academic. A seam typed as an iterable of rows makes
+   the caller materialize the table whether or not either arm reads it -- at
+   six million rows that was measured at 183 ms of marshalling in front of a
+   7 ms query, 26x the work being divided, to build 1.2 GB of tuples nothing
+   dereferenced. :meth:`RowSource.values` is therefore default-deny: a source
+   that has no values refuses by name rather than fabricating them, and the
+   executor never materializes a table on an arm's behalf.
+
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   dau_scheduler.rows.RowSource
+   dau_scheduler.rows.RowRange
+   dau_scheduler.rows.RowBatch
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   dau_scheduler.rows.as_row_source
+
+
+Module Contents
+---------------
+
+.. py:class:: RowSource
+
+   The rows one arm owns, named by offset and optionally by value.
+
+
+   .. py:attribute:: __slots__
+      :value: ()
+
+
+
+   .. py:attribute:: start
+      :type:  int
+
+
+   .. py:attribute:: stop
+      :type:  int
+
+
+   .. py:method:: __len__() -> int
+
+
+   .. py:method:: slice(start: int, stop: int) -> RowSource
+      :abstractmethod:
+
+
+      The sub-source covering ``[start, stop)`` of THIS source's rows.
+
+      Relative indices, absolute offsets: the result carries where it sits
+      in the whole table, which is the number an arm slices its own
+      resident copy at.
+
+
+
+   .. py:method:: values() -> collections.abc.Sequence[Any]
+
+
+   .. py:method:: __iter__() -> collections.abc.Iterator[Any]
+
+
+.. py:class:: RowRange
+
+   Bases: :py:obj:`RowSource`
+
+
+   Rows named by their offsets in the table, and nothing else.
+
+   The source a split between two engines that each hold the data wants: it
+   costs two integers no matter how many rows it names, so a sweep over
+   millions of rows allocates nothing per call.
+
+
+   .. py:attribute:: start
+      :type:  int
+
+
+   .. py:attribute:: stop
+      :type:  int
+
+
+   .. py:method:: __post_init__() -> None
+
+
+   .. py:method:: slice(start: int, stop: int) -> RowRange
+
+      The sub-source covering ``[start, stop)`` of THIS source's rows.
+
+      Relative indices, absolute offsets: the result carries where it sits
+      in the whole table, which is the number an arm slices its own
+      resident copy at.
+
+
+
+.. py:class:: RowBatch
+
+   Bases: :py:obj:`RowSource`
+
+
+   Rows the caller has already materialized: the offsets AND the values.
+
+   The rows are WRAPPED rather than copied. Whatever normalization an arm
+   performs on its own input is not repeated here, because repeating it
+   over the whole table was the cost this seam exists to remove.
+
+
+   .. py:attribute:: rows
+      :type:  collections.abc.Sequence[Any]
+
+
+   .. py:attribute:: start
+      :type:  int
+      :value: 0
+
+
+
+   .. py:method:: __post_init__() -> None
+
+
+   .. py:property:: stop
+      :type: int
+
+
+
+   .. py:method:: __repr__() -> str
+
+
+   .. py:method:: slice(start: int, stop: int) -> RowBatch
+
+      The sub-source covering ``[start, stop)`` of THIS source's rows.
+
+      Relative indices, absolute offsets: the result carries where it sits
+      in the whole table, which is the number an arm slices its own
+      resident copy at.
+
+
+
+   .. py:method:: values() -> collections.abc.Sequence[Any]
+
+
+.. py:function:: as_row_source(rows: RowSource | collections.abc.Iterable[Any]) -> RowSource
+
+   The seam's argument, from whatever the caller is holding.
+
+   A source passes through untouched -- that is the point, and the reason
+   this is not ``list(rows)`` under a better name. A sequence is wrapped in
+   place, so a caller who already has the rows pays nothing to hand them
+   over. Only an ITERATOR is drained, and it has to be: both arms read from
+   one source, and an iterator cannot serve two.
+
+

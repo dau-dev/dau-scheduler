@@ -1,0 +1,162 @@
+test_profile
+============
+
+.. py:module:: test_profile
+
+.. autoapi-nested-parse::
+
+   Measured host cost: the model, its staleness rules, and the cache.
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   test_profile._profile
+   test_profile.test_fixed_cost_is_not_scaled_by_the_row_count
+   test_profile.test_a_profile_refuses_numbers_it_cannot_price_with
+   test_profile.test_a_node_cost_refuses_a_nan
+   test_profile.test_a_profile_goes_stale_when_the_row_count_moves_too_far
+   test_profile.test_a_profile_goes_stale_under_a_different_engine
+   test_profile.test_an_unrecorded_engine_version_is_unknown_and_therefore_stale
+   test_profile.test_the_profile_prices_a_split
+   test_profile.test_overlapping_nodes_are_not_summed_into_elapsed_time
+   test_profile.test_gaps_between_nodes_are_real_elapsed_cost
+   test_profile.test_fixed_nodes_count_their_overlap_once
+   test_profile.test_every_node_is_kept_with_its_own_cost
+   test_profile.test_a_profile_needs_timings_and_a_row_count
+   test_profile.test_the_host_is_part_of_the_identity
+   test_profile.test_the_cache_round_trips_by_plan_and_host
+   test_profile.test_an_empty_cache_directory_lists_nothing
+   test_profile.test_the_engine_version_is_not_part_of_the_key
+   test_profile.test_a_link_rate_is_keyed_by_host_device_and_transfer_size_and_round_trips
+   test_profile.test_a_link_rate_goes_stale_by_age_and_an_undated_one_is_stale
+   test_profile.test_a_link_rate_refuses_numbers_it_cannot_price_with
+   test_profile.test_a_copied_profile_is_checked_where_it_is_used
+   test_profile.test_a_copied_link_rate_is_checked_where_it_is_used
+   test_profile.test_models_refuse_fields_they_do_not_declare
+   test_profile.test_a_reversed_or_negative_span_is_a_reporting_fault_not_a_cheap_node
+   test_profile.test_cache_entries_stay_directly_under_the_root
+   test_profile.test_the_cache_root_expands_a_home_directory
+
+
+Module Contents
+---------------
+
+.. py:function:: _profile(**overrides: object) -> dau_scheduler.QueryProfile
+
+.. py:function:: test_fixed_cost_is_not_scaled_by_the_row_count() -> None
+
+   Plan-time work does not grow with data, and folding it into a per-row
+   rate over-estimates a large query by orders of magnitude.
+
+
+.. py:function:: test_a_profile_refuses_numbers_it_cannot_price_with() -> None
+
+.. py:function:: test_a_node_cost_refuses_a_nan() -> None
+
+   NaN fails every comparison, so a bare ``< 0`` check admits it and it
+   then propagates through every estimate built on it.
+
+
+.. py:function:: test_a_profile_goes_stale_when_the_row_count_moves_too_far() -> None
+
+   Extrapolating one measurement across orders of magnitude is where a
+   profile-guided split goes confidently wrong.
+
+
+.. py:function:: test_a_profile_goes_stale_under_a_different_engine() -> None
+
+   A measurement taken under one build says nothing about another, and
+   this module exists BECAUSE an analytic model of that engine would be
+   guesswork.
+
+
+.. py:function:: test_an_unrecorded_engine_version_is_unknown_and_therefore_stale() -> None
+
+   It may have been measured under anything -- defaulting to the installed
+   build would let a hand-written profile claim a measurement it never
+   made.
+
+
+.. py:function:: test_the_profile_prices_a_split() -> None
+
+   What the measurement is for: the closed form takes the host figure from
+   it instead of the caller inventing one.
+
+
+.. py:function:: test_overlapping_nodes_are_not_summed_into_elapsed_time() -> None
+
+   Summing ``end - start`` double-counts the overlap and drops the gaps:
+   with these spans the true elapsed cost is 15 ms and the sum reports 21.
+
+
+.. py:function:: test_gaps_between_nodes_are_real_elapsed_cost() -> None
+
+   Anything not attributed to a plan-time node scales, including the time
+   the engine spent between the nodes it reported.
+
+
+.. py:function:: test_fixed_nodes_count_their_overlap_once() -> None
+
+.. py:function:: test_every_node_is_kept_with_its_own_cost() -> None
+
+   The per-node breakdown is what a boundary-choosing planner needs; the
+   whole-query figure is what the closed form needs. One measurement serves
+   both.
+
+
+.. py:function:: test_a_profile_needs_timings_and_a_row_count() -> None
+
+.. py:function:: test_the_host_is_part_of_the_identity() -> None
+
+   Two machines running the same query differed ~1.6x in one measurement,
+   so a profile keyed by plan alone steers a split on the wrong one.
+
+
+.. py:function:: test_the_cache_round_trips_by_plan_and_host(tmp_path) -> None
+
+.. py:function:: test_an_empty_cache_directory_lists_nothing(tmp_path) -> None
+
+.. py:function:: test_the_engine_version_is_not_part_of_the_key(tmp_path) -> None
+
+   A host is a key because you cannot re-measure on a machine you are not
+   on; an engine version is not, because you can always re-measure under the
+   one you have. So it is staleness, not a second slot on disk.
+
+
+.. py:function:: test_a_link_rate_is_keyed_by_host_device_and_transfer_size_and_round_trips(tmp_path) -> None
+
+   The rate the cut model prices every byte crossing with is a measured
+   fact about one host's link to one device at one transfer size, kept
+   beside the host profiles and deletable by hand like them.
+
+
+.. py:function:: test_a_link_rate_goes_stale_by_age_and_an_undated_one_is_stale() -> None
+
+.. py:function:: test_a_link_rate_refuses_numbers_it_cannot_price_with(bad) -> None
+
+.. py:function:: test_a_copied_profile_is_checked_where_it_is_used(tmp_path) -> None
+
+   ``model_copy(update=...)`` skips validation, so an invalid copy must
+   be caught at the use site rather than priced: estimating with it,
+   asking whether it is stale, and caching it all refuse.
+
+
+.. py:function:: test_a_copied_link_rate_is_checked_where_it_is_used(tmp_path) -> None
+
+.. py:function:: test_models_refuse_fields_they_do_not_declare() -> None
+
+.. py:function:: test_a_reversed_or_negative_span_is_a_reporting_fault_not_a_cheap_node(spans) -> None
+
+.. py:function:: test_cache_entries_stay_directly_under_the_root(tmp_path) -> None
+
+   A plan key or host is caller text. One containing a slash or ``..``
+   must not name a file outside the cache, and two keys that differ only
+   in such characters must not collide.
+
+
+.. py:function:: test_the_cache_root_expands_a_home_directory(tmp_path, monkeypatch) -> None
+

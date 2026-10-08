@@ -1,0 +1,24 @@
+test_all
+========
+
+.. py:module:: test_all
+
+.. autoapi-nested-parse::
+
+   The package exports what its README and docs say it does.
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   test_all.test_the_documented_surface_is_exported
+
+
+Module Contents
+---------------
+
+.. py:function:: test_the_documented_surface_is_exported() -> None
+

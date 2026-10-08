@@ -1,0 +1,1544 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="next" title="dau_scheduler.errors" href="errors/index.html"><link rel="prev" title="test_posture" href="../test_posture/index.html">
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
+        <title>dau_scheduler - dau scheduler v0.1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/searchlite.css?v=4235115c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/custom.css?v=890fd012" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">dau scheduler <code style='font-size: var(--font-size--small--4);color: var(--sd-color-primary);'>v0.1.0</code></div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <span class="sidebar-brand-text">dau scheduler <code style='font-size: var(--font-size--small--4);color: var(--sd-color-primary);'>v0.1.0</code></span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/tutorial/split-a-query.html">Split a query across two engines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/how-to/measure-host-cost.html">Measure host cost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/how-to/choose-a-merge-rule.html">Choose a merge rule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/how-to/develop.html">Develop and contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/reference/postures.html">Postures and work splits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/reference/merge-rules.html">Merge rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/reference/rows-and-execution.html">Row sources and execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../docs/src/explanation/design.html">Why rows, measured costs and refusals</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../test_all/index.html">test_all</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test_rows/index.html">test_rows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test_merge/index.html">test_merge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test_split/index.html">test_split</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test_readme/index.html">test_readme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test_profile/index.html">test_profile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../test_posture/index.html">test_posture</a></li>
+<li class="toctree-l2 current has-children current-page"><a class="current reference internal" href="#">dau_scheduler</a><input aria-label="Toggle navigation of dau_scheduler" checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="errors/index.html">dau_scheduler.errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="merge/index.html">dau_scheduler.merge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="posture/index.html">dau_scheduler.posture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="profile/index.html">dau_scheduler.profile</a></li>
+<li class="toctree-l3"><a class="reference internal" href="rows/index.html">dau_scheduler.rows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="split/index.html">dau_scheduler.split</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../../_sources/autoapi/dau_scheduler/index.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="module-dau_scheduler">
+<span id="dau-scheduler"></span><h1>dau_scheduler<a class="headerlink" href="#module-dau_scheduler" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="errors/index.html">dau_scheduler.errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="merge/index.html">dau_scheduler.merge</a></li>
+<li class="toctree-l1"><a class="reference internal" href="posture/index.html">dau_scheduler.posture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="profile/index.html">dau_scheduler.profile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rows/index.html">dau_scheduler.rows</a></li>
+<li class="toctree-l1"><a class="reference internal" href="split/index.html">dau_scheduler.split</a></li>
+</ul>
+</div>
+</section>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.__version__" title="dau_scheduler.__version__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__version__</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.ADDITIVE" title="dau_scheduler.ADDITIVE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ADDITIVE</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.AGGREGATE_REFUSALS" title="dau_scheduler.AGGREGATE_REFUSALS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AGGREGATE_REFUSALS</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.BOUNDARY_STATS" title="dau_scheduler.BOUNDARY_STATS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BOUNDARY_STATS</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.DEFERRED_MEAN" title="dau_scheduler.DEFERRED_MEAN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DEFERRED_MEAN</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.POSTURES" title="dau_scheduler.POSTURES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">POSTURES</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.Posture" title="dau_scheduler.Posture"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Posture</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.SplitArm" title="dau_scheduler.SplitArm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SplitArm</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="exceptions">
+<h2>Exceptions<a class="headerlink" href="#exceptions" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.PostureError" title="dau_scheduler.PostureError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PostureError</span></code></a></p></td>
+<td><p>A posture was requested that cannot be resolved into a share.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.SplitError" title="dau_scheduler.SplitError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SplitError</span></code></a></p></td>
+<td><p>A split was asked for that cannot be executed or merged as asked.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.MergeRule" title="dau_scheduler.MergeRule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MergeRule</span></code></a></p></td>
+<td><p>What one query's partials are, and whether they can be put together.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.HostCost" title="dau_scheduler.HostCost"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HostCost</span></code></a></p></td>
+<td><p>Anything that can price a row count on the engine the caller is on.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.WorkSplit" title="dau_scheduler.WorkSplit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WorkSplit</span></code></a></p></td>
+<td><p>How one query's rows divide between the two engines.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.LinkRate" title="dau_scheduler.LinkRate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LinkRate</span></code></a></p></td>
+<td><p>The measured host-to-device transfer rate of one link: the term the</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.NodeCost" title="dau_scheduler.NodeCost"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NodeCost</span></code></a></p></td>
+<td><p>One plan node's measured cost, and whether it scales with rows.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.ProfileCache" title="dau_scheduler.ProfileCache"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProfileCache</span></code></a></p></td>
+<td><p>Profiles on disk, keyed by plan and host, and link rates keyed by</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.QueryProfile" title="dau_scheduler.QueryProfile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QueryProfile</span></code></a></p></td>
+<td><p>A measured host cost for one plan on one host.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.RowBatch" title="dau_scheduler.RowBatch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RowBatch</span></code></a></p></td>
+<td><p>Rows the caller has already materialized: the offsets AND the values.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.RowRange" title="dau_scheduler.RowRange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RowRange</span></code></a></p></td>
+<td><p>Rows named by their offsets in the table, and nothing else.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.RowSource" title="dau_scheduler.RowSource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RowSource</span></code></a></p></td>
+<td><p>The rows one arm owns, named by offset and optionally by value.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.SplitExecution" title="dau_scheduler.SplitExecution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SplitExecution</span></code></a></p></td>
+<td><p>One executed split: what each engine ran, how long, and the answer.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.check_split" title="dau_scheduler.check_split"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_split</span></code></a>() → None)</p></td>
+<td><p>Refuse a query whose result cannot be reassembled, by name.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.merge_keyed_groups" title="dau_scheduler.merge_keyed_groups"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_keyed_groups</span></code></a>(→ list[Any])</p></td>
+<td><p>Merge per-key records that carry no ordering, over the whole key set.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.merge_ordered_groups" title="dau_scheduler.merge_ordered_groups"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_ordered_groups</span></code></a>(→ list[Any])</p></td>
+<td><p>Concatenate per-group records, folding the group that straddles the</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.merge_sorted_runs" title="dau_scheduler.merge_sorted_runs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_sorted_runs</span></code></a>(→ list[Any])</p></td>
+<td><p>Merge the arms' sorted runs into one sorted run.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.merge_top_k" title="dau_scheduler.merge_top_k"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_top_k</span></code></a>(→ list[Any])</p></td>
+<td><p>Re-rank the arms' k-lists into one.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.merge_totals" title="dau_scheduler.merge_totals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge_totals</span></code></a>(→ Any)</p></td>
+<td><p>Add the named aggregates, then RE-DERIVE anything computed from them.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.batch_count" title="dau_scheduler.batch_count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">batch_count</span></code></a>(→ int)</p></td>
+<td><p>How many batches one engine's share should be delivered in.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.plan_split" title="dau_scheduler.plan_split"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plan_split</span></code></a>(→ WorkSplit)</p></td>
+<td><p>Resolve a posture into a row split.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.host_identity" title="dau_scheduler.host_identity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">host_identity</span></code></a>(→ str)</p></td>
+<td><p>A name for the machine a profile was measured on.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.profile_from_spans" title="dau_scheduler.profile_from_spans"><code class="xref py py-obj docutils literal notranslate"><span class="pre">profile_from_spans</span></code></a>(→ QueryProfile)</p></td>
+<td><p>Build a profile from an engine's per-node timings.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.as_row_source" title="dau_scheduler.as_row_source"><code class="xref py py-obj docutils literal notranslate"><span class="pre">as_row_source</span></code></a>(→ RowSource)</p></td>
+<td><p>The seam's argument, from whatever the caller is holding.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.execute_split" title="dau_scheduler.execute_split"><code class="xref py py-obj docutils literal notranslate"><span class="pre">execute_split</span></code></a>() → SplitExecution)</p></td>
+<td><p>Run <code class="docutils literal notranslate"><span class="pre">split</span></code>'s share of the rows on one engine and the rest on the</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="package-contents">
+<h2>Package Contents<a class="headerlink" href="#package-contents" title="Link to this heading">¶</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="dau_scheduler.__version__">
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">__version__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'0.1.0'</span></em><a class="headerlink" href="#dau_scheduler.__version__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="dau_scheduler.PostureError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">PostureError</span></span><a class="reference internal" href="../../_modules/dau_scheduler/errors.html#PostureError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.PostureError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ValueError</span></code></p>
+<p>A posture was requested that cannot be resolved into a share.</p>
+<p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="dau_scheduler.SplitError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">SplitError</span></span><a class="reference internal" href="../../_modules/dau_scheduler/errors.html#SplitError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.SplitError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">ValueError</span></code></p>
+<p>A split was asked for that cannot be executed or merged as asked.</p>
+<p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="dau_scheduler.ADDITIVE">
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">ADDITIVE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">frozenset</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dau_scheduler.ADDITIVE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="dau_scheduler.AGGREGATE_REFUSALS">
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">AGGREGATE_REFUSALS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dau_scheduler.AGGREGATE_REFUSALS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="dau_scheduler.BOUNDARY_STATS">
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">BOUNDARY_STATS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">frozenset</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dau_scheduler.BOUNDARY_STATS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="dau_scheduler.DEFERRED_MEAN">
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">DEFERRED_MEAN</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">frozenset</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dau_scheduler.DEFERRED_MEAN" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dau_scheduler.MergeRule">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">MergeRule</span></span><a class="reference internal" href="../../_modules/dau_scheduler/merge.html#MergeRule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.MergeRule" title="Link to this definition">¶</a></dt>
+<dd><p>What one query’s partials are, and whether they can be put together.</p>
+<p><code class="docutils literal notranslate"><span class="pre">terminal</span></code> names the result shape, for messages. <code class="docutils literal notranslate"><span class="pre">combine</span></code> takes the
+arms’ partials IN ARM ORDER – the leading rows first – and returns the
+answer the unsplit query would have produced. <code class="docutils literal notranslate"><span class="pre">mergeable</span></code> is the set of
+aggregate kinds whose partials this shape can combine, consulted by
+<a class="reference internal" href="#dau_scheduler.check_split" title="dau_scheduler.check_split"><code class="xref py py-func docutils literal notranslate"><span class="pre">check_split()</span></code></a> and default-deny.</p>
+<p><code class="docutils literal notranslate"><span class="pre">refusal</span></code>, when set, says this shape cannot be split at all, and no
+<code class="docutils literal notranslate"><span class="pre">combine</span></code> is reached.</p>
+<p><code class="docutils literal notranslate"><span class="pre">failed</span></code> is the guard for an arm that could not complete. An engine that
+invalidated its own work returns a partial that says so, and merging that
+into the other arm’s would produce a plausible SHORT answer – so if any
+partial reports failure, the merged result is that partial, failure and
+all, rather than a total nobody can tell is missing rows.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.MergeRule.terminal">
+<span class="sig-name descname"><span class="pre">terminal</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dau_scheduler.MergeRule.terminal" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.MergeRule.combine">
+<span class="sig-name descname"><span class="pre">combine</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">collections.abc.Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dau_scheduler.MergeRule.combine" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.MergeRule.mergeable">
+<span class="sig-name descname"><span class="pre">mergeable</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">frozenset</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dau_scheduler.MergeRule.mergeable" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.MergeRule.failed">
+<span class="sig-name descname"><span class="pre">failed</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">collections.abc.Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#dau_scheduler.MergeRule.failed" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.MergeRule.refusal">
+<span class="sig-name descname"><span class="pre">refusal</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#dau_scheduler.MergeRule.refusal" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.MergeRule.merge">
+<span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/merge.html#MergeRule.merge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.MergeRule.merge" title="Link to this definition">¶</a></dt>
+<dd><p>The merged answer for these partials.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dau_scheduler.check_split">
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">check_split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rule</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#dau_scheduler.MergeRule" title="dau_scheduler.MergeRule"><span class="pre">MergeRule</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/merge.html#check_split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.check_split" title="Link to this definition">¶</a></dt>
+<dd><p>Refuse a query whose result cannot be reassembled, by name.</p>
+<p><code class="docutils literal notranslate"><span class="pre">aggregates</span></code> are <code class="docutils literal notranslate"><span class="pre">(output</span> <span class="pre">name,</span> <span class="pre">aggregate</span> <span class="pre">kind)</span></code> pairs, so the refusal
+names the output the caller has to change rather than only the kind.</p>
+<p>Kept separate from execution so a planner can ask whether a query is
+splittable at all before committing anything to either engine.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dau_scheduler.merge_keyed_groups">
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">merge_keyed_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/merge.html#merge_keyed_groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.merge_keyed_groups" title="Link to this definition">¶</a></dt>
+<dd><p>Merge per-key records that carry no ordering, over the whole key set.</p>
+<p>The contrast with <a class="reference internal" href="#dau_scheduler.merge_ordered_groups" title="dau_scheduler.merge_ordered_groups"><code class="xref py py-func docutils literal notranslate"><span class="pre">merge_ordered_groups()</span></code></a> is the point. An engine
+holding one accumulator per distinct key can meet a key anywhere in its
+rows, so a key may appear in both arms and there is no boundary pair to
+fold – every key has to be looked up. The result is key-ascending, which
+is the order such an engine drains in.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dau_scheduler.merge_ordered_groups">
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">merge_ordered_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/merge.html#merge_ordered_groups"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.merge_ordered_groups" title="Link to this definition">¶</a></dt>
+<dd><p>Concatenate per-group records, folding the group that straddles the
+boundary.</p>
+<p>Valid only when the rows are SORTED on the group key, because that is what
+makes the boundary pair the only group two arms can share. The
+precondition is verified rather than trusted: on unsorted rows an
+order-sensitive engine emits several records per key, and merging those by
+key would collapse them into an answer no run produced.</p>
+<p><code class="docutils literal notranslate"><span class="pre">fold</span></code> combines two partial records of the same group; <code class="docutils literal notranslate"><span class="pre">key</span></code> reads a
+record’s group key.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dau_scheduler.merge_sorted_runs">
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">merge_sorted_runs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">descending</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/merge.html#merge_sorted_runs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.merge_sorted_runs" title="Link to this definition">¶</a></dt>
+<dd><p>Merge the arms’ sorted runs into one sorted run.</p>
+<p>Equal keys take the earlier range first, which is what keeps a stable
+sort’s arrival-order ties true of the whole table rather than of each
+half.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dau_scheduler.merge_top_k">
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">merge_top_k</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">descending</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/merge.html#merge_top_k"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.merge_top_k" title="Link to this definition">¶</a></dt>
+<dd><p>Re-rank the arms’ k-lists into one.</p>
+<p>A row in the whole query’s top k ranks at least as high within the range
+it arrived in, so it is in that range’s k-list: the arms’ outputs are the
+complete candidate set. Each arm emits equal keys in arrival order and the
+arms are given in row order, so a STABLE re-rank keeps an earliest-arrival
+tie-break true of the whole table rather than of each half.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dau_scheduler.merge_totals">
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">merge_totals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">finalize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/merge.html#merge_totals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.merge_totals" title="Link to this definition">¶</a></dt>
+<dd><p>Add the named aggregates, then RE-DERIVE anything computed from them.</p>
+<p><code class="docutils literal notranslate"><span class="pre">finalize</span></code> is where an output that is an EXPRESSION over the aggregates
+– a ratio, a share, a rate – is recomputed from the merged totals.
+Adding the two arms’ ratios would produce a number that is not a ratio of
+anything, and it would look exactly like a total.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="dau_scheduler.POSTURES">
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">POSTURES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('cpu',</span> <span class="pre">'offload',</span> <span class="pre">'collaborative',</span> <span class="pre">'adaptive')</span></em><a class="headerlink" href="#dau_scheduler.POSTURES" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dau_scheduler.HostCost">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">HostCost</span></span><a class="reference internal" href="../../_modules/dau_scheduler/posture.html#HostCost"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.HostCost" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">Protocol</span></code></p>
+<p>Anything that can price a row count on the engine the caller is on.</p>
+<p><a class="reference internal" href="profile/index.html#dau_scheduler.profile.QueryProfile" title="dau_scheduler.profile.QueryProfile"><code class="xref py py-class docutils literal notranslate"><span class="pre">dau_scheduler.profile.QueryProfile</span></code></a> is one, measured rather than
+modelled; a caller with an analytic model of its own host can pass that
+instead.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.HostCost.estimate">
+<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/posture.html#HostCost.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.HostCost.estimate" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="dau_scheduler.Posture">
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">Posture</span></span><a class="headerlink" href="#dau_scheduler.Posture" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dau_scheduler.WorkSplit">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">WorkSplit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**data:</span> <span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/dau_scheduler/posture.html#WorkSplit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.WorkSplit" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></p>
+<p>How one query’s rows divide between the two engines.</p>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.</p>
+<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.WorkSplit.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span></em><a class="headerlink" href="#dau_scheduler.WorkSplit.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.WorkSplit.posture">
+<span class="sig-name descname"><span class="pre">posture</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dau_scheduler.WorkSplit.posture" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.WorkSplit.device_share">
+<span class="sig-name descname"><span class="pre">device_share</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#dau_scheduler.WorkSplit.device_share" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.WorkSplit.rationale">
+<span class="sig-name descname"><span class="pre">rationale</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dau_scheduler.WorkSplit.rationale" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.WorkSplit.predicted_speedup">
+<span class="sig-name descname"><span class="pre">predicted_speedup</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#dau_scheduler.WorkSplit.predicted_speedup" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.WorkSplit.check">
+<span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.WorkSplit" title="dau_scheduler.WorkSplit"><span class="pre">WorkSplit</span></a></span></span><a class="reference internal" href="../../_modules/dau_scheduler/posture.html#WorkSplit.check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.WorkSplit.check" title="Link to this definition">¶</a></dt>
+<dd><p>Re-run the invariants and return <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<p>Construction validates, but <code class="docutils literal notranslate"><span class="pre">model_copy(update=...)</span></code> does not, so
+every consumer calls this before acting on a split rather than
+trusting that the instance it was handed went through <code class="docutils literal notranslate"><span class="pre">__init__</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.WorkSplit._share_is_a_fraction">
+<span class="sig-name descname"><span class="pre">_share_is_a_fraction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.WorkSplit" title="dau_scheduler.WorkSplit"><span class="pre">WorkSplit</span></a></span></span><a class="reference internal" href="../../_modules/dau_scheduler/posture.html#WorkSplit._share_is_a_fraction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.WorkSplit._share_is_a_fraction" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dau_scheduler.batch_count">
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">batch_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload_bytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">resident</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">knee_bytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/posture.html#batch_count"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.batch_count" title="Link to this definition">¶</a></dt>
+<dd><p>How many batches one engine’s share should be delivered in.</p>
+<p><strong>Batching exists to hide the transfer behind the compute.</strong> Each batch’s
+transfer overlaps the previous batch’s work, so the pipelined cost falls
+toward the transfer time alone. With the data already RESIDENT on the
+engine there is no transfer to hide and every batch is pure per-call
+overhead, so the answer is one.</p>
+<p>Measured on one link with a 45.8 MiB payload:</p>
+<div class="table-wrapper docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>batches</p></th>
+<th class="head"><p>streamed</p></th>
+<th class="head"><p>resident</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>22.08 ms</p></td>
+<td><p><strong>5.27 ms</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p><strong>18.78</strong></p></td>
+<td><p>5.91 ms</p></td>
+</tr>
+<tr class="row-even"><td><p>12</p></td>
+<td><p>22.59 ms</p></td>
+<td><p>–</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The optima are opposite, so a single tuned batch count is wrong for one of
+them – which is why this takes <code class="docutils literal notranslate"><span class="pre">resident</span></code> rather than a constant.</p>
+<p>Streamed, the count targets the link’s transfer knee rather than a fitted
+model. <code class="docutils literal notranslate"><span class="pre">knee_bytes</span></code> is the payload below which a transfer loses rate to
+per-transfer setup; it is a property of the link and has to be measured on
+it, so there is no default here. Fitting <code class="docutils literal notranslate"><span class="pre">T(B)</span> <span class="pre">=</span> <span class="pre">transfer</span> <span class="pre">+</span> <span class="pre">work/B</span> <span class="pre">+</span> <span class="pre">c*B</span></code>
+to the measured points above gives <code class="docutils literal notranslate"><span class="pre">c</span></code> anywhere from 83 to 568
+microseconds depending on which pair is fitted, so the model does not
+generalize and the measured knee is the honest thing to encode. At a
+15 MiB knee, 45.8 MiB rounds to 3, which is what measured fastest.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dau_scheduler.plan_split">
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">plan_split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">posture</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Posture</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'collaborative'</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpu_seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#dau_scheduler.HostCost" title="dau_scheduler.HostCost"><span class="pre">HostCost</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_fixed_seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.WorkSplit" title="dau_scheduler.WorkSplit"><span class="pre">WorkSplit</span></a></span></span><a class="reference internal" href="../../_modules/dau_scheduler/posture.html#plan_split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.plan_split" title="Link to this definition">¶</a></dt>
+<dd><p>Resolve a posture into a row split.</p>
+<p><code class="docutils literal notranslate"><span class="pre">cpu_seconds</span></code> and <code class="docutils literal notranslate"><span class="pre">device_seconds</span></code> are whole-query estimates for each
+engine alone. Only <code class="docutils literal notranslate"><span class="pre">collaborative</span></code> needs them; the other postures are
+definitional and take none, which is the point of offering them – a
+caller who does not want to pay for cost estimation can still express an
+intent.</p>
+<p>The host figure may instead come from a measurement: pass a
+<a class="reference internal" href="#dau_scheduler.HostCost" title="dau_scheduler.HostCost"><code class="xref py py-class docutils literal notranslate"><span class="pre">HostCost</span></code></a> and the <code class="docutils literal notranslate"><span class="pre">rows</span></code> this run will process, and the estimate
+is taken from it. An explicit <code class="docutils literal notranslate"><span class="pre">cpu_seconds</span></code> still wins – a caller who
+measured the thing itself should not be overridden by a model of it.</p>
+<p>What is refused is guessing. With neither a figure nor a profile,
+<code class="docutils literal notranslate"><span class="pre">collaborative</span></code> declines to invent one, because a fabricated number
+underneath a real decision is worse than no decision: the split changes
+which engine runs which rows, so an error in it is self-reinforcing.</p>
+<p><code class="docutils literal notranslate"><span class="pre">device_fixed_seconds</span></code> is what one device job costs before it has
+processed a row – launching it, polling it, reading its records – a
+per-invocation term the proportional form omitted and one measurement
+put at a few milliseconds beside a 12.3 ms host time (2026-09-27). With it
+the balance is <code class="docutils literal notranslate"><span class="pre">(1</span> <span class="pre">-</span> <span class="pre">s)</span> <span class="pre">*</span> <span class="pre">cpu</span> <span class="pre">=</span> <span class="pre">fixed</span> <span class="pre">+</span> <span class="pre">s</span> <span class="pre">*</span> <span class="pre">device</span></code>, and a share that
+cannot beat the host alone (the fixed cost is already most of the host
+time) is a <code class="docutils literal notranslate"><span class="pre">cpu</span></code> split that says why, not a split predicted to win by
+a margin the fixed cost eats.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dau_scheduler.LinkRate">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">LinkRate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**data:</span> <span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#LinkRate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.LinkRate" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></p>
+<p>The measured host-to-device transfer rate of one link: the term the
+adaptive cut model and a streamed split price every byte crossing with.</p>
+<p>Measured, not declared: a platform states its bus width and lane count,
+but what a transfer actually sustains depends on the host, the slot, the
+driver and the transfer size, and the sweeps of record put the same card
+at different rates in different hosts. So the rate is keyed by (host,
+device), like a host profile, and measured where it will be used.
+<code class="docutils literal notranslate"><span class="pre">transfer_bytes</span></code> is part of the identity, not a note: a link’s rate at
+one transfer size says little about another (per-transfer setup makes
+small transfers materially slower), so a rate is measured at the size
+the caller will move and cached under it. <code class="docutils literal notranslate"><span class="pre">samples</span></code> keeps the
+individual rates so the spread is visible beside the figure the model
+uses. <code class="docutils literal notranslate"><span class="pre">measured_at</span></code> (seconds since the epoch) is what staleness is
+judged by: a driver change, a link renegotiation or a reboot cannot
+invalidate an entry, so an old one is re-measured rather than trusted.</p>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.</p>
+<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.LinkRate.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span></em><a class="headerlink" href="#dau_scheduler.LinkRate.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.LinkRate.host">
+<span class="sig-name descname"><span class="pre">host</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dau_scheduler.LinkRate.host" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.LinkRate.device">
+<span class="sig-name descname"><span class="pre">device</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dau_scheduler.LinkRate.device" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.LinkRate.bytes_per_second">
+<span class="sig-name descname"><span class="pre">bytes_per_second</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#dau_scheduler.LinkRate.bytes_per_second" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.LinkRate.transfer_bytes">
+<span class="sig-name descname"><span class="pre">transfer_bytes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#dau_scheduler.LinkRate.transfer_bytes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.LinkRate.samples">
+<span class="sig-name descname"><span class="pre">samples</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="headerlink" href="#dau_scheduler.LinkRate.samples" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.LinkRate.measured_at">
+<span class="sig-name descname"><span class="pre">measured_at</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#dau_scheduler.LinkRate.measured_at" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.LinkRate.is_stale">
+<span class="sig-name descname"><span class="pre">is_stale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">now</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_age_seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#LinkRate.is_stale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.LinkRate.is_stale" title="Link to this definition">¶</a></dt>
+<dd><p>Older than <code class="docutils literal notranslate"><span class="pre">max_age_seconds</span></code> at <code class="docutils literal notranslate"><span class="pre">now</span></code>, or never dated.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.LinkRate._rate_is_usable">
+<span class="sig-name descname"><span class="pre">_rate_is_usable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.LinkRate" title="dau_scheduler.LinkRate"><span class="pre">LinkRate</span></a></span></span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#LinkRate._rate_is_usable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.LinkRate._rate_is_usable" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.LinkRate.check">
+<span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.LinkRate" title="dau_scheduler.LinkRate"><span class="pre">LinkRate</span></a></span></span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#LinkRate.check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.LinkRate.check" title="Link to this definition">¶</a></dt>
+<dd><p>Re-run the invariants and return <code class="docutils literal notranslate"><span class="pre">self</span></code> (see <a class="reference internal" href="#dau_scheduler.QueryProfile.check" title="dau_scheduler.QueryProfile.check"><code class="xref py py-meth docutils literal notranslate"><span class="pre">QueryProfile.check()</span></code></a>).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dau_scheduler.NodeCost">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">NodeCost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**data:</span> <span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#NodeCost"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.NodeCost" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></p>
+<p>One plan node’s measured cost, and whether it scales with rows.</p>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.</p>
+<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.NodeCost.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span></em><a class="headerlink" href="#dau_scheduler.NodeCost.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.NodeCost.node">
+<span class="sig-name descname"><span class="pre">node</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dau_scheduler.NodeCost.node" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.NodeCost.seconds">
+<span class="sig-name descname"><span class="pre">seconds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#dau_scheduler.NodeCost.seconds" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.NodeCost.scales_with_rows">
+<span class="sig-name descname"><span class="pre">scales_with_rows</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#dau_scheduler.NodeCost.scales_with_rows" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.NodeCost.check">
+<span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.NodeCost" title="dau_scheduler.NodeCost"><span class="pre">NodeCost</span></a></span></span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#NodeCost.check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.NodeCost.check" title="Link to this definition">¶</a></dt>
+<dd><p>Re-run the invariants and return <code class="docutils literal notranslate"><span class="pre">self</span></code> (see <a class="reference internal" href="#dau_scheduler.QueryProfile.check" title="dau_scheduler.QueryProfile.check"><code class="xref py py-meth docutils literal notranslate"><span class="pre">QueryProfile.check()</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.NodeCost._seconds_is_finite">
+<span class="sig-name descname"><span class="pre">_seconds_is_finite</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.NodeCost" title="dau_scheduler.NodeCost"><span class="pre">NodeCost</span></a></span></span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#NodeCost._seconds_is_finite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.NodeCost._seconds_is_finite" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dau_scheduler.ProfileCache">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">ProfileCache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#ProfileCache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.ProfileCache" title="Link to this definition">¶</a></dt>
+<dd><p>Profiles on disk, keyed by plan and host, and link rates keyed by
+device and host.</p>
+<p>Deliberately a plain directory of JSON rather than anything cleverer: a
+profile is small, human-readable, and worth being able to delete by hand
+when it goes stale.</p>
+<p>The engine version is deliberately <strong>not</strong> part of the key. A host is a
+key because you cannot re-measure on a machine you are not on; an engine
+version is not, because you can always re-measure under the one you have.
+So it is staleness (<a class="reference internal" href="#dau_scheduler.QueryProfile.is_stale_for" title="dau_scheduler.QueryProfile.is_stale_for"><code class="xref py py-meth docutils literal notranslate"><span class="pre">QueryProfile.is_stale_for()</span></code></a>), handled exactly as
+a row count that has moved too far, rather than a second slot on disk.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.ProfileCache.root">
+<span class="sig-name descname"><span class="pre">root</span></span><a class="headerlink" href="#dau_scheduler.ProfileCache.root" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.ProfileCache._under_root">
+<span class="sig-name descname"><span class="pre">_under_root</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pathlib.Path</span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#ProfileCache._under_root"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.ProfileCache._under_root" title="Link to this definition">¶</a></dt>
+<dd><p>A file directly under the cache root. Every key component is
+percent-encoded with no safe characters, so a plan key or host that
+contains a slash, <code class="docutils literal notranslate"><span class="pre">..</span></code> or a space becomes one flat, reversible file
+name and cannot name a path outside the root. The check is kept
+anyway: a cache that writes where it is told is the failure mode
+this guards.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.ProfileCache._component">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#ProfileCache._component"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.ProfileCache._component" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.ProfileCache._path">
+<span class="sig-name descname"><span class="pre">_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plan_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pathlib.Path</span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#ProfileCache._path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.ProfileCache._path" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.ProfileCache.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plan_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.QueryProfile" title="dau_scheduler.QueryProfile"><span class="pre">QueryProfile</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#ProfileCache.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.ProfileCache.get" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.ProfileCache.put">
+<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#dau_scheduler.QueryProfile" title="dau_scheduler.QueryProfile"><span class="pre">QueryProfile</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pathlib.Path</span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#ProfileCache.put"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.ProfileCache.put" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.ProfileCache.entries">
+<span class="sig-name descname"><span class="pre">entries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">collections.abc.Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#ProfileCache.entries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.ProfileCache.entries" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.ProfileCache._link_path">
+<span class="sig-name descname"><span class="pre">_link_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transfer_bytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pathlib.Path</span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#ProfileCache._link_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.ProfileCache._link_path" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.ProfileCache.get_link_rate">
+<span class="sig-name descname"><span class="pre">get_link_rate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transfer_bytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.LinkRate" title="dau_scheduler.LinkRate"><span class="pre">LinkRate</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#ProfileCache.get_link_rate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.ProfileCache.get_link_rate" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.ProfileCache.put_link_rate">
+<span class="sig-name descname"><span class="pre">put_link_rate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#dau_scheduler.LinkRate" title="dau_scheduler.LinkRate"><span class="pre">LinkRate</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pathlib.Path</span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#ProfileCache.put_link_rate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.ProfileCache.put_link_rate" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dau_scheduler.QueryProfile">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">QueryProfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**data:</span> <span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#QueryProfile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.QueryProfile" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></p>
+<p>A measured host cost for one plan on one host.</p>
+<p><code class="docutils literal notranslate"><span class="pre">selectivity</span></code> is the fraction of rows surviving the query’s filters when
+the caller measured it. It is left <code class="docutils literal notranslate"><span class="pre">None</span></code> rather than inferred: nothing
+in a timing profile reveals row counts, and a guessed selectivity poisons
+everything downstream that prices bytes.</p>
+<p><code class="docutils literal notranslate"><span class="pre">engine_version</span></code> records which build of the engine was measured. It
+defaults to <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> – unknown – and NOT to whatever is installed, which
+would let a hand-written profile claim to have been measured under an
+engine it never ran on.</p>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.</p>
+<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.QueryProfile.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span></em><a class="headerlink" href="#dau_scheduler.QueryProfile.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.QueryProfile.plan_key">
+<span class="sig-name descname"><span class="pre">plan_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dau_scheduler.QueryProfile.plan_key" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.QueryProfile.host">
+<span class="sig-name descname"><span class="pre">host</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dau_scheduler.QueryProfile.host" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.QueryProfile.rows">
+<span class="sig-name descname"><span class="pre">rows</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#dau_scheduler.QueryProfile.rows" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.QueryProfile.fixed_seconds">
+<span class="sig-name descname"><span class="pre">fixed_seconds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#dau_scheduler.QueryProfile.fixed_seconds" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.QueryProfile.per_row_seconds">
+<span class="sig-name descname"><span class="pre">per_row_seconds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#dau_scheduler.QueryProfile.per_row_seconds" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.QueryProfile.nodes">
+<span class="sig-name descname"><span class="pre">nodes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#dau_scheduler.NodeCost" title="dau_scheduler.NodeCost"><span class="pre">NodeCost</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="headerlink" href="#dau_scheduler.QueryProfile.nodes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.QueryProfile.selectivity">
+<span class="sig-name descname"><span class="pre">selectivity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#dau_scheduler.QueryProfile.selectivity" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.QueryProfile.engine_version">
+<span class="sig-name descname"><span class="pre">engine_version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#dau_scheduler.QueryProfile.engine_version" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.QueryProfile.check">
+<span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.QueryProfile" title="dau_scheduler.QueryProfile"><span class="pre">QueryProfile</span></a></span></span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#QueryProfile.check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.QueryProfile.check" title="Link to this definition">¶</a></dt>
+<dd><p>Re-run the invariants and return <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<p>Construction validates, but <code class="docutils literal notranslate"><span class="pre">model_copy(update=...)</span></code> does not, so
+every use site (<code class="docutils literal notranslate"><span class="pre">estimate</span></code>, <code class="docutils literal notranslate"><span class="pre">is_stale_for</span></code>, the cache) calls this
+rather than trusting that the instance went through <code class="docutils literal notranslate"><span class="pre">__init__</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.QueryProfile._costs_are_sane">
+<span class="sig-name descname"><span class="pre">_costs_are_sane</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.QueryProfile" title="dau_scheduler.QueryProfile"><span class="pre">QueryProfile</span></a></span></span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#QueryProfile._costs_are_sane"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.QueryProfile._costs_are_sane" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.QueryProfile.estimate">
+<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#QueryProfile.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.QueryProfile.estimate" title="Link to this definition">¶</a></dt>
+<dd><p>Host seconds for <code class="docutils literal notranslate"><span class="pre">rows</span></code>, as <code class="docutils literal notranslate"><span class="pre">fixed</span> <span class="pre">+</span> <span class="pre">per_row</span> <span class="pre">*</span> <span class="pre">rows</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.QueryProfile.is_stale_for">
+<span class="sig-name descname"><span class="pre">is_stale_for</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#QueryProfile.is_stale_for"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.QueryProfile.is_stale_for" title="Link to this definition">¶</a></dt>
+<dd><p>Whether this measurement can still price <code class="docutils literal notranslate"><span class="pre">rows</span></code> on the engine here
+now.</p>
+<p>Two things invalidate a measurement, and <strong>both are answered by this
+one predicate on purpose</strong>: a caller that has to remember to ask a
+second question is how a version stamp comes to be recorded on every
+profile and consulted by nothing.</p>
+<p><em>Row count.</em> Extrapolating one measurement across orders of magnitude
+is where a profile-guided split goes confidently wrong, and
+confidently wrong is worse than absent: the split decides which engine
+runs which rows, so the error is self-reinforcing.</p>
+<p><em>Engine version.</em> The argument for keying on the host – two machines
+measured 1.41x apart, so a profile keyed by plan alone steers the
+split on the wrong one – applies verbatim to the engine being
+measured, and this module exists BECAUSE an analytic model of that
+engine would be guesswork. A measurement taken under one build says
+nothing about another.</p>
+<p>A profile with no recorded version is <strong>unknown, not current</strong>, and is
+stale for the same reason a guessed selectivity is refused: it may
+have been measured under anything.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dau_scheduler.host_identity">
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">host_identity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#host_identity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.host_identity" title="Link to this definition">¶</a></dt>
+<dd><p>A name for the machine a profile was measured on.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dau_scheduler.profile_from_spans">
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">profile_from_spans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spans</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plan_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_fixed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">lambda</span> <span class="pre">_node:</span> <span class="pre">...</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selectivity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.QueryProfile" title="dau_scheduler.QueryProfile"><span class="pre">QueryProfile</span></a></span></span><a class="reference internal" href="../../_modules/dau_scheduler/profile.html#profile_from_spans"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile_from_spans" title="Link to this definition">¶</a></dt>
+<dd><p>Build a profile from an engine’s per-node timings.</p>
+<p><code class="docutils literal notranslate"><span class="pre">spans</span></code> are <code class="docutils literal notranslate"><span class="pre">(start,</span> <span class="pre">end,</span> <span class="pre">node</span> <span class="pre">name)</span></code> in MICROSECONDS, as a profiling
+query engine reports them. <code class="docutils literal notranslate"><span class="pre">is_fixed</span></code> names the plan-time nodes – the
+ones that must not be divided by the row count.</p>
+<p><strong>Nodes overlap (an engine runs some in parallel) and leave gaps, so
+summing ``end - start`` is NOT elapsed time.</strong> It double-counts the
+overlap and drops the gaps entirely: with optimization 0-1000, scan
+1000-11000 and filter 5000-15000, the true elapsed cost is 15 ms and the
+sum reports 21 ms.</p>
+<p>So the span is taken as elapsed wall time, the fixed nodes are measured as
+a UNION of their intervals, and everything else – including the gaps,
+which are real elapsed cost – is attributed to scaling work.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dau_scheduler.RowBatch">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">RowBatch</span></span><a class="reference internal" href="../../_modules/dau_scheduler/rows.html#RowBatch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.RowBatch" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dau_scheduler.RowSource" title="dau_scheduler.RowSource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RowSource</span></code></a></p>
+<p>Rows the caller has already materialized: the offsets AND the values.</p>
+<p>The rows are WRAPPED rather than copied. Whatever normalization an arm
+performs on its own input is not repeated here, because repeating it
+over the whole table was the cost this seam exists to remove.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.RowBatch.rows">
+<span class="sig-name descname"><span class="pre">rows</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dau_scheduler.RowBatch.rows" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.RowBatch.start">
+<span class="sig-name descname"><span class="pre">start</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#dau_scheduler.RowBatch.start" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.RowBatch.__post_init__">
+<span class="sig-name descname"><span class="pre">__post_init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/rows.html#RowBatch.__post_init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.RowBatch.__post_init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dau_scheduler.RowBatch.stop">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stop</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#dau_scheduler.RowBatch.stop" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.RowBatch.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/rows.html#RowBatch.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.RowBatch.__repr__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.RowBatch.slice">
+<span class="sig-name descname"><span class="pre">slice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.RowBatch" title="dau_scheduler.RowBatch"><span class="pre">RowBatch</span></a></span></span><a class="reference internal" href="../../_modules/dau_scheduler/rows.html#RowBatch.slice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.RowBatch.slice" title="Link to this definition">¶</a></dt>
+<dd><p>The sub-source covering <code class="docutils literal notranslate"><span class="pre">[start,</span> <span class="pre">stop)</span></code> of THIS source’s rows.</p>
+<p>Relative indices, absolute offsets: the result carries where it sits
+in the whole table, which is the number an arm slices its own
+resident copy at.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.RowBatch.values">
+<span class="sig-name descname"><span class="pre">values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/rows.html#RowBatch.values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.RowBatch.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dau_scheduler.RowRange">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">RowRange</span></span><a class="reference internal" href="../../_modules/dau_scheduler/rows.html#RowRange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.RowRange" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dau_scheduler.RowSource" title="dau_scheduler.RowSource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RowSource</span></code></a></p>
+<p>Rows named by their offsets in the table, and nothing else.</p>
+<p>The source a split between two engines that each hold the data wants: it
+costs two integers no matter how many rows it names, so a sweep over
+millions of rows allocates nothing per call.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.RowRange.start">
+<span class="sig-name descname"><span class="pre">start</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#dau_scheduler.RowRange.start" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.RowRange.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#dau_scheduler.RowRange.stop" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.RowRange.__post_init__">
+<span class="sig-name descname"><span class="pre">__post_init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/rows.html#RowRange.__post_init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.RowRange.__post_init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.RowRange.slice">
+<span class="sig-name descname"><span class="pre">slice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.RowRange" title="dau_scheduler.RowRange"><span class="pre">RowRange</span></a></span></span><a class="reference internal" href="../../_modules/dau_scheduler/rows.html#RowRange.slice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.RowRange.slice" title="Link to this definition">¶</a></dt>
+<dd><p>The sub-source covering <code class="docutils literal notranslate"><span class="pre">[start,</span> <span class="pre">stop)</span></code> of THIS source’s rows.</p>
+<p>Relative indices, absolute offsets: the result carries where it sits
+in the whole table, which is the number an arm slices its own
+resident copy at.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dau_scheduler.RowSource">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">RowSource</span></span><a class="reference internal" href="../../_modules/dau_scheduler/rows.html#RowSource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.RowSource" title="Link to this definition">¶</a></dt>
+<dd><p>The rows one arm owns, named by offset and optionally by value.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.RowSource.__slots__">
+<span class="sig-name descname"><span class="pre">__slots__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="headerlink" href="#dau_scheduler.RowSource.__slots__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.RowSource.start">
+<span class="sig-name descname"><span class="pre">start</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#dau_scheduler.RowSource.start" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.RowSource.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#dau_scheduler.RowSource.stop" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.RowSource.__len__">
+<span class="sig-name descname"><span class="pre">__len__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/rows.html#RowSource.__len__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.RowSource.__len__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.RowSource.slice">
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">slice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.RowSource" title="dau_scheduler.RowSource"><span class="pre">RowSource</span></a></span></span><a class="reference internal" href="../../_modules/dau_scheduler/rows.html#RowSource.slice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.RowSource.slice" title="Link to this definition">¶</a></dt>
+<dd><p>The sub-source covering <code class="docutils literal notranslate"><span class="pre">[start,</span> <span class="pre">stop)</span></code> of THIS source’s rows.</p>
+<p>Relative indices, absolute offsets: the result carries where it sits
+in the whole table, which is the number an arm slices its own
+resident copy at.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.RowSource.values">
+<span class="sig-name descname"><span class="pre">values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">collections.abc.Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/rows.html#RowSource.values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.RowSource.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.RowSource.__iter__">
+<span class="sig-name descname"><span class="pre">__iter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">collections.abc.Iterator</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/dau_scheduler/rows.html#RowSource.__iter__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.RowSource.__iter__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dau_scheduler.as_row_source">
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">as_row_source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#dau_scheduler.RowSource" title="dau_scheduler.RowSource"><span class="pre">RowSource</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">collections.abc.Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.RowSource" title="dau_scheduler.RowSource"><span class="pre">RowSource</span></a></span></span><a class="reference internal" href="../../_modules/dau_scheduler/rows.html#as_row_source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.as_row_source" title="Link to this definition">¶</a></dt>
+<dd><p>The seam’s argument, from whatever the caller is holding.</p>
+<p>A source passes through untouched – that is the point, and the reason
+this is not <code class="docutils literal notranslate"><span class="pre">list(rows)</span></code> under a better name. A sequence is wrapped in
+place, so a caller who already has the rows pays nothing to hand them
+over. Only an ITERATOR is drained, and it has to be: both arms read from
+one source, and an iterator cannot serve two.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="dau_scheduler.SplitArm">
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">SplitArm</span></span><a class="headerlink" href="#dau_scheduler.SplitArm" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dau_scheduler.SplitExecution">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">SplitExecution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**data:</span> <span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/dau_scheduler/split.html#SplitExecution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.SplitExecution" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></p>
+<p>One executed split: what each engine ran, how long, and the answer.</p>
+<p><code class="docutils literal notranslate"><span class="pre">result</span></code> is whatever an UNSPLIT run of this query returns, so the
+caller’s decode path is unchanged by having split the work.</p>
+<p><code class="docutils literal notranslate"><span class="pre">overlap_seconds</span></code> is the intersection of the two arms’ wall-clock
+intervals. It measures that the arms were IN FLIGHT together, which is
+the property a split needs and the one a serialized executor loses. It
+does not claim parallel progress inside a single interpreter, which
+nothing here could promise on the caller’s behalf.</p>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.</p>
+<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.SplitExecution.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span></em><a class="headerlink" href="#dau_scheduler.SplitExecution.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.SplitExecution.posture">
+<span class="sig-name descname"><span class="pre">posture</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dau_scheduler.SplitExecution.posture" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.SplitExecution.device_share">
+<span class="sig-name descname"><span class="pre">device_share</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#dau_scheduler.SplitExecution.device_share" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.SplitExecution.terminal">
+<span class="sig-name descname"><span class="pre">terminal</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dau_scheduler.SplitExecution.terminal" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.SplitExecution.device_rows">
+<span class="sig-name descname"><span class="pre">device_rows</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#dau_scheduler.SplitExecution.device_rows" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.SplitExecution.host_rows">
+<span class="sig-name descname"><span class="pre">host_rows</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#dau_scheduler.SplitExecution.host_rows" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.SplitExecution.device_seconds">
+<span class="sig-name descname"><span class="pre">device_seconds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#dau_scheduler.SplitExecution.device_seconds" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.SplitExecution.host_seconds">
+<span class="sig-name descname"><span class="pre">host_seconds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#dau_scheduler.SplitExecution.host_seconds" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.SplitExecution.wall_seconds">
+<span class="sig-name descname"><span class="pre">wall_seconds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#dau_scheduler.SplitExecution.wall_seconds" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.SplitExecution.overlap_seconds">
+<span class="sig-name descname"><span class="pre">overlap_seconds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#dau_scheduler.SplitExecution.overlap_seconds" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.SplitExecution.materialize_seconds">
+<span class="sig-name descname"><span class="pre">materialize_seconds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#dau_scheduler.SplitExecution.materialize_seconds" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.SplitExecution.merge_seconds">
+<span class="sig-name descname"><span class="pre">merge_seconds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#dau_scheduler.SplitExecution.merge_seconds" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.SplitExecution.device_granularity">
+<span class="sig-name descname"><span class="pre">device_granularity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#dau_scheduler.SplitExecution.device_granularity" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.SplitExecution.result">
+<span class="sig-name descname"><span class="pre">result</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Any</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#dau_scheduler.SplitExecution.result" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.SplitExecution._figures_are_sane">
+<span class="sig-name descname"><span class="pre">_figures_are_sane</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.SplitExecution" title="dau_scheduler.SplitExecution"><span class="pre">SplitExecution</span></a></span></span><a class="reference internal" href="../../_modules/dau_scheduler/split.html#SplitExecution._figures_are_sane"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.SplitExecution._figures_are_sane" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dau_scheduler.execute_split">
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">execute_split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rows/index.html#dau_scheduler.rows.RowSource" title="dau_scheduler.rows.RowSource"><span class="pre">dau_scheduler.rows.RowSource</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">collections.abc.Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="posture/index.html#dau_scheduler.posture.WorkSplit" title="dau_scheduler.posture.WorkSplit"><span class="pre">dau_scheduler.posture.WorkSplit</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">merge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="merge/index.html#dau_scheduler.merge.MergeRule" title="dau_scheduler.merge.MergeRule"><span class="pre">dau_scheduler.merge.MergeRule</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SplitArm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SplitArm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">build_rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="rows/index.html#dau_scheduler.rows.RowSource" title="dau_scheduler.rows.RowSource"><span class="pre">dau_scheduler.rows.RowSource</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">collections.abc.Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.SplitExecution" title="dau_scheduler.SplitExecution"><span class="pre">SplitExecution</span></a></span></span><a class="reference internal" href="../../_modules/dau_scheduler/split.html#execute_split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.execute_split" title="Link to this definition">¶</a></dt>
+<dd><p>Run <code class="docutils literal notranslate"><span class="pre">split</span></code>’s share of the rows on one engine and the rest on the
+other, at the same time, and merge the partials into the query’s answer.</p>
+<p><code class="docutils literal notranslate"><span class="pre">query</span></code> is passed to both arms untouched; this module never inspects it.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">device</span></code> arm takes rows <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">share*n)</span></code> and the <code class="docutils literal notranslate"><span class="pre">host</span></code> arm the
+rest. That order is part of the contract, not an implementation detail:
+a grouped <code class="docutils literal notranslate"><span class="pre">first</span></code>/<code class="docutils literal notranslate"><span class="pre">last</span></code> and a top-k’s earliest-arrival tie-break are
+defined by it. An arm with no rows is not launched at all – a share of
+0.0 or 1.0 runs exactly the unsplit path (given a table on the device’s
+granularity), which is what makes the degenerate ends of a share sweep
+meaningful.</p>
+<p><code class="docutils literal notranslate"><span class="pre">rows</span></code> is the whole table as a <a class="reference internal" href="rows/index.html#dau_scheduler.rows.RowSource" title="dau_scheduler.rows.RowSource"><code class="xref py py-class docutils literal notranslate"><span class="pre">RowSource</span></code></a> –
+a <a class="reference internal" href="rows/index.html#dau_scheduler.rows.RowRange" title="dau_scheduler.rows.RowRange"><code class="xref py py-class docutils literal notranslate"><span class="pre">RowRange</span></code></a> when both arms run from data they
+already hold, a <a class="reference internal" href="rows/index.html#dau_scheduler.rows.RowBatch" title="dau_scheduler.rows.RowBatch"><code class="xref py py-class docutils literal notranslate"><span class="pre">RowBatch</span></code></a> when one of them
+reads values – or any iterable of rows, which is wrapped and charged to
+<code class="docutils literal notranslate"><span class="pre">materialize_seconds</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">aggregates</span></code> are <code class="docutils literal notranslate"><span class="pre">(output</span> <span class="pre">name,</span> <span class="pre">aggregate</span> <span class="pre">kind)</span></code> pairs checked against
+<code class="docutils literal notranslate"><span class="pre">merge</span></code> before anything runs (see
+<a class="reference internal" href="merge/index.html#dau_scheduler.merge.check_split" title="dau_scheduler.merge.check_split"><code class="xref py py-func docutils literal notranslate"><span class="pre">dau_scheduler.merge.check_split()</span></code></a>).</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">device</span></code> arm carrying <code class="docutils literal notranslate"><span class="pre">row_granularity</span></code> (see <a class="reference internal" href="#dau_scheduler.SplitArm" title="dau_scheduler.SplitArm"><code class="xref py py-data docutils literal notranslate"><span class="pre">SplitArm</span></code></a>) can
+only take a row count that divides it – an engine whose job length must
+sit on a fixed row grid. The boundary is snapped to the nearest such multiple
+and the count actually given is reported as <code class="docutils literal notranslate"><span class="pre">device_rows</span></code>. It is an
+execution fact about the engine, not part of the share the planner
+chose, which is why it rides the arm rather than the
+<a class="reference internal" href="posture/index.html#dau_scheduler.posture.WorkSplit" title="dau_scheduler.posture.WorkSplit"><code class="xref py py-class docutils literal notranslate"><span class="pre">WorkSplit</span></code></a>.</p>
+</dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="errors/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">dau_scheduler.errors</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../test_posture/index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">test_posture</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; the dau-scheduler authors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">dau_scheduler</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#attributes">Attributes</a></li>
+<li><a class="reference internal" href="#exceptions">Exceptions</a></li>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+<li><a class="reference internal" href="#package-contents">Package Contents</a><ul>
+<li><a class="reference internal" href="#dau_scheduler.__version__"><code class="docutils literal notranslate"><span class="pre">__version__</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.PostureError"><code class="docutils literal notranslate"><span class="pre">PostureError</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.SplitError"><code class="docutils literal notranslate"><span class="pre">SplitError</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.ADDITIVE"><code class="docutils literal notranslate"><span class="pre">ADDITIVE</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.AGGREGATE_REFUSALS"><code class="docutils literal notranslate"><span class="pre">AGGREGATE_REFUSALS</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.BOUNDARY_STATS"><code class="docutils literal notranslate"><span class="pre">BOUNDARY_STATS</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.DEFERRED_MEAN"><code class="docutils literal notranslate"><span class="pre">DEFERRED_MEAN</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.MergeRule"><code class="docutils literal notranslate"><span class="pre">MergeRule</span></code></a><ul>
+<li><a class="reference internal" href="#dau_scheduler.MergeRule.terminal"><code class="docutils literal notranslate"><span class="pre">MergeRule.terminal</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.MergeRule.combine"><code class="docutils literal notranslate"><span class="pre">MergeRule.combine</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.MergeRule.mergeable"><code class="docutils literal notranslate"><span class="pre">MergeRule.mergeable</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.MergeRule.failed"><code class="docutils literal notranslate"><span class="pre">MergeRule.failed</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.MergeRule.refusal"><code class="docutils literal notranslate"><span class="pre">MergeRule.refusal</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.MergeRule.merge"><code class="docutils literal notranslate"><span class="pre">MergeRule.merge()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dau_scheduler.check_split"><code class="docutils literal notranslate"><span class="pre">check_split()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.merge_keyed_groups"><code class="docutils literal notranslate"><span class="pre">merge_keyed_groups()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.merge_ordered_groups"><code class="docutils literal notranslate"><span class="pre">merge_ordered_groups()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.merge_sorted_runs"><code class="docutils literal notranslate"><span class="pre">merge_sorted_runs()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.merge_top_k"><code class="docutils literal notranslate"><span class="pre">merge_top_k()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.merge_totals"><code class="docutils literal notranslate"><span class="pre">merge_totals()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.POSTURES"><code class="docutils literal notranslate"><span class="pre">POSTURES</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.HostCost"><code class="docutils literal notranslate"><span class="pre">HostCost</span></code></a><ul>
+<li><a class="reference internal" href="#dau_scheduler.HostCost.estimate"><code class="docutils literal notranslate"><span class="pre">HostCost.estimate()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dau_scheduler.Posture"><code class="docutils literal notranslate"><span class="pre">Posture</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.WorkSplit"><code class="docutils literal notranslate"><span class="pre">WorkSplit</span></code></a><ul>
+<li><a class="reference internal" href="#dau_scheduler.WorkSplit.model_config"><code class="docutils literal notranslate"><span class="pre">WorkSplit.model_config</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.WorkSplit.posture"><code class="docutils literal notranslate"><span class="pre">WorkSplit.posture</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.WorkSplit.device_share"><code class="docutils literal notranslate"><span class="pre">WorkSplit.device_share</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.WorkSplit.rationale"><code class="docutils literal notranslate"><span class="pre">WorkSplit.rationale</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.WorkSplit.predicted_speedup"><code class="docutils literal notranslate"><span class="pre">WorkSplit.predicted_speedup</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.WorkSplit.check"><code class="docutils literal notranslate"><span class="pre">WorkSplit.check()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.WorkSplit._share_is_a_fraction"><code class="docutils literal notranslate"><span class="pre">WorkSplit._share_is_a_fraction()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dau_scheduler.batch_count"><code class="docutils literal notranslate"><span class="pre">batch_count()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.plan_split"><code class="docutils literal notranslate"><span class="pre">plan_split()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.LinkRate"><code class="docutils literal notranslate"><span class="pre">LinkRate</span></code></a><ul>
+<li><a class="reference internal" href="#dau_scheduler.LinkRate.model_config"><code class="docutils literal notranslate"><span class="pre">LinkRate.model_config</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.LinkRate.host"><code class="docutils literal notranslate"><span class="pre">LinkRate.host</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.LinkRate.device"><code class="docutils literal notranslate"><span class="pre">LinkRate.device</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.LinkRate.bytes_per_second"><code class="docutils literal notranslate"><span class="pre">LinkRate.bytes_per_second</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.LinkRate.transfer_bytes"><code class="docutils literal notranslate"><span class="pre">LinkRate.transfer_bytes</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.LinkRate.samples"><code class="docutils literal notranslate"><span class="pre">LinkRate.samples</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.LinkRate.measured_at"><code class="docutils literal notranslate"><span class="pre">LinkRate.measured_at</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.LinkRate.is_stale"><code class="docutils literal notranslate"><span class="pre">LinkRate.is_stale()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.LinkRate._rate_is_usable"><code class="docutils literal notranslate"><span class="pre">LinkRate._rate_is_usable()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.LinkRate.check"><code class="docutils literal notranslate"><span class="pre">LinkRate.check()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dau_scheduler.NodeCost"><code class="docutils literal notranslate"><span class="pre">NodeCost</span></code></a><ul>
+<li><a class="reference internal" href="#dau_scheduler.NodeCost.model_config"><code class="docutils literal notranslate"><span class="pre">NodeCost.model_config</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.NodeCost.node"><code class="docutils literal notranslate"><span class="pre">NodeCost.node</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.NodeCost.seconds"><code class="docutils literal notranslate"><span class="pre">NodeCost.seconds</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.NodeCost.scales_with_rows"><code class="docutils literal notranslate"><span class="pre">NodeCost.scales_with_rows</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.NodeCost.check"><code class="docutils literal notranslate"><span class="pre">NodeCost.check()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.NodeCost._seconds_is_finite"><code class="docutils literal notranslate"><span class="pre">NodeCost._seconds_is_finite()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dau_scheduler.ProfileCache"><code class="docutils literal notranslate"><span class="pre">ProfileCache</span></code></a><ul>
+<li><a class="reference internal" href="#dau_scheduler.ProfileCache.root"><code class="docutils literal notranslate"><span class="pre">ProfileCache.root</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.ProfileCache._under_root"><code class="docutils literal notranslate"><span class="pre">ProfileCache._under_root()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.ProfileCache._component"><code class="docutils literal notranslate"><span class="pre">ProfileCache._component()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.ProfileCache._path"><code class="docutils literal notranslate"><span class="pre">ProfileCache._path()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.ProfileCache.get"><code class="docutils literal notranslate"><span class="pre">ProfileCache.get()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.ProfileCache.put"><code class="docutils literal notranslate"><span class="pre">ProfileCache.put()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.ProfileCache.entries"><code class="docutils literal notranslate"><span class="pre">ProfileCache.entries()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.ProfileCache._link_path"><code class="docutils literal notranslate"><span class="pre">ProfileCache._link_path()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.ProfileCache.get_link_rate"><code class="docutils literal notranslate"><span class="pre">ProfileCache.get_link_rate()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.ProfileCache.put_link_rate"><code class="docutils literal notranslate"><span class="pre">ProfileCache.put_link_rate()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dau_scheduler.QueryProfile"><code class="docutils literal notranslate"><span class="pre">QueryProfile</span></code></a><ul>
+<li><a class="reference internal" href="#dau_scheduler.QueryProfile.model_config"><code class="docutils literal notranslate"><span class="pre">QueryProfile.model_config</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.QueryProfile.plan_key"><code class="docutils literal notranslate"><span class="pre">QueryProfile.plan_key</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.QueryProfile.host"><code class="docutils literal notranslate"><span class="pre">QueryProfile.host</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.QueryProfile.rows"><code class="docutils literal notranslate"><span class="pre">QueryProfile.rows</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.QueryProfile.fixed_seconds"><code class="docutils literal notranslate"><span class="pre">QueryProfile.fixed_seconds</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.QueryProfile.per_row_seconds"><code class="docutils literal notranslate"><span class="pre">QueryProfile.per_row_seconds</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.QueryProfile.nodes"><code class="docutils literal notranslate"><span class="pre">QueryProfile.nodes</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.QueryProfile.selectivity"><code class="docutils literal notranslate"><span class="pre">QueryProfile.selectivity</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.QueryProfile.engine_version"><code class="docutils literal notranslate"><span class="pre">QueryProfile.engine_version</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.QueryProfile.check"><code class="docutils literal notranslate"><span class="pre">QueryProfile.check()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.QueryProfile._costs_are_sane"><code class="docutils literal notranslate"><span class="pre">QueryProfile._costs_are_sane()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.QueryProfile.estimate"><code class="docutils literal notranslate"><span class="pre">QueryProfile.estimate()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.QueryProfile.is_stale_for"><code class="docutils literal notranslate"><span class="pre">QueryProfile.is_stale_for()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dau_scheduler.host_identity"><code class="docutils literal notranslate"><span class="pre">host_identity()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile_from_spans"><code class="docutils literal notranslate"><span class="pre">profile_from_spans()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.RowBatch"><code class="docutils literal notranslate"><span class="pre">RowBatch</span></code></a><ul>
+<li><a class="reference internal" href="#dau_scheduler.RowBatch.rows"><code class="docutils literal notranslate"><span class="pre">RowBatch.rows</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.RowBatch.start"><code class="docutils literal notranslate"><span class="pre">RowBatch.start</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.RowBatch.__post_init__"><code class="docutils literal notranslate"><span class="pre">RowBatch.__post_init__()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.RowBatch.stop"><code class="docutils literal notranslate"><span class="pre">RowBatch.stop</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.RowBatch.__repr__"><code class="docutils literal notranslate"><span class="pre">RowBatch.__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.RowBatch.slice"><code class="docutils literal notranslate"><span class="pre">RowBatch.slice()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.RowBatch.values"><code class="docutils literal notranslate"><span class="pre">RowBatch.values()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dau_scheduler.RowRange"><code class="docutils literal notranslate"><span class="pre">RowRange</span></code></a><ul>
+<li><a class="reference internal" href="#dau_scheduler.RowRange.start"><code class="docutils literal notranslate"><span class="pre">RowRange.start</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.RowRange.stop"><code class="docutils literal notranslate"><span class="pre">RowRange.stop</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.RowRange.__post_init__"><code class="docutils literal notranslate"><span class="pre">RowRange.__post_init__()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.RowRange.slice"><code class="docutils literal notranslate"><span class="pre">RowRange.slice()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dau_scheduler.RowSource"><code class="docutils literal notranslate"><span class="pre">RowSource</span></code></a><ul>
+<li><a class="reference internal" href="#dau_scheduler.RowSource.__slots__"><code class="docutils literal notranslate"><span class="pre">RowSource.__slots__</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.RowSource.start"><code class="docutils literal notranslate"><span class="pre">RowSource.start</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.RowSource.stop"><code class="docutils literal notranslate"><span class="pre">RowSource.stop</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.RowSource.__len__"><code class="docutils literal notranslate"><span class="pre">RowSource.__len__()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.RowSource.slice"><code class="docutils literal notranslate"><span class="pre">RowSource.slice()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.RowSource.values"><code class="docutils literal notranslate"><span class="pre">RowSource.values()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.RowSource.__iter__"><code class="docutils literal notranslate"><span class="pre">RowSource.__iter__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dau_scheduler.as_row_source"><code class="docutils literal notranslate"><span class="pre">as_row_source()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.SplitArm"><code class="docutils literal notranslate"><span class="pre">SplitArm</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.SplitExecution"><code class="docutils literal notranslate"><span class="pre">SplitExecution</span></code></a><ul>
+<li><a class="reference internal" href="#dau_scheduler.SplitExecution.model_config"><code class="docutils literal notranslate"><span class="pre">SplitExecution.model_config</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.SplitExecution.posture"><code class="docutils literal notranslate"><span class="pre">SplitExecution.posture</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.SplitExecution.device_share"><code class="docutils literal notranslate"><span class="pre">SplitExecution.device_share</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.SplitExecution.terminal"><code class="docutils literal notranslate"><span class="pre">SplitExecution.terminal</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.SplitExecution.device_rows"><code class="docutils literal notranslate"><span class="pre">SplitExecution.device_rows</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.SplitExecution.host_rows"><code class="docutils literal notranslate"><span class="pre">SplitExecution.host_rows</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.SplitExecution.device_seconds"><code class="docutils literal notranslate"><span class="pre">SplitExecution.device_seconds</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.SplitExecution.host_seconds"><code class="docutils literal notranslate"><span class="pre">SplitExecution.host_seconds</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.SplitExecution.wall_seconds"><code class="docutils literal notranslate"><span class="pre">SplitExecution.wall_seconds</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.SplitExecution.overlap_seconds"><code class="docutils literal notranslate"><span class="pre">SplitExecution.overlap_seconds</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.SplitExecution.materialize_seconds"><code class="docutils literal notranslate"><span class="pre">SplitExecution.materialize_seconds</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.SplitExecution.merge_seconds"><code class="docutils literal notranslate"><span class="pre">SplitExecution.merge_seconds</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.SplitExecution.device_granularity"><code class="docutils literal notranslate"><span class="pre">SplitExecution.device_granularity</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.SplitExecution.result"><code class="docutils literal notranslate"><span class="pre">SplitExecution.result</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.SplitExecution._figures_are_sane"><code class="docutils literal notranslate"><span class="pre">SplitExecution._figures_are_sane()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dau_scheduler.execute_split"><code class="docutils literal notranslate"><span class="pre">execute_split()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=01f34227"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-searchlite-index="searchlite-index.json" defer="defer" src="../../_static/searchlite.js?v=a5320898"></script>
+    <script data-searchlite-adopt="true" defer="defer" src="../../_static/searchlite-ui.js?v=4e4bdd69"></script>
+    <script src="../../_static/js/custom.js?v=956e5d78"></script>
+    </body>
+</html>

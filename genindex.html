@@ -1,0 +1,2004 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="#"><link rel="search" title="Search" href="search.html">
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 --><title>Index - dau scheduler v0.1.0</title>
+<link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/searchlite.css?v=4235115c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/custom.css?v=890fd012" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">dau scheduler <code style='font-size: var(--font-size--small--4);color: var(--sd-color-primary);'>v0.1.0</code></div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  <span class="sidebar-brand-text">dau scheduler <code style='font-size: var(--font-size--small--4);color: var(--sd-color-primary);'>v0.1.0</code></span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/tutorial/split-a-query.html">Split a query across two engines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/how-to/measure-host-cost.html">Measure host cost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/how-to/choose-a-merge-rule.html">Choose a merge rule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/how-to/develop.html">Develop and contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/reference/postures.html">Postures and work splits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/reference/merge-rules.html">Merge rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/reference/rows-and-execution.html">Row sources and execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/explanation/design.html">Why rows, measured costs and refusals</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="autoapi/index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/test_all/index.html">test_all</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/test_rows/index.html">test_rows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/test_merge/index.html">test_merge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/test_split/index.html">test_split</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/test_readme/index.html">test_readme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/test_profile/index.html">test_profile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="autoapi/test_posture/index.html">test_posture</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/dau_scheduler/index.html">dau_scheduler</a><input aria-label="Toggle navigation of dau_scheduler" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/dau_scheduler/errors/index.html">dau_scheduler.errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/dau_scheduler/merge/index.html">dau_scheduler.merge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/dau_scheduler/posture/index.html">dau_scheduler.posture</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/dau_scheduler/profile/index.html">dau_scheduler.profile</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/dau_scheduler/rows/index.html">dau_scheduler.rows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/dau_scheduler/split/index.html">dau_scheduler.split</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          
+<section class="genindex-section">
+  <h1 id="index">Index</h1>
+  <div class="genindex-jumpbox"><a href="#_"><strong>_</strong></a> | <a href="#A"><strong>A</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#H"><strong>H</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#K"><strong>K</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#Q"><strong>Q</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#V"><strong>V</strong></a> | <a href="#W"><strong>W</strong></a></div>
+</section>
+<section id="_" class="genindex-section">
+  <h2>_</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/test_split/index.html#test_split._GriddedArm.__call__">__call__() (test_split._GriddedArm method)</a>
+</li>
+        <li><a href="autoapi/dau_scheduler/rows/index.html#dau_scheduler.rows.RowSource.__iter__">__iter__() (dau_scheduler.rows.RowSource method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.RowSource.__iter__">(dau_scheduler.RowSource method)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/rows/index.html#dau_scheduler.rows.RowSource.__len__">__len__() (dau_scheduler.rows.RowSource method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.RowSource.__len__">(dau_scheduler.RowSource method)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.RowBatch.__post_init__">__post_init__() (dau_scheduler.RowBatch method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.RowRange.__post_init__">(dau_scheduler.RowRange method)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/rows/index.html#dau_scheduler.rows.RowBatch.__post_init__">(dau_scheduler.rows.RowBatch method)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/rows/index.html#dau_scheduler.rows.RowRange.__post_init__">(dau_scheduler.rows.RowRange method)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.RowBatch.__repr__">__repr__() (dau_scheduler.RowBatch method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/rows/index.html#dau_scheduler.rows.RowBatch.__repr__">(dau_scheduler.rows.RowBatch method)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/rows/index.html#dau_scheduler.rows.RowSource.__slots__">__slots__ (dau_scheduler.rows.RowSource attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.RowSource.__slots__">(dau_scheduler.RowSource attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.__version__">__version__ (in module dau_scheduler)</a>
+</li>
+        <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.ProfileCache._component">_component() (dau_scheduler.profile.ProfileCache static method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.ProfileCache._component">(dau_scheduler.ProfileCache static method)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.QueryProfile._costs_are_sane">_costs_are_sane() (dau_scheduler.profile.QueryProfile method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.QueryProfile._costs_are_sane">(dau_scheduler.QueryProfile method)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/test_split/index.html#test_split._execute">_execute() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/dau_scheduler/split/index.html#dau_scheduler.split.SplitExecution._figures_are_sane">_figures_are_sane() (dau_scheduler.split.SplitExecution method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.SplitExecution._figures_are_sane">(dau_scheduler.SplitExecution method)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/test_merge/index.html#test_merge._fold_groups">_fold_groups() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge._fold_stats">_fold_stats() (in module test_merge)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/test_split/index.html#test_split._GriddedArm">_GriddedArm (class in test_split)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge._groups">_groups() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge._halves">_halves() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.ProfileCache._link_path">_link_path() (dau_scheduler.profile.ProfileCache method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.ProfileCache._link_path">(dau_scheduler.ProfileCache method)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.ProfileCache._path">_path() (dau_scheduler.profile.ProfileCache method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.ProfileCache._path">(dau_scheduler.ProfileCache method)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/test_profile/index.html#test_profile._profile">_profile() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.LinkRate._rate_is_usable">_rate_is_usable() (dau_scheduler.LinkRate method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.LinkRate._rate_is_usable">(dau_scheduler.profile.LinkRate method)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/test_merge/index.html#test_merge._reductions">_reductions() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_split/index.html#test_split._rule">_rule() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_split/index.html#test_split._run">_run() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge._runs">_runs() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.NodeCost._seconds_is_finite">_seconds_is_finite() (dau_scheduler.NodeCost method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.NodeCost._seconds_is_finite">(dau_scheduler.profile.NodeCost method)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/posture/index.html#dau_scheduler.posture.WorkSplit._share_is_a_fraction">_share_is_a_fraction() (dau_scheduler.posture.WorkSplit method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.WorkSplit._share_is_a_fraction">(dau_scheduler.WorkSplit method)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/test_split/index.html#test_split._split">_split() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge._stats">_stats() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge._totals">_totals() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.ProfileCache._under_root">_under_root() (dau_scheduler.profile.ProfileCache method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.ProfileCache._under_root">(dau_scheduler.ProfileCache method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="A" class="genindex-section">
+  <h2>A</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.ADDITIVE">ADDITIVE (in module dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/merge/index.html#dau_scheduler.merge.ADDITIVE">(in module dau_scheduler.merge)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.AGGREGATE_REFUSALS">AGGREGATE_REFUSALS (in module dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/merge/index.html#dau_scheduler.merge.AGGREGATE_REFUSALS">(in module dau_scheduler.merge)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.as_row_source">as_row_source() (in module dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/rows/index.html#dau_scheduler.rows.as_row_source">(in module dau_scheduler.rows)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="B" class="genindex-section">
+  <h2>B</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.batch_count">batch_count() (in module dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/posture/index.html#dau_scheduler.posture.batch_count">(in module dau_scheduler.posture)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/test_readme/index.html#test_readme.BLOCK">BLOCK (in module test_readme)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.BOUNDARY_STATS">BOUNDARY_STATS (in module dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/merge/index.html#dau_scheduler.merge.BOUNDARY_STATS">(in module dau_scheduler.merge)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.LinkRate.bytes_per_second">bytes_per_second (dau_scheduler.LinkRate attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.LinkRate.bytes_per_second">(dau_scheduler.profile.LinkRate attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="C" class="genindex-section">
+  <h2>C</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.LinkRate.check">check() (dau_scheduler.LinkRate method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.NodeCost.check">(dau_scheduler.NodeCost method)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/posture/index.html#dau_scheduler.posture.WorkSplit.check">(dau_scheduler.posture.WorkSplit method)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.LinkRate.check">(dau_scheduler.profile.LinkRate method)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.NodeCost.check">(dau_scheduler.profile.NodeCost method)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.QueryProfile.check">(dau_scheduler.profile.QueryProfile method)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.QueryProfile.check">(dau_scheduler.QueryProfile method)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.WorkSplit.check">(dau_scheduler.WorkSplit method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.check_split">check_split() (in module dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/merge/index.html#dau_scheduler.merge.check_split">(in module dau_scheduler.merge)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/merge/index.html#dau_scheduler.merge.MergeRule.combine">combine (dau_scheduler.merge.MergeRule attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.MergeRule.combine">(dau_scheduler.MergeRule attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.Group.count">count (test_merge.Group attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/test_merge/index.html#test_merge.Stats.count">(test_merge.Stats attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="D" class="genindex-section">
+  <h2>D</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
+    dau_scheduler
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#module-dau_scheduler">module</a>
+</li>
+        </ul></li>
+        <li>
+    dau_scheduler.errors
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/errors/index.html#module-dau_scheduler.errors">module</a>
+</li>
+        </ul></li>
+        <li>
+    dau_scheduler.merge
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/merge/index.html#module-dau_scheduler.merge">module</a>
+</li>
+        </ul></li>
+        <li>
+    dau_scheduler.posture
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/posture/index.html#module-dau_scheduler.posture">module</a>
+</li>
+        </ul></li>
+        <li>
+    dau_scheduler.profile
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#module-dau_scheduler.profile">module</a>
+</li>
+        </ul></li>
+        <li>
+    dau_scheduler.rows
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/rows/index.html#module-dau_scheduler.rows">module</a>
+</li>
+        </ul></li>
+        <li>
+    dau_scheduler.split
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/split/index.html#module-dau_scheduler.split">module</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.DEFERRED_MEAN">DEFERRED_MEAN (in module dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/merge/index.html#dau_scheduler.merge.DEFERRED_MEAN">(in module dau_scheduler.merge)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.LinkRate.device">device (dau_scheduler.LinkRate attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.LinkRate.device">(dau_scheduler.profile.LinkRate attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/split/index.html#dau_scheduler.split.SplitExecution.device_granularity">device_granularity (dau_scheduler.split.SplitExecution attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.SplitExecution.device_granularity">(dau_scheduler.SplitExecution attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/split/index.html#dau_scheduler.split.SplitExecution.device_rows">device_rows (dau_scheduler.split.SplitExecution attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.SplitExecution.device_rows">(dau_scheduler.SplitExecution attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/split/index.html#dau_scheduler.split.SplitExecution.device_seconds">device_seconds (dau_scheduler.split.SplitExecution attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.SplitExecution.device_seconds">(dau_scheduler.SplitExecution attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/posture/index.html#dau_scheduler.posture.WorkSplit.device_share">device_share (dau_scheduler.posture.WorkSplit attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/split/index.html#dau_scheduler.split.SplitExecution.device_share">(dau_scheduler.split.SplitExecution attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.SplitExecution.device_share">(dau_scheduler.SplitExecution attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.WorkSplit.device_share">(dau_scheduler.WorkSplit attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="E" class="genindex-section">
+  <h2>E</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.QueryProfile.engine_version">engine_version (dau_scheduler.profile.QueryProfile attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.QueryProfile.engine_version">(dau_scheduler.QueryProfile attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.ProfileCache.entries">entries() (dau_scheduler.profile.ProfileCache method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.ProfileCache.entries">(dau_scheduler.ProfileCache method)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.HostCost.estimate">estimate() (dau_scheduler.HostCost method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/posture/index.html#dau_scheduler.posture.HostCost.estimate">(dau_scheduler.posture.HostCost method)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.QueryProfile.estimate">(dau_scheduler.profile.QueryProfile method)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.QueryProfile.estimate">(dau_scheduler.QueryProfile method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.execute_split">execute_split() (in module dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/split/index.html#dau_scheduler.split.execute_split">(in module dau_scheduler.split)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="F" class="genindex-section">
+  <h2>F</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/merge/index.html#dau_scheduler.merge.MergeRule.failed">failed (dau_scheduler.merge.MergeRule attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.MergeRule.failed">(dau_scheduler.MergeRule attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/test_merge/index.html#test_merge.Stats.first">first (test_merge.Stats attribute)</a>
+</li>
+        <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.QueryProfile.fixed_seconds">fixed_seconds (dau_scheduler.profile.QueryProfile attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.QueryProfile.fixed_seconds">(dau_scheduler.QueryProfile attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="G" class="genindex-section">
+  <h2>G</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.ProfileCache.get">get() (dau_scheduler.profile.ProfileCache method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.ProfileCache.get">(dau_scheduler.ProfileCache method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.ProfileCache.get_link_rate">get_link_rate() (dau_scheduler.profile.ProfileCache method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.ProfileCache.get_link_rate">(dau_scheduler.ProfileCache method)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.Group">Group (class in test_merge)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="H" class="genindex-section">
+  <h2>H</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.LinkRate.host">host (dau_scheduler.LinkRate attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.LinkRate.host">(dau_scheduler.profile.LinkRate attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.QueryProfile.host">(dau_scheduler.profile.QueryProfile attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.QueryProfile.host">(dau_scheduler.QueryProfile attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.host_identity">host_identity() (in module dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.host_identity">(in module dau_scheduler.profile)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/split/index.html#dau_scheduler.split.SplitExecution.host_rows">host_rows (dau_scheduler.split.SplitExecution attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.SplitExecution.host_rows">(dau_scheduler.SplitExecution attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/split/index.html#dau_scheduler.split.SplitExecution.host_seconds">host_seconds (dau_scheduler.split.SplitExecution attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.SplitExecution.host_seconds">(dau_scheduler.SplitExecution attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.HostCost">HostCost (class in dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/posture/index.html#dau_scheduler.posture.HostCost">(class in dau_scheduler.posture)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="I" class="genindex-section">
+  <h2>I</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.LinkRate.is_stale">is_stale() (dau_scheduler.LinkRate method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.LinkRate.is_stale">(dau_scheduler.profile.LinkRate method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.QueryProfile.is_stale_for">is_stale_for() (dau_scheduler.profile.QueryProfile method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.QueryProfile.is_stale_for">(dau_scheduler.QueryProfile method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="K" class="genindex-section">
+  <h2>K</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/test_merge/index.html#test_merge.Group.key">key (test_merge.Group attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/test_merge/index.html#test_merge.Stats.key">(test_merge.Stats attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/test_posture/index.html#test_posture.KNEE_BYTES">KNEE_BYTES (in module test_posture)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="L" class="genindex-section">
+  <h2>L</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/test_merge/index.html#test_merge.Stats.last">last (test_merge.Stats attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.LinkRate">LinkRate (class in dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.LinkRate">(class in dau_scheduler.profile)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="M" class="genindex-section">
+  <h2>M</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/split/index.html#dau_scheduler.split.SplitExecution.materialize_seconds">materialize_seconds (dau_scheduler.split.SplitExecution attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.SplitExecution.materialize_seconds">(dau_scheduler.SplitExecution attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.Stats.maximum">maximum (test_merge.Stats attribute)</a>
+</li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.LinkRate.measured_at">measured_at (dau_scheduler.LinkRate attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.LinkRate.measured_at">(dau_scheduler.profile.LinkRate attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/merge/index.html#dau_scheduler.merge.MergeRule.merge">merge() (dau_scheduler.merge.MergeRule method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.MergeRule.merge">(dau_scheduler.MergeRule method)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.merge_keyed_groups">merge_keyed_groups() (in module dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/merge/index.html#dau_scheduler.merge.merge_keyed_groups">(in module dau_scheduler.merge)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.merge_ordered_groups">merge_ordered_groups() (in module dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/merge/index.html#dau_scheduler.merge.merge_ordered_groups">(in module dau_scheduler.merge)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/split/index.html#dau_scheduler.split.SplitExecution.merge_seconds">merge_seconds (dau_scheduler.split.SplitExecution attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.SplitExecution.merge_seconds">(dau_scheduler.SplitExecution attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.merge_sorted_runs">merge_sorted_runs() (in module dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/merge/index.html#dau_scheduler.merge.merge_sorted_runs">(in module dau_scheduler.merge)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.merge_top_k">merge_top_k() (in module dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/merge/index.html#dau_scheduler.merge.merge_top_k">(in module dau_scheduler.merge)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.merge_totals">merge_totals() (in module dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/merge/index.html#dau_scheduler.merge.merge_totals">(in module dau_scheduler.merge)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/merge/index.html#dau_scheduler.merge.MergeRule.mergeable">mergeable (dau_scheduler.merge.MergeRule attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.MergeRule.mergeable">(dau_scheduler.MergeRule attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.MergeRule">MergeRule (class in dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/merge/index.html#dau_scheduler.merge.MergeRule">(class in dau_scheduler.merge)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.Stats.minimum">minimum (test_merge.Stats attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.LinkRate.model_config">model_config (dau_scheduler.LinkRate attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.NodeCost.model_config">(dau_scheduler.NodeCost attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/posture/index.html#dau_scheduler.posture.WorkSplit.model_config">(dau_scheduler.posture.WorkSplit attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.LinkRate.model_config">(dau_scheduler.profile.LinkRate attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.NodeCost.model_config">(dau_scheduler.profile.NodeCost attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.QueryProfile.model_config">(dau_scheduler.profile.QueryProfile attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.QueryProfile.model_config">(dau_scheduler.QueryProfile attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/split/index.html#dau_scheduler.split.SplitExecution.model_config">(dau_scheduler.split.SplitExecution attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.SplitExecution.model_config">(dau_scheduler.SplitExecution attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.WorkSplit.model_config">(dau_scheduler.WorkSplit attribute)</a>
+</li>
+        </ul></li>
+        <li>
+    module
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#module-dau_scheduler">dau_scheduler</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/errors/index.html#module-dau_scheduler.errors">dau_scheduler.errors</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/merge/index.html#module-dau_scheduler.merge">dau_scheduler.merge</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/posture/index.html#module-dau_scheduler.posture">dau_scheduler.posture</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#module-dau_scheduler.profile">dau_scheduler.profile</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/rows/index.html#module-dau_scheduler.rows">dau_scheduler.rows</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/split/index.html#module-dau_scheduler.split">dau_scheduler.split</a>
+</li>
+          <li><a href="autoapi/test_all/index.html#module-test_all">test_all</a>
+</li>
+          <li><a href="autoapi/test_merge/index.html#module-test_merge">test_merge</a>
+</li>
+          <li><a href="autoapi/test_posture/index.html#module-test_posture">test_posture</a>
+</li>
+          <li><a href="autoapi/test_profile/index.html#module-test_profile">test_profile</a>
+</li>
+          <li><a href="autoapi/test_readme/index.html#module-test_readme">test_readme</a>
+</li>
+          <li><a href="autoapi/test_rows/index.html#module-test_rows">test_rows</a>
+</li>
+          <li><a href="autoapi/test_split/index.html#module-test_split">test_split</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="N" class="genindex-section">
+  <h2>N</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.NodeCost.node">node (dau_scheduler.NodeCost attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.NodeCost.node">(dau_scheduler.profile.NodeCost attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.NodeCost">NodeCost (class in dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.NodeCost">(class in dau_scheduler.profile)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.QueryProfile.nodes">nodes (dau_scheduler.profile.QueryProfile attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.QueryProfile.nodes">(dau_scheduler.QueryProfile attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="O" class="genindex-section">
+  <h2>O</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/test_split/index.html#test_split.OUTPUTS">OUTPUTS (in module test_split)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/split/index.html#dau_scheduler.split.SplitExecution.overlap_seconds">overlap_seconds (dau_scheduler.split.SplitExecution attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.SplitExecution.overlap_seconds">(dau_scheduler.SplitExecution attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="P" class="genindex-section">
+  <h2>P</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.QueryProfile.per_row_seconds">per_row_seconds (dau_scheduler.profile.QueryProfile attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.QueryProfile.per_row_seconds">(dau_scheduler.QueryProfile attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.QueryProfile.plan_key">plan_key (dau_scheduler.profile.QueryProfile attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.QueryProfile.plan_key">(dau_scheduler.QueryProfile attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.plan_split">plan_split() (in module dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/posture/index.html#dau_scheduler.posture.plan_split">(in module dau_scheduler.posture)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/posture/index.html#dau_scheduler.posture.WorkSplit.posture">posture (dau_scheduler.posture.WorkSplit attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/split/index.html#dau_scheduler.split.SplitExecution.posture">(dau_scheduler.split.SplitExecution attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.SplitExecution.posture">(dau_scheduler.SplitExecution attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.WorkSplit.posture">(dau_scheduler.WorkSplit attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.Posture">Posture (in module dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/posture/index.html#dau_scheduler.posture.Posture">(in module dau_scheduler.posture)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/errors/index.html#dau_scheduler.errors.PostureError">PostureError</a>, <a href="autoapi/dau_scheduler/index.html#dau_scheduler.PostureError">[1]</a>, <a href="autoapi/dau_scheduler/posture/index.html#dau_scheduler.posture.PostureError">[2]</a>
+</li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.POSTURES">POSTURES (in module dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/posture/index.html#dau_scheduler.posture.POSTURES">(in module dau_scheduler.posture)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/posture/index.html#dau_scheduler.posture.WorkSplit.predicted_speedup">predicted_speedup (dau_scheduler.posture.WorkSplit attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.WorkSplit.predicted_speedup">(dau_scheduler.WorkSplit attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.profile_from_spans">profile_from_spans() (in module dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.profile_from_spans">(in module dau_scheduler.profile)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.ProfileCache">ProfileCache (class in dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.ProfileCache">(class in dau_scheduler.profile)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.ProfileCache.put">put() (dau_scheduler.profile.ProfileCache method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.ProfileCache.put">(dau_scheduler.ProfileCache method)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.ProfileCache.put_link_rate">put_link_rate() (dau_scheduler.profile.ProfileCache method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.ProfileCache.put_link_rate">(dau_scheduler.ProfileCache method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="Q" class="genindex-section">
+  <h2>Q</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/test_split/index.html#test_split.QUERY">QUERY (in module test_split)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.QueryProfile">QueryProfile (class in dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.QueryProfile">(class in dau_scheduler.profile)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="R" class="genindex-section">
+  <h2>R</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/posture/index.html#dau_scheduler.posture.WorkSplit.rationale">rationale (dau_scheduler.posture.WorkSplit attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.WorkSplit.rationale">(dau_scheduler.WorkSplit attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/test_readme/index.html#test_readme.README">README (in module test_readme)</a>
+</li>
+        <li><a href="autoapi/dau_scheduler/merge/index.html#dau_scheduler.merge.MergeRule.refusal">refusal (dau_scheduler.merge.MergeRule attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.MergeRule.refusal">(dau_scheduler.MergeRule attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/split/index.html#dau_scheduler.split.SplitExecution.result">result (dau_scheduler.split.SplitExecution attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.SplitExecution.result">(dau_scheduler.SplitExecution attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.ProfileCache.root">root (dau_scheduler.profile.ProfileCache attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.ProfileCache.root">(dau_scheduler.ProfileCache attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/test_split/index.html#test_split._GriddedArm.row_granularity">row_granularity (test_split._GriddedArm attribute)</a>
+</li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.RowBatch">RowBatch (class in dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/rows/index.html#dau_scheduler.rows.RowBatch">(class in dau_scheduler.rows)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.RowRange">RowRange (class in dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/rows/index.html#dau_scheduler.rows.RowRange">(class in dau_scheduler.rows)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.QueryProfile.rows">rows (dau_scheduler.profile.QueryProfile attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.QueryProfile.rows">(dau_scheduler.QueryProfile attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.RowBatch.rows">(dau_scheduler.RowBatch attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/rows/index.html#dau_scheduler.rows.RowBatch.rows">(dau_scheduler.rows.RowBatch attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.ROWS">ROWS (in module test_merge)</a>
+
+        <ul>
+          <li><a href="autoapi/test_split/index.html#test_split.ROWS">(in module test_split)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.RowSource">RowSource (class in dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/rows/index.html#dau_scheduler.rows.RowSource">(class in dau_scheduler.rows)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="S" class="genindex-section">
+  <h2>S</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.LinkRate.samples">samples (dau_scheduler.LinkRate attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.LinkRate.samples">(dau_scheduler.profile.LinkRate attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.NodeCost.scales_with_rows">scales_with_rows (dau_scheduler.NodeCost attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.NodeCost.scales_with_rows">(dau_scheduler.profile.NodeCost attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.NodeCost.seconds">seconds (dau_scheduler.NodeCost attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.NodeCost.seconds">(dau_scheduler.profile.NodeCost attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.QueryProfile.selectivity">selectivity (dau_scheduler.profile.QueryProfile attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.QueryProfile.selectivity">(dau_scheduler.QueryProfile attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/test_split/index.html#test_split.SHARES">SHARES (in module test_split)</a>
+</li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.RowBatch.slice">slice() (dau_scheduler.RowBatch method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.RowRange.slice">(dau_scheduler.RowRange method)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/rows/index.html#dau_scheduler.rows.RowBatch.slice">(dau_scheduler.rows.RowBatch method)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/rows/index.html#dau_scheduler.rows.RowRange.slice">(dau_scheduler.rows.RowRange method)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/rows/index.html#dau_scheduler.rows.RowSource.slice">(dau_scheduler.rows.RowSource method)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.RowSource.slice">(dau_scheduler.RowSource method)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.SplitArm">SplitArm (in module dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/split/index.html#dau_scheduler.split.SplitArm">(in module dau_scheduler.split)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/errors/index.html#dau_scheduler.errors.SplitError">SplitError</a>, <a href="autoapi/dau_scheduler/index.html#dau_scheduler.SplitError">[1]</a>
+</li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.SplitExecution">SplitExecution (class in dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/split/index.html#dau_scheduler.split.SplitExecution">(class in dau_scheduler.split)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.RowBatch.start">start (dau_scheduler.RowBatch attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.RowRange.start">(dau_scheduler.RowRange attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/rows/index.html#dau_scheduler.rows.RowBatch.start">(dau_scheduler.rows.RowBatch attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/rows/index.html#dau_scheduler.rows.RowRange.start">(dau_scheduler.rows.RowRange attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/rows/index.html#dau_scheduler.rows.RowSource.start">(dau_scheduler.rows.RowSource attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.RowSource.start">(dau_scheduler.RowSource attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.Stats">Stats (class in test_merge)</a>
+</li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.RowBatch.stop">stop (dau_scheduler.RowBatch property)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.RowRange.stop">(dau_scheduler.RowRange attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/rows/index.html#dau_scheduler.rows.RowBatch.stop">(dau_scheduler.rows.RowBatch property)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/rows/index.html#dau_scheduler.rows.RowRange.stop">(dau_scheduler.rows.RowRange attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/rows/index.html#dau_scheduler.rows.RowSource.stop">(dau_scheduler.rows.RowSource attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.RowSource.stop">(dau_scheduler.RowSource attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="T" class="genindex-section">
+  <h2>T</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/merge/index.html#dau_scheduler.merge.MergeRule.terminal">terminal (dau_scheduler.merge.MergeRule attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.MergeRule.terminal">(dau_scheduler.MergeRule attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/split/index.html#dau_scheduler.split.SplitExecution.terminal">(dau_scheduler.split.SplitExecution attribute)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.SplitExecution.terminal">(dau_scheduler.SplitExecution attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/test_rows/index.html#test_rows.test_a_batch_repr_does_not_print_the_table">test_a_batch_repr_does_not_print_the_table() (in module test_rows)</a>
+</li>
+        <li><a href="autoapi/test_split/index.html#test_split.test_a_blocking_arm_overlaps_the_other">test_a_blocking_arm_overlaps_the_other() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_split/index.html#test_split.test_a_broadcast_build_side_reaches_both_arms_whole">test_a_broadcast_build_side_reaches_both_arms_whole() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_a_copied_link_rate_is_checked_where_it_is_used">test_a_copied_link_rate_is_checked_where_it_is_used() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_a_copied_profile_is_checked_where_it_is_used">test_a_copied_profile_is_checked_where_it_is_used() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_split/index.html#test_split.test_a_copied_split_is_checked_before_anything_runs">test_a_copied_split_is_checked_before_anything_runs() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_split/index.html#test_split.test_a_declared_aggregate_passes_the_gate">test_a_declared_aggregate_passes_the_gate() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_a_declared_mean_passes_when_the_partials_carry_it">test_a_declared_mean_passes_when_the_partials_carry_it() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_split/index.html#test_split.test_a_degenerate_share_launches_one_engine">test_a_degenerate_share_launches_one_engine() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_a_derived_output_is_recomputed_from_the_merged_totals">test_a_derived_output_is_recomputed_from_the_merged_totals() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_a_failed_arm_is_not_merged_into_a_short_answer">test_a_failed_arm_is_not_merged_into_a_short_answer() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_split/index.html#test_split.test_a_failed_arm_reports_its_failure_rather_than_a_short_answer">test_a_failed_arm_reports_its_failure_rather_than_a_short_answer() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_a_link_rate_goes_stale_by_age_and_an_undated_one_is_stale">test_a_link_rate_goes_stale_by_age_and_an_undated_one_is_stale() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_a_link_rate_is_keyed_by_host_device_and_transfer_size_and_round_trips">test_a_link_rate_is_keyed_by_host_device_and_transfer_size_and_round_trips() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_a_link_rate_refuses_numbers_it_cannot_price_with">test_a_link_rate_refuses_numbers_it_cannot_price_with() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_a_mean_survives_only_as_a_sum_and_a_count">test_a_mean_survives_only_as_a_sum_and_a_count() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_posture/index.html#test_posture.test_a_measured_profile_supplies_the_host_figure">test_a_measured_profile_supplies_the_host_figure() (in module test_posture)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_a_merged_top_k_keeps_the_earliest_arrival_tie_break">test_a_merged_top_k_keeps_the_earliest_arrival_tie_break() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_a_negative_limit_is_refused">test_a_negative_limit_is_refused() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_a_node_cost_refuses_a_nan">test_a_node_cost_refuses_a_nan() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_a_profile_goes_stale_under_a_different_engine">test_a_profile_goes_stale_under_a_different_engine() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_a_profile_goes_stale_when_the_row_count_moves_too_far">test_a_profile_goes_stale_when_the_row_count_moves_too_far() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_a_profile_needs_timings_and_a_row_count">test_a_profile_needs_timings_and_a_row_count() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_posture/index.html#test_posture.test_a_profile_prices_a_row_count">test_a_profile_prices_a_row_count() (in module test_posture)</a>
+</li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_a_profile_refuses_numbers_it_cannot_price_with">test_a_profile_refuses_numbers_it_cannot_price_with() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_rows/index.html#test_rows.test_a_range_cannot_be_inverted">test_a_range_cannot_be_inverted() (in module test_rows)</a>
+</li>
+        <li><a href="autoapi/test_rows/index.html#test_rows.test_a_range_is_two_integers_at_any_row_count">test_a_range_is_two_integers_at_any_row_count() (in module test_rows)</a>
+</li>
+        <li><a href="autoapi/test_rows/index.html#test_rows.test_a_range_refuses_the_arm_that_reads_values">test_a_range_refuses_the_arm_that_reads_values() (in module test_rows)</a>
+</li>
+        <li><a href="autoapi/test_split/index.html#test_split.test_a_refusal_arrives_before_either_arm_starts">test_a_refusal_arrives_before_either_arm_starts() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_a_reversed_or_negative_span_is_a_reporting_fault_not_a_cheap_node">test_a_reversed_or_negative_span_is_a_reporting_fault_not_a_cheap_node() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_rows/index.html#test_rows.test_a_row_batch_refuses_a_negative_start">test_a_row_batch_refuses_a_negative_start() (in module test_rows)</a>
+</li>
+        <li><a href="autoapi/test_split/index.html#test_split.test_a_row_range_refuses_the_arm_that_reads_values">test_a_row_range_refuses_the_arm_that_reads_values() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_split/index.html#test_split.test_a_row_range_splits_a_table_neither_arm_reads">test_a_row_range_splits_a_table_neither_arm_reads() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_a_rule_with_no_combine_says_so">test_a_rule_with_no_combine_says_so() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_rows/index.html#test_rows.test_a_sequence_is_wrapped_in_place">test_a_sequence_is_wrapped_in_place() (in module test_rows)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_a_shape_that_cannot_split_refuses_before_any_aggregate">test_a_shape_that_cannot_split_refuses_before_any_aggregate() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_rows/index.html#test_rows.test_a_slice_carries_absolute_offsets">test_a_slice_carries_absolute_offsets() (in module test_rows)</a>
+</li>
+        <li><a href="autoapi/test_posture/index.html#test_posture.test_a_split_pays_least_when_one_engine_dominates">test_a_split_pays_least_when_one_engine_dominates() (in module test_posture)</a>
+</li>
+        <li><a href="autoapi/test_rows/index.html#test_rows.test_a_sub_range_may_be_empty_or_the_whole_parent">test_a_sub_range_may_be_empty_or_the_whole_parent() (in module test_rows)</a>
+</li>
+        <li><a href="autoapi/test_rows/index.html#test_rows.test_a_sub_range_must_lie_inside_its_parent">test_a_sub_range_must_lie_inside_its_parent() (in module test_rows)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_a_top_k_merges_two_k_lists">test_a_top_k_merges_two_k_lists() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_rows/index.html#test_rows.test_a_whole_table_slice_does_not_copy">test_a_whole_table_slice_does_not_copy() (in module test_rows)</a>
+</li>
+        <li><a href="autoapi/test_posture/index.html#test_posture.test_adaptive_refuses_instead_of_falling_back">test_adaptive_refuses_instead_of_falling_back() (in module test_posture)</a>
+</li>
+        <li>
+    test_all
+
+        <ul>
+          <li><a href="autoapi/test_all/index.html#module-test_all">module</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_an_empty_cache_directory_lists_nothing">test_an_empty_cache_directory_lists_nothing() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_an_empty_merge_answers">test_an_empty_merge_answers() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_split/index.html#test_split.test_an_empty_table_still_answers">test_an_empty_table_still_answers() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_split/index.html#test_split.test_an_execution_report_refuses_impossible_figures">test_an_execution_report_refuses_impossible_figures() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_split/index.html#test_split.test_an_invalid_granularity_is_refused_before_the_rows_are_consumed">test_an_invalid_granularity_is_refused_before_the_rows_are_consumed() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_rows/index.html#test_rows.test_an_iterator_is_drained_because_it_cannot_serve_two_arms">test_an_iterator_is_drained_because_it_cannot_serve_two_arms() (in module test_rows)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_an_unknown_aggregate_is_refused_rather_than_summed">test_an_unknown_aggregate_is_refused_rather_than_summed() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_an_unrecorded_engine_version_is_unknown_and_therefore_stale">test_an_unrecorded_engine_version_is_unknown_and_therefore_stale() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_arms_that_arrive_out_of_order_refuse_the_ordered_merge">test_arms_that_arrive_out_of_order_refuse_the_ordered_merge() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_posture/index.html#test_posture.test_batch_count_rejects_impossible_inputs">test_batch_count_rejects_impossible_inputs() (in module test_posture)</a>
+</li>
+        <li><a href="autoapi/test_posture/index.html#test_posture.test_batches_are_never_split_below_the_knee">test_batches_are_never_split_below_the_knee() (in module test_posture)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_boundary_stats_are_declarable_too">test_boundary_stats_are_declarable_too() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_boundary_stats_come_from_the_ranges_that_own_them">test_boundary_stats_come_from_the_ranges_that_own_them() (in module test_merge)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_cache_entries_stay_directly_under_the_root">test_cache_entries_stay_directly_under_the_root() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_check_split_refuses_a_distinct_count_by_name">test_check_split_refuses_a_distinct_count_by_name() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_check_split_refuses_a_mean_by_name">test_check_split_refuses_a_mean_by_name() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_posture/index.html#test_posture.test_collaborative_balances_the_engines">test_collaborative_balances_the_engines() (in module test_posture)</a>
+</li>
+        <li><a href="autoapi/test_posture/index.html#test_posture.test_collaborative_refuses_rather_than_inventing_a_cost_model">test_collaborative_refuses_rather_than_inventing_a_cost_model() (in module test_posture)</a>
+</li>
+        <li><a href="autoapi/test_posture/index.html#test_posture.test_collaborative_rejects_nonpositive_estimates">test_collaborative_rejects_nonpositive_estimates() (in module test_posture)</a>
+</li>
+        <li><a href="autoapi/test_posture/index.html#test_posture.test_cpu_and_offload_need_no_estimates">test_cpu_and_offload_need_no_estimates() (in module test_posture)</a>
+</li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_every_node_is_kept_with_its_own_cost">test_every_node_is_kept_with_its_own_cost() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_posture/index.html#test_posture.test_every_posture_is_reachable_or_refused_by_name">test_every_posture_is_reachable_or_refused_by_name() (in module test_posture)</a>
+</li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_fixed_cost_is_not_scaled_by_the_row_count">test_fixed_cost_is_not_scaled_by_the_row_count() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_fixed_nodes_count_their_overlap_once">test_fixed_nodes_count_their_overlap_once() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_gaps_between_nodes_are_real_elapsed_cost">test_gaps_between_nodes_are_real_elapsed_cost() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_rows/index.html#test_rows.test_iterating_a_range_reaches_the_same_refusal">test_iterating_a_range_reaches_the_same_refusal() (in module test_rows)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_keyed_groups_merge_over_the_whole_key_set">test_keyed_groups_merge_over_the_whole_key_set() (in module test_merge)</a>
+</li>
+        <li>
+    test_merge
+
+        <ul>
+          <li><a href="autoapi/test_merge/index.html#module-test_merge">module</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_models_refuse_fields_they_do_not_declare">test_models_refuse_fields_they_do_not_declare() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_posture/index.html#test_posture.test_offload_is_not_the_wall_clock_optimum">test_offload_is_not_the_wall_clock_optimum() (in module test_posture)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_one_partial_is_the_answer">test_one_partial_is_the_answer() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_ordered_groups_fold_the_group_that_straddles_the_boundary">test_ordered_groups_fold_the_group_that_straddles_the_boundary() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_overlapping_nodes_are_not_summed_into_elapsed_time">test_overlapping_nodes_are_not_summed_into_elapsed_time() (in module test_profile)</a>
+</li>
+        <li>
+    test_posture
+
+        <ul>
+          <li><a href="autoapi/test_posture/index.html#module-test_posture">module</a>
+</li>
+        </ul></li>
+        <li>
+    test_profile
+
+        <ul>
+          <li><a href="autoapi/test_profile/index.html#module-test_profile">module</a>
+</li>
+        </ul></li>
+        <li>
+    test_readme
+
+        <ul>
+          <li><a href="autoapi/test_readme/index.html#module-test_readme">module</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/test_posture/index.html#test_posture.test_resident_wants_one_batch_at_any_size">test_resident_wants_one_batch_at_any_size() (in module test_posture)</a>
+</li>
+        <li>
+    test_rows
+
+        <ul>
+          <li><a href="autoapi/test_rows/index.html#module-test_rows">module</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/test_posture/index.html#test_posture.test_small_payloads_are_not_split_below_the_knee">test_small_payloads_are_not_split_below_the_knee() (in module test_posture)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_sorted_runs_merge_stably">test_sorted_runs_merge_stably() (in module test_merge)</a>
+</li>
+        <li>
+    test_split
+
+        <ul>
+          <li><a href="autoapi/test_split/index.html#module-test_split">module</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/test_posture/index.html#test_posture.test_split_validates_its_own_fields">test_split_validates_its_own_fields() (in module test_posture)</a>
+</li>
+        <li><a href="autoapi/test_posture/index.html#test_posture.test_streamed_reproduces_the_measured_optimum">test_streamed_reproduces_the_measured_optimum() (in module test_posture)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_sums_and_counts_add">test_sums_and_counts_add() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_split/index.html#test_split.test_the_accounting_covers_the_marshalling_it_makes_the_caller_pay">test_the_accounting_covers_the_marshalling_it_makes_the_caller_pay() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_split/index.html#test_split.test_the_arms_split_the_rows_at_the_planned_share">test_the_arms_split_the_rows_at_the_planned_share() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_split/index.html#test_split.test_the_boundary_snaps_to_the_device_granularity">test_the_boundary_snaps_to_the_device_granularity() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_the_cache_root_expands_a_home_directory">test_the_cache_root_expands_a_home_directory() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_the_cache_round_trips_by_plan_and_host">test_the_cache_round_trips_by_plan_and_host() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_split/index.html#test_split.test_the_callers_own_rows_reach_the_arm_uncopied">test_the_callers_own_rows_reach_the_arm_uncopied() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_posture/index.html#test_posture.test_the_closed_form_lands_on_a_measured_optimum">test_the_closed_form_lands_on_a_measured_optimum() (in module test_posture)</a>
+</li>
+        <li><a href="autoapi/test_split/index.html#test_split.test_the_degenerate_shares_survive_a_granularity">test_the_degenerate_shares_survive_a_granularity() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_posture/index.html#test_posture.test_the_device_fixed_cost_moves_the_balance_and_can_rule_the_split_out">test_the_device_fixed_cost_moves_the_balance_and_can_rule_the_split_out() (in module test_posture)</a>
+</li>
+        <li><a href="autoapi/test_all/index.html#test_all.test_the_documented_surface_is_exported">test_the_documented_surface_is_exported() (in module test_all)</a>
+</li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_the_engine_version_is_not_part_of_the_key">test_the_engine_version_is_not_part_of_the_key() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_the_host_is_part_of_the_identity">test_the_host_is_part_of_the_identity() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_posture/index.html#test_posture.test_the_knee_has_no_default">test_the_knee_has_no_default() (in module test_posture)</a>
+</li>
+        <li><a href="autoapi/test_split/index.html#test_split.test_the_leading_rows_go_to_the_first_arm">test_the_leading_rows_go_to_the_first_arm() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_split/index.html#test_split.test_the_merged_answer_is_the_unsplit_answer_at_every_share">test_the_merged_answer_is_the_unsplit_answer_at_every_share() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_the_order_statistics_and_moments_are_refused_by_name">test_the_order_statistics_and_moments_are_refused_by_name() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_profile/index.html#test_profile.test_the_profile_prices_a_split">test_the_profile_prices_a_split() (in module test_profile)</a>
+</li>
+        <li><a href="autoapi/test_readme/index.html#test_readme.test_the_readme_examples_run_in_order">test_the_readme_examples_run_in_order() (in module test_readme)</a>
+</li>
+        <li><a href="autoapi/test_split/index.html#test_split.test_the_two_arms_are_in_flight_together">test_the_two_arms_are_in_flight_together() (in module test_split)</a>
+</li>
+        <li><a href="autoapi/test_posture/index.html#test_posture.test_the_two_optima_are_opposite">test_the_two_optima_are_opposite() (in module test_posture)</a>
+</li>
+        <li><a href="autoapi/test_posture/index.html#test_posture.test_unknown_posture_is_refused">test_unknown_posture_is_refused() (in module test_posture)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.test_unsorted_rows_refuse_the_ordered_merge">test_unsorted_rows_refuse_the_ordered_merge() (in module test_merge)</a>
+</li>
+        <li><a href="autoapi/test_merge/index.html#test_merge.Group.total">total (test_merge.Group attribute)</a>
+</li>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.LinkRate.transfer_bytes">transfer_bytes (dau_scheduler.LinkRate attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/profile/index.html#dau_scheduler.profile.LinkRate.transfer_bytes">(dau_scheduler.profile.LinkRate attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="V" class="genindex-section">
+  <h2>V</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.RowBatch.values">values() (dau_scheduler.RowBatch method)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/rows/index.html#dau_scheduler.rows.RowBatch.values">(dau_scheduler.rows.RowBatch method)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/rows/index.html#dau_scheduler.rows.RowSource.values">(dau_scheduler.rows.RowSource method)</a>
+</li>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.RowSource.values">(dau_scheduler.RowSource method)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="W" class="genindex-section">
+  <h2>W</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/split/index.html#dau_scheduler.split.SplitExecution.wall_seconds">wall_seconds (dau_scheduler.split.SplitExecution attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.SplitExecution.wall_seconds">(dau_scheduler.SplitExecution attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/dau_scheduler/index.html#dau_scheduler.WorkSplit">WorkSplit (class in dau_scheduler)</a>
+
+        <ul>
+          <li><a href="autoapi/dau_scheduler/posture/index.html#dau_scheduler.posture.WorkSplit">(class in dau_scheduler.posture)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; the dau-scheduler authors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=01f34227"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script data-searchlite-index="searchlite-index.json" defer="defer" src="_static/searchlite.js?v=a5320898"></script>
+    <script data-searchlite-adopt="true" defer="defer" src="_static/searchlite-ui.js?v=4e4bdd69"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+
+import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"
+
+
+
+
+const initStyles = () => {
+    const defaultStyle = document.createElement('style');
+    defaultStyle.textContent = "pre.mermaid {\n    /* Same as .mermaid-container > pre */\n    display: block;\n    width: 100%;\n}\n\npre.mermaid > svg {\n    /* Same as .mermaid-container > pre > svg */\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}";
+    document.head.appendChild(defaultStyle);
+
+    const fullscreenStyle = document.createElement('style');
+    fullscreenStyle.textContent = ".mermaid-container {\n    position: relative;\n    display: flex;\n    flex-direction: row;\n    width: 100%;\n}\n\n.mermaid-container > pre {\n    display: block;\n    width: 100%;\n}\n\n.mermaid-container > pre > svg {\n    height: 500px;\n    width: 100%;\n    max-width: 100% !important;\n}\n\n.mermaid-fullscreen-btn {\n    position: absolute;\n    width: 28px;\n    height: 28px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.3);\n    border-radius: 4px;\n    cursor: pointer;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    transition: all 0.2s;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);\n    font-size: 14px;\n    line-height: 1;\n    padding: 0;\n    color: #333;\n}\n\n.mermaid-fullscreen-btn:hover {\n    opacity: 100% !important;\n    background: rgba(255, 255, 255, 1);\n    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-btn.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.3);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-btn.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal {\n    display: none;\n    position: fixed !important;\n    top: 0 !important;\n    left: 0 !important;\n    width: 95vw;\n    height: 100vh;\n    background: rgba(255, 255, 255, 0.98);\n    z-index: 9999;\n    padding: 20px;\n    overflow: auto;\n}\n\n.mermaid-fullscreen-modal.dark-theme {\n    background: rgba(0, 0, 0, 0.98);\n}\n\n.mermaid-fullscreen-modal.active {\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen {\n    position: relative;\n    width: 95vw;\n    height: 90vh;\n    max-width: 95vw;\n    max-height: 90vh;\n    background: white;\n    border-radius: 8px;\n    padding: 20px;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);\n    overflow: auto;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen.dark-theme {\n    background: #1a1a1a;\n    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);\n}\n\n.mermaid-container-fullscreen pre.mermaid {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\n.mermaid-container-fullscreen .mermaid svg {\n    height: 100% !important;\n    width: 100% !important;\n    cursor: grab;\n}\n\n.mermaid-fullscreen-close {\n    position: fixed !important;\n    top: 20px !important;\n    right: 20px !important;\n    width: 40px;\n    height: 40px;\n    background: rgba(255, 255, 255, 0.95);\n    border: 1px solid rgba(0, 0, 0, 0.2);\n    border-radius: 50%;\n    cursor: pointer;\n    z-index: 10000;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);\n    transition: all 0.2s;\n    font-size: 24px;\n    line-height: 1;\n    color: #333;\n}\n\n.mermaid-fullscreen-close:hover {\n    background: white;\n    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);\n    transform: scale(1.1);\n}\n\n.mermaid-fullscreen-close.dark-theme {\n    background: rgba(50, 50, 50, 0.95);\n    border: 1px solid rgba(255, 255, 255, 0.2);\n    color: #e0e0e0;\n}\n\n.mermaid-fullscreen-close.dark-theme:hover {\n    background: rgba(60, 60, 60, 1);\n    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);\n}\n\n.mermaid-fullscreen-modal .mermaid-fullscreen-btn {\n    display: none !important;\n}";
+    document.head.appendChild(fullscreenStyle);
+}
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    // We use a set of heuristics:
+    // 1. Check for common dark mode classes or attributes
+    // 2. Check computed background color brightness
+    if (document.documentElement.classList.contains('dark') ||
+        document.documentElement.getAttribute('data-theme') === 'dark' ||
+        document.body.classList.contains('dark') ||
+        document.body.getAttribute('data-theme') === 'dark') {
+        // console.log("Dark theme detected via class/attribute");
+        return true;
+    }
+    if (document.documentElement.classList.contains('light') ||
+        document.documentElement.getAttribute('data-theme') === 'light' ||
+        document.body.classList.contains('light') ||
+        document.body.getAttribute('data-theme') === 'light') {
+        // console.log("Light theme detected via class/attribute");
+        return false;
+    }
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // console.log("Dark theme detected via prefers-color-scheme");
+        return true;
+    }
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        // console.log("Background color brightness:", brightness);
+        return brightness < 128;
+    }
+    // console.log("No dark or light theme detected, defaulting to light theme");
+    return false;
+};
+
+let darkTheme = isDarkTheme();
+let modal = null;
+let modalContent = null;
+let previousScrollOffset = [window.scrollX, window.scrollY];
+let _lazyObserver = null;
+let _renderQueue = Promise.resolve();
+let closeModal = () => {};
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal?.classList.contains('active')) {
+        closeModal();
+    }
+});
+
+// Apply d3 zoom to each SVG. Idempotent: an SVG already wrapped is skipped,
+// so this is safe to call both for the initial batch and for diagrams that
+// render lazily once they become visible.
+const addZoomToSvgs = (svgs) => {
+    svgs.each(function() {
+        if (this.getAttribute('data-zoom-applied') === 'true') return;
+        var svg = d3.select(this);
+        svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+        var inner = svg.select("g");
+        var zoom = d3.zoom().on("zoom", function(event) {
+            inner.attr("transform", event.transform);
+        });
+        svg.call(zoom);
+        this.setAttribute('data-zoom-applied', 'true');
+    });
+};
+
+const runMermaid = async (rerun) => {
+    console.log("Running mermaid diagrams, rerun =", rerun);
+    // clear all existing mermaid charts
+    let all_mermaids = document.querySelectorAll(".mermaid");
+
+    if (rerun) {
+        // Disconnect any previous lazy rendering observer
+        if (_lazyObserver) {
+            _lazyObserver.disconnect();
+            _lazyObserver = null;
+        }
+
+        all_mermaids.forEach((el) => {
+            el.removeAttribute('data-mermaid-deferred');
+            el.removeAttribute('data-mermaid-render-failed');
+            if(!el.hasAttribute("data-original-code")) {
+                // store original code
+                // console.log(`Storing original code for first run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+            if(el.getAttribute("data-processed") === "true") {
+                // remove and restore original
+                el.removeAttribute("data-processed");
+                // console.log(`Restoring original code for re-run: `, el.getAttribute('data-original-code'));
+                el.innerHTML = el.getAttribute('data-original-code');
+            } else {
+                // store original code
+                // console.log(`Storing original code for re-run: `, el.innerHTML);
+                el.setAttribute('data-original-code', el.innerHTML);
+            }
+        });
+
+        // Separate visible and hidden elements. Mermaid's layout engine measures
+        // text dimensions via the DOM, which fails for elements hidden by a parent
+        // (e.g., Reveal.js non-active slides, sphinx-design unopened tabs),
+        // producing broken SVGs. Render visible elements now, defer hidden ones.
+        const visible = [];
+        const hidden = [];
+        all_mermaids.forEach((el) => {
+            // offsetParent is null for display:none ancestors.
+            // getClientRects().length > 0 catches position:fixed elements
+            // (which also have null offsetParent but are still visible).
+            if (el.offsetParent !== null || el.getClientRects().length > 0) {
+                visible.push(el);
+            } else {
+                hidden.push(el);
+                el.setAttribute('data-mermaid-deferred', 'true');
+            }
+        });
+
+        if (visible.length > 0) {
+            try {
+                await mermaid.run({ nodes: visible });
+            } catch (e) {
+                console.error("Mermaid rendering failed:", e);
+            }
+        }
+
+        // Lazily render hidden elements when they become visible.
+        // Uses a promise chain (_renderQueue) to serialize rendering,
+        // since IntersectionObserver may report multiple entries at once
+        // and mermaid.run() is not safe to call concurrently.
+        if (hidden.length > 0) {
+            if (typeof IntersectionObserver === 'undefined') {
+                console.warn("IntersectionObserver not available; hidden mermaid diagrams will not render.");
+            } else {
+                _renderQueue = Promise.resolve();
+                _lazyObserver = new IntersectionObserver((entries) => {
+                    for (const entry of entries) {
+                        if (entry.isIntersecting && entry.target.getAttribute("data-processed") !== "true") {
+                            _lazyObserver.unobserve(entry.target);
+                            const el = entry.target;
+                            _renderQueue = _renderQueue.then(async () => {
+                                try {
+                                    await mermaid.run({ nodes: [el] });
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    // Apply zoom to the now-rendered diagram, matching
+                                    // the decoration visible diagrams receive.
+                                    if (true) {
+                                        addZoomToSvgs(d3.selectAll(".mermaid").select(function() {
+                                            return this.querySelector("svg");
+                                        }));
+                                    }
+                                } catch (e) {
+                                    console.error("Mermaid deferred rendering failed:", e);
+                                    el.removeAttribute('data-mermaid-deferred');
+                                    el.setAttribute('data-mermaid-render-failed', 'true');
+                                }
+                            });
+                        }
+                    }
+                });
+                hidden.forEach((el) => _lazyObserver.observe(el));
+            }
+        }
+    }
+
+    all_mermaids = document.querySelectorAll(".mermaid");
+    // Exclude deferred (hidden) and render-failed elements from completion checks
+    const mermaids_active = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])");
+    const mermaids_processed = document.querySelectorAll(".mermaid:not([data-mermaid-deferred]):not([data-mermaid-render-failed])[data-processed='true']");
+
+    if (true) {
+        const mermaids_to_add_zoom = -1 === -1 ? mermaids_active.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll(".mermaid").select(function() {
+                return this.querySelector("svg");
+            });
+            // Wait until every active (visible) diagram has rendered. Deferred
+            // diagrams are excluded, so a fixed d3_node_count that counts a
+            // hidden diagram no longer loops forever waiting for its SVG.
+            if(mermaids_active.length !== mermaids_processed.length) {
+                setTimeout(() => runMermaid(false), 200);
+                return;
+            }
+            addZoomToSvgs(svgs);
+        }
+    } else if(mermaids_active.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(() => runMermaid(false), 200);
+        return;
+    }
+
+    // Stop here if not adding fullscreen capability
+    if (!true) return;
+
+    if (modal !== null ) {
+        // Destroy existing modal
+        modal.remove();
+        modal = null;
+        modalContent = null;
+    }
+
+    modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            // Already processed, adjust button class if needed
+            const existingBtn = mermaidDiv.parentNode.querySelector('.mermaid-fullscreen-btn');
+            if (existingBtn) {
+                existingBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+            }
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = "\u26f6";
+        fullscreenBtn.style.opacity = "50%";
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scrollX, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.display = 'block';
+
+                if (true) {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        container.appendChild(fullscreenBtn);
+    });
+};
+
+
+// Resolves once the lazily-loaded zenuml plugin has registered (or immediately
+// when the page has no zenuml diagram). `load` awaits this before rendering.
+let zenumlReady = Promise.resolve();
+const pageHasZenuml = () => [...document.querySelectorAll(".mermaid")].some((el) => {
+    const code = el.getAttribute("data-original-code") || el.textContent || "";
+    const diagram = code
+        .replace(/^\s*---\s*\n[^]*?\n---\s*/, "")
+        .replace(/^\s*%%\{[^]*?\}%%\s*/, "");
+    return /^\s*zenuml\b/i.test(diagram);
+});
+
+
+const load = async () => {
+    initStyles();
+
+
+    // Wait for the zenuml plugin (loaded lazily below) to finish registering
+    // before rendering, so zenuml diagrams are recognised.
+    await zenumlReady;
+
+    await runMermaid(true);
+
+    const reRunIfThemeChanges = async () => {
+        const newDarkTheme = isDarkTheme();
+        if (newDarkTheme !== darkTheme) {
+            darkTheme = newDarkTheme;
+            console.log("Theme change detected, re-running mermaid with", darkTheme ? "dark" : "default", "theme");
+            await mermaid.initialize(
+                {...{"startOnLoad": false},
+                ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+                }
+            );
+            await runMermaid(true);
+        }
+    };
+
+    // Update theme classes when theme changes
+    const themeObserver = new MutationObserver(reRunIfThemeChanges);
+    themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    themeObserver.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+};
+
+
+mermaid.registerLayoutLoaders(elkLayouts);
+
+
+
+// Only load and register the zenuml plugin when the page actually contains a
+// zenuml diagram. This avoids fetching the (large) zenuml bundle on every page,
+// and avoids its side effects where they are not needed. The import is kept off
+// the module's top level (no top-level await) so the "load" listener below is
+// still registered synchronously; `load` awaits `zenumlReady` before rendering.
+if (pageHasZenuml()) {
+    // The zenuml bundle injects a stylesheet that declares generic design tokens
+    // (--background, --border, --white, ...) on :root, clobbering identically-named
+    // tokens in the host theme (sphinxawesome, shibuya, ...) and causing a flash of
+    // restyled page content. Confine those declarations to the zenuml diagram
+    // subtree so they no longer leak onto the host page.
+    const descopeZenumlStyle = (node) => {
+        if (!node || node.tagName !== "STYLE" || node.hasAttribute("data-zenuml-descoped")) return;
+        const css = node.textContent || "";
+        if (!css.includes("--occurance-border")) return; // zenuml stylesheet signature
+        node.setAttribute("data-zenuml-descoped", "true");
+        node.textContent = css.replace(/:root\b/g, ".zenuml");
+    };
+    new MutationObserver((records) => {
+        for (const rec of records) {
+            for (const node of rec.addedNodes) descopeZenumlStyle(node);
+        }
+    }).observe(document.head, { childList: true });
+
+    zenumlReady = import("https://cdn.jsdelivr.net/npm/@mermaid-js/mermaid-zenuml@0.2.2/dist/mermaid-zenuml.esm.min.mjs").then(({ default: zenumlLayouts }) => {
+        mermaid.registerExternalDiagrams([zenumlLayouts]);
+    });
+}
+
+
+console.log("Initializing mermaid with", darkTheme ? "dark" : "default", "theme");
+mermaid.initialize(
+    {...{"startOnLoad": false},
+    ...{ darkMode: darkTheme, theme: darkTheme ? "dark" : "default" },
+    }
+);
+
+window.addEventListener("load", load);
+window.runMermaid = runMermaid;</script>
+    <script src="_static/js/custom.js?v=956e5d78"></script>
+    </body>
+</html>

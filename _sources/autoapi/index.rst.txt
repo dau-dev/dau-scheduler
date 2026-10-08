@@ -1,0 +1,18 @@
+API Reference
+=============
+
+This page contains auto-generated API reference documentation [#f1]_.
+
+.. toctree::
+   :titlesonly:
+
+   /autoapi/test_all/index
+   /autoapi/test_rows/index
+   /autoapi/test_merge/index
+   /autoapi/test_split/index
+   /autoapi/test_readme/index
+   /autoapi/test_profile/index
+   /autoapi/test_posture/index
+   /autoapi/dau_scheduler/index
+
+.. [#f1] Created with `sphinx-autoapi <https://github.com/readthedocs/sphinx-autoapi>`_

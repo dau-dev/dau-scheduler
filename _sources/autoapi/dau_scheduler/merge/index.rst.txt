@@ -1,0 +1,229 @@
+dau_scheduler.merge
+===================
+
+.. py:module:: dau_scheduler.merge
+
+.. autoapi-nested-parse::
+
+   Which results survive being split across two engines, and how they combine.
+
+   Splitting a query by rows means each engine computes a PARTIAL answer over
+   the rows it owns, and the answer the caller asked for has to be reassembled
+   from two of them. **Not every result can be.** This module is the taxonomy of
+   which can, what each one's merge is, and what the merge quietly assumes.
+
+   The aggregates:
+
+   * **Sums and counts add.** They are the easy case and the reason the rest
+     looks easier than it is.
+   * **A mean does not merge.** The mean of two ranges is not the mean of their
+     means, and weighting by row count is just deriving it from the sum and the
+     count after the fact. So a mean survives a split only when the partials
+     carry sum and count SEPARATELY and the division happens after the merge --
+     which is a property of what the engines emit, not something a merge step
+     can recover.
+   * **An exact distinct count cannot be combined** without the elements it
+     counted. Two ranges that each saw ``n`` distinct keys may between them have
+     seen anywhere from ``n`` to ``2n``, and nothing in the partials says
+     which. (A mergeable sketch would combine, as an approximation; it is not
+     what these engines emit, so it is not what this taxonomy admits.)
+   * **Variance and standard deviation** merge only from count, sum and
+     sum-of-squares carried separately, for the same reason as the mean.
+   * **A median, or any order statistic of the whole**, needs the values rather
+     than two partial answers.
+   * **Minimum and maximum merge trivially**; **first and last merge by
+     POSITION**, which is why the arms' row ranges have a defined order -- the
+     merged group opens in the earlier range and closes in the later one.
+
+   The result shapes:
+
+   * **A top-k merges by re-ranking the two k-lists.** A row in the whole
+     query's top k ranks at least as high within the range it arrived in, so it
+     is in that range's k-list: the two k-lists are the complete candidate set,
+     and nothing outside them can qualify.
+   * **Sorted rows merge as two sorted runs**, with equal keys taking the
+     earlier range first so a stable sort stays stable across the boundary.
+   * **A grouped aggregation merges by key.** Two cases, and confusing them is a
+     wrong answer rather than an error. When the partials are ORDERED by key,
+     only the group that straddles the boundary can appear in both, and merging
+     is a concatenation with that one pair folded -- but that is true only if the
+     input really is sorted on the group key, so :func:`merge_ordered_groups`
+     VERIFIES it rather than trusting it. When the partials are keyed rather
+     than ordered, any key may appear in both arms and the merge is over the
+     whole key set (:func:`merge_keyed_groups`).
+   * **A windowed result does not merge at all** when a window can span the
+     boundary: the window reads rows from both ranges, so neither arm's record
+     is the query's answer for those rows.
+
+   **Everything here is default-deny.** :func:`check_split` refuses an aggregate
+   that is not named as mergeable rather than adding it on the assumption that
+   every aggregate is additive. Refusing costs a caller one message; the
+   alternative is a confident wrong answer, which is the failure this whole
+   layer exists to make impossible.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   dau_scheduler.merge.ADDITIVE
+   dau_scheduler.merge.DEFERRED_MEAN
+   dau_scheduler.merge.BOUNDARY_STATS
+   dau_scheduler.merge.AGGREGATE_REFUSALS
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   dau_scheduler.merge.MergeRule
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   dau_scheduler.merge.check_split
+   dau_scheduler.merge.merge_totals
+   dau_scheduler.merge.merge_ordered_groups
+   dau_scheduler.merge.merge_keyed_groups
+   dau_scheduler.merge.merge_top_k
+   dau_scheduler.merge.merge_sorted_runs
+
+
+Module Contents
+---------------
+
+.. py:data:: ADDITIVE
+   :type:  frozenset[str]
+
+.. py:data:: DEFERRED_MEAN
+   :type:  frozenset[str]
+
+.. py:data:: BOUNDARY_STATS
+   :type:  frozenset[str]
+
+.. py:data:: AGGREGATE_REFUSALS
+   :type:  dict[str, str]
+
+.. py:class:: MergeRule
+
+   What one query's partials are, and whether they can be put together.
+
+   ``terminal`` names the result shape, for messages. ``combine`` takes the
+   arms' partials IN ARM ORDER -- the leading rows first -- and returns the
+   answer the unsplit query would have produced. ``mergeable`` is the set of
+   aggregate kinds whose partials this shape can combine, consulted by
+   :func:`check_split` and default-deny.
+
+   ``refusal``, when set, says this shape cannot be split at all, and no
+   ``combine`` is reached.
+
+   ``failed`` is the guard for an arm that could not complete. An engine that
+   invalidated its own work returns a partial that says so, and merging that
+   into the other arm's would produce a plausible SHORT answer -- so if any
+   partial reports failure, the merged result is that partial, failure and
+   all, rather than a total nobody can tell is missing rows.
+
+
+   .. py:attribute:: terminal
+      :type:  str
+
+
+   .. py:attribute:: combine
+      :type:  collections.abc.Callable[[collections.abc.Sequence[Any]], Any]
+
+
+   .. py:attribute:: mergeable
+      :type:  frozenset[str]
+
+
+   .. py:attribute:: failed
+      :type:  collections.abc.Callable[[Any], bool] | None
+      :value: None
+
+
+
+   .. py:attribute:: refusal
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:method:: merge(partials: collections.abc.Sequence[Any]) -> Any
+
+      The merged answer for these partials.
+
+
+
+.. py:function:: check_split(rule: MergeRule, aggregates: collections.abc.Iterable[tuple[str, str]] = ()) -> None
+
+   Refuse a query whose result cannot be reassembled, by name.
+
+   ``aggregates`` are ``(output name, aggregate kind)`` pairs, so the refusal
+   names the output the caller has to change rather than only the kind.
+
+   Kept separate from execution so a planner can ask whether a query is
+   splittable at all before committing anything to either engine.
+
+
+.. py:function:: merge_totals(partials: collections.abc.Sequence[dict[str, Any]], names: collections.abc.Sequence[str], *, finalize: collections.abc.Callable[[dict[str, Any]], Any] | None = None) -> Any
+
+   Add the named aggregates, then RE-DERIVE anything computed from them.
+
+   ``finalize`` is where an output that is an EXPRESSION over the aggregates
+   -- a ratio, a share, a rate -- is recomputed from the merged totals.
+   Adding the two arms' ratios would produce a number that is not a ratio of
+   anything, and it would look exactly like a total.
+
+
+.. py:function:: merge_ordered_groups(partials: collections.abc.Sequence[collections.abc.Sequence[Any]], *, key: collections.abc.Callable[[Any], Any], fold: collections.abc.Callable[[Any, Any], Any]) -> list[Any]
+
+   Concatenate per-group records, folding the group that straddles the
+   boundary.
+
+   Valid only when the rows are SORTED on the group key, because that is what
+   makes the boundary pair the only group two arms can share. The
+   precondition is verified rather than trusted: on unsorted rows an
+   order-sensitive engine emits several records per key, and merging those by
+   key would collapse them into an answer no run produced.
+
+   ``fold`` combines two partial records of the same group; ``key`` reads a
+   record's group key.
+
+
+.. py:function:: merge_keyed_groups(partials: collections.abc.Sequence[collections.abc.Sequence[Any]], *, key: collections.abc.Callable[[Any], Any], fold: collections.abc.Callable[[Any, Any], Any]) -> list[Any]
+
+   Merge per-key records that carry no ordering, over the whole key set.
+
+   The contrast with :func:`merge_ordered_groups` is the point. An engine
+   holding one accumulator per distinct key can meet a key anywhere in its
+   rows, so a key may appear in both arms and there is no boundary pair to
+   fold -- every key has to be looked up. The result is key-ascending, which
+   is the order such an engine drains in.
+
+
+.. py:function:: merge_top_k(partials: collections.abc.Sequence[collections.abc.Sequence[Any]], *, limit: int, key: collections.abc.Callable[[Any], Any], descending: bool = True) -> list[Any]
+
+   Re-rank the arms' k-lists into one.
+
+   A row in the whole query's top k ranks at least as high within the range
+   it arrived in, so it is in that range's k-list: the arms' outputs are the
+   complete candidate set. Each arm emits equal keys in arrival order and the
+   arms are given in row order, so a STABLE re-rank keeps an earliest-arrival
+   tie-break true of the whole table rather than of each half.
+
+
+.. py:function:: merge_sorted_runs(partials: collections.abc.Sequence[collections.abc.Sequence[Any]], *, key: collections.abc.Callable[[Any], Any], descending: bool = False) -> list[Any]
+
+   Merge the arms' sorted runs into one sorted run.
+
+   Equal keys take the earlier range first, which is what keeps a stable
+   sort's arrival-order ties true of the whole table rather than of each
+   half.
+
+

@@ -1,0 +1,215 @@
+test_split
+==========
+
+.. py:module:: test_split
+
+.. autoapi-nested-parse::
+
+   The executor: two engines over disjoint row ranges, one answer.
+
+   Both arms here are plain Python functions over the same rows, which is the
+   point of the seam -- the executor never learns what is on either end of it.
+   Every merged answer is checked against the same query run over the WHOLE
+   table at several shares, including the degenerate 0.0 and 1.0.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   test_split.SHARES
+   test_split.ROWS
+   test_split.OUTPUTS
+   test_split.QUERY
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   test_split._GriddedArm
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   test_split._split
+   test_split._rule
+   test_split._run
+   test_split._execute
+   test_split.test_the_merged_answer_is_the_unsplit_answer_at_every_share
+   test_split.test_the_arms_split_the_rows_at_the_planned_share
+   test_split.test_the_leading_rows_go_to_the_first_arm
+   test_split.test_a_degenerate_share_launches_one_engine
+   test_split.test_an_empty_table_still_answers
+   test_split.test_the_two_arms_are_in_flight_together
+   test_split.test_a_blocking_arm_overlaps_the_other
+   test_split.test_a_row_range_splits_a_table_neither_arm_reads
+   test_split.test_a_row_range_refuses_the_arm_that_reads_values
+   test_split.test_the_callers_own_rows_reach_the_arm_uncopied
+   test_split.test_the_accounting_covers_the_marshalling_it_makes_the_caller_pay
+   test_split.test_a_refusal_arrives_before_either_arm_starts
+   test_split.test_a_declared_aggregate_passes_the_gate
+   test_split.test_a_broadcast_build_side_reaches_both_arms_whole
+   test_split.test_a_failed_arm_reports_its_failure_rather_than_a_short_answer
+   test_split.test_the_boundary_snaps_to_the_device_granularity
+   test_split.test_the_degenerate_shares_survive_a_granularity
+   test_split.test_an_invalid_granularity_is_refused_before_the_rows_are_consumed
+   test_split.test_a_copied_split_is_checked_before_anything_runs
+   test_split.test_an_execution_report_refuses_impossible_figures
+
+
+Module Contents
+---------------
+
+.. py:data:: SHARES
+   :value: (0.0, 0.13, 0.5, 0.6, 0.87, 1.0)
+
+
+.. py:data:: ROWS
+
+.. py:data:: OUTPUTS
+   :value: ('total', 'len')
+
+
+.. py:data:: QUERY
+
+.. py:function:: _split(share: float) -> dau_scheduler.WorkSplit
+
+.. py:function:: _rule() -> dau_scheduler.MergeRule
+
+.. py:function:: _run(query, rows, build)
+
+   One arm: the whole query over the rows it was given.
+
+
+.. py:class:: _GriddedArm(row_granularity: int)
+
+   An arm that can only take row counts on a grid, the way a device whose
+   job length must sit on a DMA grid can.
+
+
+   .. py:attribute:: row_granularity
+
+
+   .. py:method:: __call__(query, rows, build)
+
+
+.. py:function:: _execute(rows, split, **kwargs)
+
+.. py:function:: test_the_merged_answer_is_the_unsplit_answer_at_every_share() -> None
+
+.. py:function:: test_the_arms_split_the_rows_at_the_planned_share() -> None
+
+.. py:function:: test_the_leading_rows_go_to_the_first_arm() -> None
+
+   Part of the contract, not an implementation detail: a grouped first and
+   last and a top-k's arrival tie-break are defined by it.
+
+
+.. py:function:: test_a_degenerate_share_launches_one_engine() -> None
+
+   At 0.0 and 1.0 there is no second arm to overlap with, and starting one
+   over zero rows would be pure per-call cost.
+
+
+.. py:function:: test_an_empty_table_still_answers() -> None
+
+.. py:function:: test_the_two_arms_are_in_flight_together() -> None
+
+   The test a serialized executor cannot pass. Each arm waits for the
+   other to arrive, so a split that ran its halves one after the other would
+   break the barrier and fail here rather than quietly report a speedup it
+   never delivered.
+
+
+.. py:function:: test_a_blocking_arm_overlaps_the_other() -> None
+
+   The arms overlap when they release the interpreter, which is what an
+   arm waiting on a link and an arm inside a native engine both do.
+
+
+.. py:function:: test_a_row_range_splits_a_table_neither_arm_reads() -> None
+
+   A real split's arms each need one number: an engine holding its own
+   copy needs a row COUNT, and one holding a resident frame needs an OFFSET.
+   Materializing rows in front of them is pure loss, so a range -- which
+   cannot be materialized at all -- has to reach them intact.
+
+
+.. py:function:: test_a_row_range_refuses_the_arm_that_reads_values() -> None
+
+   The executor does not paper over the mismatch by materializing the
+   table behind the caller's back to keep an arm fed.
+
+
+.. py:function:: test_the_callers_own_rows_reach_the_arm_uncopied() -> None
+
+   A materialized batch is WRAPPED, not re-tupled -- identity is what pins
+   it, because a copy compares equal and fails only ``is``.
+
+
+.. py:function:: test_the_accounting_covers_the_marshalling_it_makes_the_caller_pay() -> None
+
+   A timing field that excludes the dominant term is worse than no field,
+   so the window spans the whole call and the marshalling has a name.
+
+
+.. py:function:: test_a_refusal_arrives_before_either_arm_starts() -> None
+
+   A refusal that arrives after the work is a refusal that already cost
+   the work.
+
+
+.. py:function:: test_a_declared_aggregate_passes_the_gate() -> None
+
+.. py:function:: test_a_broadcast_build_side_reaches_both_arms_whole() -> None
+
+   The build side of a join is a TABLE, not part of the row range being
+   split: halving it too would drop every match whose build row landed in the
+   other arm, and the sums would still look like sums.
+
+
+.. py:function:: test_a_failed_arm_reports_its_failure_rather_than_a_short_answer() -> None
+
+   An arm that could not complete carries a partial that says so, and
+   merging it into the other arm's would return a plausible answer missing
+   half the rows.
+
+
+.. py:function:: test_the_boundary_snaps_to_the_device_granularity() -> None
+
+   A device whose job length must sit on a DMA grid can only take a row
+   count that divides it. 0.5975 of 500 rows is 298.75 -> 299, which a
+   granularity of 4 snaps to 300; the merged answer is unchanged and the
+   count reported is the one the arm was given.
+
+
+.. py:function:: test_the_degenerate_shares_survive_a_granularity() -> None
+
+   0.0 still launches no device arm, and 1.0 still hands the device
+   everything -- when the table is on the grid. 500 rows on a granularity
+   of 8 is NOT: the device can take at most 496, the host gets the 4-row
+   tail, and the merged answer is still the unsplit one. That is the
+   device's limit being respected rather than a share being mis-served.
+
+
+.. py:function:: test_an_invalid_granularity_is_refused_before_the_rows_are_consumed() -> None
+
+   A one-shot iterable must survive a refused call, or the retry with a
+   corrected argument runs over nothing.
+
+
+.. py:function:: test_a_copied_split_is_checked_before_anything_runs() -> None
+
+   ``model_copy(update=...)`` skips validation, so a split that was edited
+   into an invalid share is refused at the executor rather than run.
+
+
+.. py:function:: test_an_execution_report_refuses_impossible_figures() -> None
+

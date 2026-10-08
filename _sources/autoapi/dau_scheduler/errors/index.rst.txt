@@ -1,0 +1,47 @@
+dau_scheduler.errors
+====================
+
+.. py:module:: dau_scheduler.errors
+
+.. autoapi-nested-parse::
+
+   The two refusals this library makes, named once.
+
+   Both are ``ValueError`` subclasses because both mean the same thing: the
+   caller asked for a split that cannot be planned or cannot be reassembled,
+   and answering anyway would produce a number nothing computed.
+
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   dau_scheduler.errors.PostureError
+   dau_scheduler.errors.SplitError
+
+
+Module Contents
+---------------
+
+.. py:exception:: PostureError
+
+   Bases: :py:obj:`ValueError`
+
+
+   A posture was requested that cannot be resolved into a share.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:exception:: SplitError
+
+   Bases: :py:obj:`ValueError`
+
+
+   A split was asked for that cannot be executed or merged as asked.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+

@@ -1,0 +1,945 @@
+dau_scheduler
+=============
+
+.. py:module:: dau_scheduler
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/dau_scheduler/errors/index
+   /autoapi/dau_scheduler/merge/index
+   /autoapi/dau_scheduler/posture/index
+   /autoapi/dau_scheduler/profile/index
+   /autoapi/dau_scheduler/rows/index
+   /autoapi/dau_scheduler/split/index
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   dau_scheduler.__version__
+   dau_scheduler.ADDITIVE
+   dau_scheduler.AGGREGATE_REFUSALS
+   dau_scheduler.BOUNDARY_STATS
+   dau_scheduler.DEFERRED_MEAN
+   dau_scheduler.POSTURES
+   dau_scheduler.Posture
+   dau_scheduler.SplitArm
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   dau_scheduler.PostureError
+   dau_scheduler.SplitError
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   dau_scheduler.MergeRule
+   dau_scheduler.HostCost
+   dau_scheduler.WorkSplit
+   dau_scheduler.LinkRate
+   dau_scheduler.NodeCost
+   dau_scheduler.ProfileCache
+   dau_scheduler.QueryProfile
+   dau_scheduler.RowBatch
+   dau_scheduler.RowRange
+   dau_scheduler.RowSource
+   dau_scheduler.SplitExecution
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   dau_scheduler.check_split
+   dau_scheduler.merge_keyed_groups
+   dau_scheduler.merge_ordered_groups
+   dau_scheduler.merge_sorted_runs
+   dau_scheduler.merge_top_k
+   dau_scheduler.merge_totals
+   dau_scheduler.batch_count
+   dau_scheduler.plan_split
+   dau_scheduler.host_identity
+   dau_scheduler.profile_from_spans
+   dau_scheduler.as_row_source
+   dau_scheduler.execute_split
+
+
+Package Contents
+----------------
+
+.. py:data:: __version__
+   :value: '0.1.0'
+
+
+.. py:exception:: PostureError
+
+   Bases: :py:obj:`ValueError`
+
+
+   A posture was requested that cannot be resolved into a share.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:exception:: SplitError
+
+   Bases: :py:obj:`ValueError`
+
+
+   A split was asked for that cannot be executed or merged as asked.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:data:: ADDITIVE
+   :type:  frozenset[str]
+
+.. py:data:: AGGREGATE_REFUSALS
+   :type:  dict[str, str]
+
+.. py:data:: BOUNDARY_STATS
+   :type:  frozenset[str]
+
+.. py:data:: DEFERRED_MEAN
+   :type:  frozenset[str]
+
+.. py:class:: MergeRule
+
+   What one query's partials are, and whether they can be put together.
+
+   ``terminal`` names the result shape, for messages. ``combine`` takes the
+   arms' partials IN ARM ORDER -- the leading rows first -- and returns the
+   answer the unsplit query would have produced. ``mergeable`` is the set of
+   aggregate kinds whose partials this shape can combine, consulted by
+   :func:`check_split` and default-deny.
+
+   ``refusal``, when set, says this shape cannot be split at all, and no
+   ``combine`` is reached.
+
+   ``failed`` is the guard for an arm that could not complete. An engine that
+   invalidated its own work returns a partial that says so, and merging that
+   into the other arm's would produce a plausible SHORT answer -- so if any
+   partial reports failure, the merged result is that partial, failure and
+   all, rather than a total nobody can tell is missing rows.
+
+
+   .. py:attribute:: terminal
+      :type:  str
+
+
+   .. py:attribute:: combine
+      :type:  collections.abc.Callable[[collections.abc.Sequence[Any]], Any]
+
+
+   .. py:attribute:: mergeable
+      :type:  frozenset[str]
+
+
+   .. py:attribute:: failed
+      :type:  collections.abc.Callable[[Any], bool] | None
+      :value: None
+
+
+
+   .. py:attribute:: refusal
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:method:: merge(partials: collections.abc.Sequence[Any]) -> Any
+
+      The merged answer for these partials.
+
+
+
+.. py:function:: check_split(rule: MergeRule, aggregates: collections.abc.Iterable[tuple[str, str]] = ()) -> None
+
+   Refuse a query whose result cannot be reassembled, by name.
+
+   ``aggregates`` are ``(output name, aggregate kind)`` pairs, so the refusal
+   names the output the caller has to change rather than only the kind.
+
+   Kept separate from execution so a planner can ask whether a query is
+   splittable at all before committing anything to either engine.
+
+
+.. py:function:: merge_keyed_groups(partials: collections.abc.Sequence[collections.abc.Sequence[Any]], *, key: collections.abc.Callable[[Any], Any], fold: collections.abc.Callable[[Any, Any], Any]) -> list[Any]
+
+   Merge per-key records that carry no ordering, over the whole key set.
+
+   The contrast with :func:`merge_ordered_groups` is the point. An engine
+   holding one accumulator per distinct key can meet a key anywhere in its
+   rows, so a key may appear in both arms and there is no boundary pair to
+   fold -- every key has to be looked up. The result is key-ascending, which
+   is the order such an engine drains in.
+
+
+.. py:function:: merge_ordered_groups(partials: collections.abc.Sequence[collections.abc.Sequence[Any]], *, key: collections.abc.Callable[[Any], Any], fold: collections.abc.Callable[[Any, Any], Any]) -> list[Any]
+
+   Concatenate per-group records, folding the group that straddles the
+   boundary.
+
+   Valid only when the rows are SORTED on the group key, because that is what
+   makes the boundary pair the only group two arms can share. The
+   precondition is verified rather than trusted: on unsorted rows an
+   order-sensitive engine emits several records per key, and merging those by
+   key would collapse them into an answer no run produced.
+
+   ``fold`` combines two partial records of the same group; ``key`` reads a
+   record's group key.
+
+
+.. py:function:: merge_sorted_runs(partials: collections.abc.Sequence[collections.abc.Sequence[Any]], *, key: collections.abc.Callable[[Any], Any], descending: bool = False) -> list[Any]
+
+   Merge the arms' sorted runs into one sorted run.
+
+   Equal keys take the earlier range first, which is what keeps a stable
+   sort's arrival-order ties true of the whole table rather than of each
+   half.
+
+
+.. py:function:: merge_top_k(partials: collections.abc.Sequence[collections.abc.Sequence[Any]], *, limit: int, key: collections.abc.Callable[[Any], Any], descending: bool = True) -> list[Any]
+
+   Re-rank the arms' k-lists into one.
+
+   A row in the whole query's top k ranks at least as high within the range
+   it arrived in, so it is in that range's k-list: the arms' outputs are the
+   complete candidate set. Each arm emits equal keys in arrival order and the
+   arms are given in row order, so a STABLE re-rank keeps an earliest-arrival
+   tie-break true of the whole table rather than of each half.
+
+
+.. py:function:: merge_totals(partials: collections.abc.Sequence[dict[str, Any]], names: collections.abc.Sequence[str], *, finalize: collections.abc.Callable[[dict[str, Any]], Any] | None = None) -> Any
+
+   Add the named aggregates, then RE-DERIVE anything computed from them.
+
+   ``finalize`` is where an output that is an EXPRESSION over the aggregates
+   -- a ratio, a share, a rate -- is recomputed from the merged totals.
+   Adding the two arms' ratios would produce a number that is not a ratio of
+   anything, and it would look exactly like a total.
+
+
+.. py:data:: POSTURES
+   :type:  tuple[str, ...]
+   :value: ('cpu', 'offload', 'collaborative', 'adaptive')
+
+
+.. py:class:: HostCost
+
+   Bases: :py:obj:`Protocol`
+
+
+   Anything that can price a row count on the engine the caller is on.
+
+   :class:`dau_scheduler.profile.QueryProfile` is one, measured rather than
+   modelled; a caller with an analytic model of its own host can pass that
+   instead.
+
+
+   .. py:method:: estimate(rows: int) -> float
+
+
+.. py:data:: Posture
+
+.. py:class:: WorkSplit(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   How one query's rows divide between the two engines.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. py:attribute:: model_config
+      :type:  ClassVar
+
+      Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+
+   .. py:attribute:: posture
+      :type:  str
+
+
+   .. py:attribute:: device_share
+      :type:  float
+
+
+   .. py:attribute:: rationale
+      :type:  str
+
+
+   .. py:attribute:: predicted_speedup
+      :type:  float | None
+      :value: None
+
+
+
+   .. py:method:: check() -> WorkSplit
+
+      Re-run the invariants and return ``self``.
+
+      Construction validates, but ``model_copy(update=...)`` does not, so
+      every consumer calls this before acting on a split rather than
+      trusting that the instance it was handed went through ``__init__``.
+
+
+
+   .. py:method:: _share_is_a_fraction() -> WorkSplit
+
+
+.. py:function:: batch_count(payload_bytes: int, *, resident: bool, knee_bytes: int) -> int
+
+   How many batches one engine's share should be delivered in.
+
+   **Batching exists to hide the transfer behind the compute.** Each batch's
+   transfer overlaps the previous batch's work, so the pipelined cost falls
+   toward the transfer time alone. With the data already RESIDENT on the
+   engine there is no transfer to hide and every batch is pure per-call
+   overhead, so the answer is one.
+
+   Measured on one link with a 45.8 MiB payload:
+
+   ==========  ==========  ==========
+   batches     streamed    resident
+   ==========  ==========  ==========
+   1           22.08 ms    **5.27 ms**
+   3           **18.78**   5.91 ms
+   12          22.59 ms    --
+   ==========  ==========  ==========
+
+   The optima are opposite, so a single tuned batch count is wrong for one of
+   them -- which is why this takes ``resident`` rather than a constant.
+
+   Streamed, the count targets the link's transfer knee rather than a fitted
+   model. ``knee_bytes`` is the payload below which a transfer loses rate to
+   per-transfer setup; it is a property of the link and has to be measured on
+   it, so there is no default here. Fitting ``T(B) = transfer + work/B + c*B``
+   to the measured points above gives ``c`` anywhere from 83 to 568
+   microseconds depending on which pair is fitted, so the model does not
+   generalize and the measured knee is the honest thing to encode. At a
+   15 MiB knee, 45.8 MiB rounds to 3, which is what measured fastest.
+
+
+.. py:function:: plan_split(posture: Posture = 'collaborative', *, cpu_seconds: float | None = None, device_seconds: float | None = None, profile: HostCost | None = None, rows: int | None = None, device_fixed_seconds: float = 0.0) -> WorkSplit
+
+   Resolve a posture into a row split.
+
+   ``cpu_seconds`` and ``device_seconds`` are whole-query estimates for each
+   engine alone. Only ``collaborative`` needs them; the other postures are
+   definitional and take none, which is the point of offering them -- a
+   caller who does not want to pay for cost estimation can still express an
+   intent.
+
+   The host figure may instead come from a measurement: pass a
+   :class:`HostCost` and the ``rows`` this run will process, and the estimate
+   is taken from it. An explicit ``cpu_seconds`` still wins -- a caller who
+   measured the thing itself should not be overridden by a model of it.
+
+   What is refused is guessing. With neither a figure nor a profile,
+   ``collaborative`` declines to invent one, because a fabricated number
+   underneath a real decision is worse than no decision: the split changes
+   which engine runs which rows, so an error in it is self-reinforcing.
+
+   ``device_fixed_seconds`` is what one device job costs before it has
+   processed a row -- launching it, polling it, reading its records -- a
+   per-invocation term the proportional form omitted and one measurement
+   put at a few milliseconds beside a 12.3 ms host time (2026-09-27). With it
+   the balance is ``(1 - s) * cpu = fixed + s * device``, and a share that
+   cannot beat the host alone (the fixed cost is already most of the host
+   time) is a ``cpu`` split that says why, not a split predicted to win by
+   a margin the fixed cost eats.
+
+
+.. py:class:: LinkRate(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   The measured host-to-device transfer rate of one link: the term the
+   adaptive cut model and a streamed split price every byte crossing with.
+
+   Measured, not declared: a platform states its bus width and lane count,
+   but what a transfer actually sustains depends on the host, the slot, the
+   driver and the transfer size, and the sweeps of record put the same card
+   at different rates in different hosts. So the rate is keyed by (host,
+   device), like a host profile, and measured where it will be used.
+   ``transfer_bytes`` is part of the identity, not a note: a link's rate at
+   one transfer size says little about another (per-transfer setup makes
+   small transfers materially slower), so a rate is measured at the size
+   the caller will move and cached under it. ``samples`` keeps the
+   individual rates so the spread is visible beside the figure the model
+   uses. ``measured_at`` (seconds since the epoch) is what staleness is
+   judged by: a driver change, a link renegotiation or a reboot cannot
+   invalidate an entry, so an old one is re-measured rather than trusted.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. py:attribute:: model_config
+      :type:  ClassVar
+
+      Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+
+   .. py:attribute:: host
+      :type:  str
+
+
+   .. py:attribute:: device
+      :type:  str
+
+
+   .. py:attribute:: bytes_per_second
+      :type:  float
+
+
+   .. py:attribute:: transfer_bytes
+      :type:  int
+
+
+   .. py:attribute:: samples
+      :type:  tuple[float, ...]
+      :value: ()
+
+
+
+   .. py:attribute:: measured_at
+      :type:  float
+      :value: 0.0
+
+
+
+   .. py:method:: is_stale(*, now: float, max_age_seconds: float) -> bool
+
+      Older than ``max_age_seconds`` at ``now``, or never dated.
+
+
+
+   .. py:method:: _rate_is_usable() -> LinkRate
+
+
+   .. py:method:: check() -> LinkRate
+
+      Re-run the invariants and return ``self`` (see :meth:`QueryProfile.check`).
+
+
+
+.. py:class:: NodeCost(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   One plan node's measured cost, and whether it scales with rows.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. py:attribute:: model_config
+      :type:  ClassVar
+
+      Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+
+   .. py:attribute:: node
+      :type:  str
+
+
+   .. py:attribute:: seconds
+      :type:  float
+
+
+   .. py:attribute:: scales_with_rows
+      :type:  bool
+
+
+   .. py:method:: check() -> NodeCost
+
+      Re-run the invariants and return ``self`` (see :meth:`QueryProfile.check`).
+
+
+
+   .. py:method:: _seconds_is_finite() -> NodeCost
+
+
+.. py:class:: ProfileCache(root: pathlib.Path | str)
+
+   Profiles on disk, keyed by plan and host, and link rates keyed by
+   device and host.
+
+   Deliberately a plain directory of JSON rather than anything cleverer: a
+   profile is small, human-readable, and worth being able to delete by hand
+   when it goes stale.
+
+   The engine version is deliberately **not** part of the key. A host is a
+   key because you cannot re-measure on a machine you are not on; an engine
+   version is not, because you can always re-measure under the one you have.
+   So it is staleness (:meth:`QueryProfile.is_stale_for`), handled exactly as
+   a row count that has moved too far, rather than a second slot on disk.
+
+
+   .. py:attribute:: root
+
+
+   .. py:method:: _under_root(name: str) -> pathlib.Path
+
+      A file directly under the cache root. Every key component is
+      percent-encoded with no safe characters, so a plan key or host that
+      contains a slash, ``..`` or a space becomes one flat, reversible file
+      name and cannot name a path outside the root. The check is kept
+      anyway: a cache that writes where it is told is the failure mode
+      this guards.
+
+
+
+   .. py:method:: _component(text: str) -> str
+      :staticmethod:
+
+
+
+   .. py:method:: _path(plan_key: str, host: str) -> pathlib.Path
+
+
+   .. py:method:: get(plan_key: str, host: str | None = None) -> QueryProfile | None
+
+
+   .. py:method:: put(profile: QueryProfile) -> pathlib.Path
+
+
+   .. py:method:: entries() -> collections.abc.Iterable[pathlib.Path]
+
+
+   .. py:method:: _link_path(device: str, host: str, transfer_bytes: int) -> pathlib.Path
+
+
+   .. py:method:: get_link_rate(device: str, transfer_bytes: int, host: str | None = None) -> LinkRate | None
+
+
+   .. py:method:: put_link_rate(rate: LinkRate) -> pathlib.Path
+
+
+.. py:class:: QueryProfile(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   A measured host cost for one plan on one host.
+
+   ``selectivity`` is the fraction of rows surviving the query's filters when
+   the caller measured it. It is left ``None`` rather than inferred: nothing
+   in a timing profile reveals row counts, and a guessed selectivity poisons
+   everything downstream that prices bytes.
+
+   ``engine_version`` records which build of the engine was measured. It
+   defaults to ``""`` -- unknown -- and NOT to whatever is installed, which
+   would let a hand-written profile claim to have been measured under an
+   engine it never ran on.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. py:attribute:: model_config
+      :type:  ClassVar
+
+      Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+
+   .. py:attribute:: plan_key
+      :type:  str
+
+
+   .. py:attribute:: host
+      :type:  str
+
+
+   .. py:attribute:: rows
+      :type:  int
+
+
+   .. py:attribute:: fixed_seconds
+      :type:  float
+
+
+   .. py:attribute:: per_row_seconds
+      :type:  float
+
+
+   .. py:attribute:: nodes
+      :type:  tuple[NodeCost, ...]
+      :value: ()
+
+
+
+   .. py:attribute:: selectivity
+      :type:  float | None
+      :value: None
+
+
+
+   .. py:attribute:: engine_version
+      :type:  str
+      :value: ''
+
+
+
+   .. py:method:: check() -> QueryProfile
+
+      Re-run the invariants and return ``self``.
+
+      Construction validates, but ``model_copy(update=...)`` does not, so
+      every use site (``estimate``, ``is_stale_for``, the cache) calls this
+      rather than trusting that the instance went through ``__init__``.
+
+
+
+   .. py:method:: _costs_are_sane() -> QueryProfile
+
+
+   .. py:method:: estimate(rows: int) -> float
+
+      Host seconds for ``rows``, as ``fixed + per_row * rows``.
+
+
+
+   .. py:method:: is_stale_for(rows: int, *, engine_version: str, factor: float = 10.0) -> bool
+
+      Whether this measurement can still price ``rows`` on the engine here
+      now.
+
+      Two things invalidate a measurement, and **both are answered by this
+      one predicate on purpose**: a caller that has to remember to ask a
+      second question is how a version stamp comes to be recorded on every
+      profile and consulted by nothing.
+
+      *Row count.* Extrapolating one measurement across orders of magnitude
+      is where a profile-guided split goes confidently wrong, and
+      confidently wrong is worse than absent: the split decides which engine
+      runs which rows, so the error is self-reinforcing.
+
+      *Engine version.* The argument for keying on the host -- two machines
+      measured 1.41x apart, so a profile keyed by plan alone steers the
+      split on the wrong one -- applies verbatim to the engine being
+      measured, and this module exists BECAUSE an analytic model of that
+      engine would be guesswork. A measurement taken under one build says
+      nothing about another.
+
+      A profile with no recorded version is **unknown, not current**, and is
+      stale for the same reason a guessed selectivity is refused: it may
+      have been measured under anything.
+
+
+
+.. py:function:: host_identity() -> str
+
+   A name for the machine a profile was measured on.
+
+
+.. py:function:: profile_from_spans(spans: collections.abc.Iterable[tuple[int, int, str]], *, rows: int, plan_key: str, host: str | None = None, is_fixed: collections.abc.Callable[[str], bool] = lambda _node: False, selectivity: float | None = None, engine_version: str = '') -> QueryProfile
+
+   Build a profile from an engine's per-node timings.
+
+   ``spans`` are ``(start, end, node name)`` in MICROSECONDS, as a profiling
+   query engine reports them. ``is_fixed`` names the plan-time nodes -- the
+   ones that must not be divided by the row count.
+
+   **Nodes overlap (an engine runs some in parallel) and leave gaps, so
+   summing ``end - start`` is NOT elapsed time.** It double-counts the
+   overlap and drops the gaps entirely: with optimization 0-1000, scan
+   1000-11000 and filter 5000-15000, the true elapsed cost is 15 ms and the
+   sum reports 21 ms.
+
+   So the span is taken as elapsed wall time, the fixed nodes are measured as
+   a UNION of their intervals, and everything else -- including the gaps,
+   which are real elapsed cost -- is attributed to scaling work.
+
+
+.. py:class:: RowBatch
+
+   Bases: :py:obj:`RowSource`
+
+
+   Rows the caller has already materialized: the offsets AND the values.
+
+   The rows are WRAPPED rather than copied. Whatever normalization an arm
+   performs on its own input is not repeated here, because repeating it
+   over the whole table was the cost this seam exists to remove.
+
+
+   .. py:attribute:: rows
+      :type:  collections.abc.Sequence[Any]
+
+
+   .. py:attribute:: start
+      :type:  int
+      :value: 0
+
+
+
+   .. py:method:: __post_init__() -> None
+
+
+   .. py:property:: stop
+      :type: int
+
+
+
+   .. py:method:: __repr__() -> str
+
+
+   .. py:method:: slice(start: int, stop: int) -> RowBatch
+
+      The sub-source covering ``[start, stop)`` of THIS source's rows.
+
+      Relative indices, absolute offsets: the result carries where it sits
+      in the whole table, which is the number an arm slices its own
+      resident copy at.
+
+
+
+   .. py:method:: values() -> collections.abc.Sequence[Any]
+
+
+.. py:class:: RowRange
+
+   Bases: :py:obj:`RowSource`
+
+
+   Rows named by their offsets in the table, and nothing else.
+
+   The source a split between two engines that each hold the data wants: it
+   costs two integers no matter how many rows it names, so a sweep over
+   millions of rows allocates nothing per call.
+
+
+   .. py:attribute:: start
+      :type:  int
+
+
+   .. py:attribute:: stop
+      :type:  int
+
+
+   .. py:method:: __post_init__() -> None
+
+
+   .. py:method:: slice(start: int, stop: int) -> RowRange
+
+      The sub-source covering ``[start, stop)`` of THIS source's rows.
+
+      Relative indices, absolute offsets: the result carries where it sits
+      in the whole table, which is the number an arm slices its own
+      resident copy at.
+
+
+
+.. py:class:: RowSource
+
+   The rows one arm owns, named by offset and optionally by value.
+
+
+   .. py:attribute:: __slots__
+      :value: ()
+
+
+
+   .. py:attribute:: start
+      :type:  int
+
+
+   .. py:attribute:: stop
+      :type:  int
+
+
+   .. py:method:: __len__() -> int
+
+
+   .. py:method:: slice(start: int, stop: int) -> RowSource
+      :abstractmethod:
+
+
+      The sub-source covering ``[start, stop)`` of THIS source's rows.
+
+      Relative indices, absolute offsets: the result carries where it sits
+      in the whole table, which is the number an arm slices its own
+      resident copy at.
+
+
+
+   .. py:method:: values() -> collections.abc.Sequence[Any]
+
+
+   .. py:method:: __iter__() -> collections.abc.Iterator[Any]
+
+
+.. py:function:: as_row_source(rows: RowSource | collections.abc.Iterable[Any]) -> RowSource
+
+   The seam's argument, from whatever the caller is holding.
+
+   A source passes through untouched -- that is the point, and the reason
+   this is not ``list(rows)`` under a better name. A sequence is wrapped in
+   place, so a caller who already has the rows pays nothing to hand them
+   over. Only an ITERATOR is drained, and it has to be: both arms read from
+   one source, and an iterator cannot serve two.
+
+
+.. py:data:: SplitArm
+
+.. py:class:: SplitExecution(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   One executed split: what each engine ran, how long, and the answer.
+
+   ``result`` is whatever an UNSPLIT run of this query returns, so the
+   caller's decode path is unchanged by having split the work.
+
+   ``overlap_seconds`` is the intersection of the two arms' wall-clock
+   intervals. It measures that the arms were IN FLIGHT together, which is
+   the property a split needs and the one a serialized executor loses. It
+   does not claim parallel progress inside a single interpreter, which
+   nothing here could promise on the caller's behalf.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. py:attribute:: model_config
+      :type:  ClassVar
+
+      Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+
+   .. py:attribute:: posture
+      :type:  str
+
+
+   .. py:attribute:: device_share
+      :type:  float
+
+
+   .. py:attribute:: terminal
+      :type:  str
+
+
+   .. py:attribute:: device_rows
+      :type:  int
+
+
+   .. py:attribute:: host_rows
+      :type:  int
+
+
+   .. py:attribute:: device_seconds
+      :type:  float
+
+
+   .. py:attribute:: host_seconds
+      :type:  float
+
+
+   .. py:attribute:: wall_seconds
+      :type:  float
+
+
+   .. py:attribute:: overlap_seconds
+      :type:  float
+
+
+   .. py:attribute:: materialize_seconds
+      :type:  float
+
+
+   .. py:attribute:: merge_seconds
+      :type:  float
+
+
+   .. py:attribute:: device_granularity
+      :type:  int
+      :value: 1
+
+
+
+   .. py:attribute:: result
+      :type:  Any
+      :value: None
+
+
+
+   .. py:method:: _figures_are_sane() -> SplitExecution
+
+
+.. py:function:: execute_split(query: Any, rows: dau_scheduler.rows.RowSource | collections.abc.Iterable[Any], split: dau_scheduler.posture.WorkSplit, merge: dau_scheduler.merge.MergeRule, *, device: SplitArm, host: SplitArm, build_rows: dau_scheduler.rows.RowSource | collections.abc.Iterable[Any] | None = None, aggregates: collections.abc.Iterable[tuple[str, str]] = ()) -> SplitExecution
+
+   Run ``split``'s share of the rows on one engine and the rest on the
+   other, at the same time, and merge the partials into the query's answer.
+
+   ``query`` is passed to both arms untouched; this module never inspects it.
+
+   The ``device`` arm takes rows ``[0, share*n)`` and the ``host`` arm the
+   rest. That order is part of the contract, not an implementation detail:
+   a grouped ``first``/``last`` and a top-k's earliest-arrival tie-break are
+   defined by it. An arm with no rows is not launched at all -- a share of
+   0.0 or 1.0 runs exactly the unsplit path (given a table on the device's
+   granularity), which is what makes the degenerate ends of a share sweep
+   meaningful.
+
+   ``rows`` is the whole table as a :class:`~dau_scheduler.rows.RowSource` --
+   a :class:`~dau_scheduler.rows.RowRange` when both arms run from data they
+   already hold, a :class:`~dau_scheduler.rows.RowBatch` when one of them
+   reads values -- or any iterable of rows, which is wrapped and charged to
+   ``materialize_seconds``.
+
+   ``aggregates`` are ``(output name, aggregate kind)`` pairs checked against
+   ``merge`` before anything runs (see
+   :func:`dau_scheduler.merge.check_split`).
+
+   A ``device`` arm carrying ``row_granularity`` (see :data:`SplitArm`) can
+   only take a row count that divides it -- an engine whose job length must
+   sit on a fixed row grid. The boundary is snapped to the nearest such multiple
+   and the count actually given is reported as ``device_rows``. It is an
+   execution fact about the engine, not part of the share the planner
+   chose, which is why it rides the arm rather than the
+   :class:`~dau_scheduler.posture.WorkSplit`.
+
+

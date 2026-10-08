@@ -1,0 +1,192 @@
+dau_scheduler.split
+===================
+
+.. py:module:: dau_scheduler.split
+
+.. autoapi-nested-parse::
+
+   Run a planned split: two engines, disjoint row ranges, one answer.
+
+   :mod:`dau_scheduler.posture` decides how much of a query the second engine
+   should carry; this runs that decision. The second engine takes the LEADING
+   row range and the first the trailing one, both run the WHOLE query over
+   their own rows, and the partial results merge into the answer an unsplit run
+   would have produced -- the same object, so a split is a drop-in for whatever
+   the caller ran before rather than a second result shape to handle.
+
+   Both engines are seams. An arm is a callable handed the query, its own
+   :class:`~dau_scheduler.rows.RowSource`, and the broadcast side of a join if
+   there is one; what it does with them is entirely its own business, and
+   nothing here assumes either arm is in this process.
+
+   **The refusal comes before either arm starts.** A result that cannot be
+   reassembled is refused while it still costs nothing; a refusal that arrives
+   after the work is a refusal that already paid for it.
+
+   **The accounting covers the whole call.** ``wall_seconds`` spans from entry
+   to answer, and the two terms that are not an arm are named:
+   ``materialize_seconds`` for everything done to the rows before an arm starts,
+   and ``merge_seconds`` for putting the partials together. A timing field that
+   excludes the dominant term is worse than no field -- and on a large split
+   where the caller passes an iterator, marshalling IS the dominant term.
+
+   **The collector stays the caller's.** Staging tens of millions of row tuples
+   leaves a heap whose collection pauses cost more than the query being split,
+   and a library that quietly repartitions its caller's heap is an imposition.
+   Handing an arm a range rather than a fresh list removes this module's own
+   contribution to that; the rest belongs to whoever allocated the rows.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   dau_scheduler.split.SplitArm
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   dau_scheduler.split.SplitExecution
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   dau_scheduler.split.execute_split
+
+
+Module Contents
+---------------
+
+.. py:data:: SplitArm
+
+.. py:class:: SplitExecution(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   One executed split: what each engine ran, how long, and the answer.
+
+   ``result`` is whatever an UNSPLIT run of this query returns, so the
+   caller's decode path is unchanged by having split the work.
+
+   ``overlap_seconds`` is the intersection of the two arms' wall-clock
+   intervals. It measures that the arms were IN FLIGHT together, which is
+   the property a split needs and the one a serialized executor loses. It
+   does not claim parallel progress inside a single interpreter, which
+   nothing here could promise on the caller's behalf.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. py:attribute:: model_config
+      :type:  ClassVar
+
+      Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+
+   .. py:attribute:: posture
+      :type:  str
+
+
+   .. py:attribute:: device_share
+      :type:  float
+
+
+   .. py:attribute:: terminal
+      :type:  str
+
+
+   .. py:attribute:: device_rows
+      :type:  int
+
+
+   .. py:attribute:: host_rows
+      :type:  int
+
+
+   .. py:attribute:: device_seconds
+      :type:  float
+
+
+   .. py:attribute:: host_seconds
+      :type:  float
+
+
+   .. py:attribute:: wall_seconds
+      :type:  float
+
+
+   .. py:attribute:: overlap_seconds
+      :type:  float
+
+
+   .. py:attribute:: materialize_seconds
+      :type:  float
+
+
+   .. py:attribute:: merge_seconds
+      :type:  float
+
+
+   .. py:attribute:: device_granularity
+      :type:  int
+      :value: 1
+
+
+
+   .. py:attribute:: result
+      :type:  Any
+      :value: None
+
+
+
+   .. py:method:: _figures_are_sane() -> SplitExecution
+
+
+.. py:function:: execute_split(query: Any, rows: dau_scheduler.rows.RowSource | collections.abc.Iterable[Any], split: dau_scheduler.posture.WorkSplit, merge: dau_scheduler.merge.MergeRule, *, device: SplitArm, host: SplitArm, build_rows: dau_scheduler.rows.RowSource | collections.abc.Iterable[Any] | None = None, aggregates: collections.abc.Iterable[tuple[str, str]] = ()) -> SplitExecution
+
+   Run ``split``'s share of the rows on one engine and the rest on the
+   other, at the same time, and merge the partials into the query's answer.
+
+   ``query`` is passed to both arms untouched; this module never inspects it.
+
+   The ``device`` arm takes rows ``[0, share*n)`` and the ``host`` arm the
+   rest. That order is part of the contract, not an implementation detail:
+   a grouped ``first``/``last`` and a top-k's earliest-arrival tie-break are
+   defined by it. An arm with no rows is not launched at all -- a share of
+   0.0 or 1.0 runs exactly the unsplit path (given a table on the device's
+   granularity), which is what makes the degenerate ends of a share sweep
+   meaningful.
+
+   ``rows`` is the whole table as a :class:`~dau_scheduler.rows.RowSource` --
+   a :class:`~dau_scheduler.rows.RowRange` when both arms run from data they
+   already hold, a :class:`~dau_scheduler.rows.RowBatch` when one of them
+   reads values -- or any iterable of rows, which is wrapped and charged to
+   ``materialize_seconds``.
+
+   ``aggregates`` are ``(output name, aggregate kind)`` pairs checked against
+   ``merge`` before anything runs (see
+   :func:`dau_scheduler.merge.check_split`).
+
+   A ``device`` arm carrying ``row_granularity`` (see :data:`SplitArm`) can
+   only take a row count that divides it -- an engine whose job length must
+   sit on a fixed row grid. The boundary is snapped to the nearest such multiple
+   and the count actually given is reported as ``device_rows``. It is an
+   execution fact about the engine, not part of the share the planner
+   chose, which is why it rides the arm rather than the
+   :class:`~dau_scheduler.posture.WorkSplit`.
+
+

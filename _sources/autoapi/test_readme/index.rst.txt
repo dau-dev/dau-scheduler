@@ -1,0 +1,39 @@
+test_readme
+===========
+
+.. py:module:: test_readme
+
+.. autoapi-nested-parse::
+
+   Every python block in the README runs as written, in order, in one
+   namespace. A README that shows code that does not run is a claim the
+   repository cannot back.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   test_readme.README
+   test_readme.BLOCK
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   test_readme.test_the_readme_examples_run_in_order
+
+
+Module Contents
+---------------
+
+.. py:data:: README
+
+.. py:data:: BLOCK
+
+.. py:function:: test_the_readme_examples_run_in_order(tmp_path, monkeypatch) -> None
+

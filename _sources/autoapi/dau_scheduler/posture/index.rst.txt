@@ -1,0 +1,229 @@
+dau_scheduler.posture
+=====================
+
+.. py:module:: dau_scheduler.posture
+
+.. autoapi-nested-parse::
+
+   How much of a query each engine should carry.
+
+   A caller with two engines has one number to choose: the fraction of rows the
+   second engine runs. Everything else follows from it.
+
+   **The postures optimize different things and are not quality tiers.** On a
+   measured pairing (the collaborative sweep of 2026-08-12 in the benchmarks
+   ledger) the host alone took 27.6 ms and the device alone 18.6 ms; the split
+   finished in 11.9 ms. Running everything on the device therefore takes 1.57x
+   the wall clock of splitting, and in exchange hands the host back entirely.
+   A planner that only minimized wall time would pick wrongly for a caller whose
+   processors have other work to do.
+
+   The closed form under ``collaborative`` is the balance point where both
+   engines finish together::
+
+       device_share = T_cpu / (T_cpu + T_device)
+       speedup      = 1 + T_cpu / T_device
+
+   which needs no search -- one cost estimate per side and the share follows.
+
+   The speedup expression is also the reason to check whether a split is worth
+   building at all: **collaborative placement pays most when the engines are
+   comparable.** From the form above (these are analytic values, not
+   measurements): at parity it returns 2x; against an engine ten times faster
+   than the host it buys 1.1x over simply handing the whole query over, which
+   is unlikely to repay the machinery.
+
+   **The share is a fraction of ROWS, not of pipeline stages.** Both engines run
+   the whole query over disjoint row ranges and their partial results combine
+   (see :mod:`dau_scheduler.merge`). Splitting by stage instead would send every
+   intermediate result across the link between the engines, which is the round
+   trip a split exists to avoid -- and it makes the second engine wait for the
+   first rather than running beside it.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   dau_scheduler.posture.Posture
+   dau_scheduler.posture.POSTURES
+
+
+Exceptions
+----------
+
+.. autoapisummary::
+
+   dau_scheduler.posture.PostureError
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   dau_scheduler.posture.HostCost
+   dau_scheduler.posture.WorkSplit
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   dau_scheduler.posture.plan_split
+   dau_scheduler.posture.batch_count
+
+
+Module Contents
+---------------
+
+.. py:exception:: PostureError
+
+   Bases: :py:obj:`ValueError`
+
+
+   A posture was requested that cannot be resolved into a share.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+.. py:data:: Posture
+
+.. py:data:: POSTURES
+   :type:  tuple[str, ...]
+   :value: ('cpu', 'offload', 'collaborative', 'adaptive')
+
+
+.. py:class:: HostCost
+
+   Bases: :py:obj:`Protocol`
+
+
+   Anything that can price a row count on the engine the caller is on.
+
+   :class:`dau_scheduler.profile.QueryProfile` is one, measured rather than
+   modelled; a caller with an analytic model of its own host can pass that
+   instead.
+
+
+   .. py:method:: estimate(rows: int) -> float
+
+
+.. py:class:: WorkSplit(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   How one query's rows divide between the two engines.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. py:attribute:: model_config
+      :type:  ClassVar
+
+      Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+
+   .. py:attribute:: posture
+      :type:  str
+
+
+   .. py:attribute:: device_share
+      :type:  float
+
+
+   .. py:attribute:: rationale
+      :type:  str
+
+
+   .. py:attribute:: predicted_speedup
+      :type:  float | None
+      :value: None
+
+
+
+   .. py:method:: check() -> WorkSplit
+
+      Re-run the invariants and return ``self``.
+
+      Construction validates, but ``model_copy(update=...)`` does not, so
+      every consumer calls this before acting on a split rather than
+      trusting that the instance it was handed went through ``__init__``.
+
+
+
+   .. py:method:: _share_is_a_fraction() -> WorkSplit
+
+
+.. py:function:: plan_split(posture: Posture = 'collaborative', *, cpu_seconds: float | None = None, device_seconds: float | None = None, profile: HostCost | None = None, rows: int | None = None, device_fixed_seconds: float = 0.0) -> WorkSplit
+
+   Resolve a posture into a row split.
+
+   ``cpu_seconds`` and ``device_seconds`` are whole-query estimates for each
+   engine alone. Only ``collaborative`` needs them; the other postures are
+   definitional and take none, which is the point of offering them -- a
+   caller who does not want to pay for cost estimation can still express an
+   intent.
+
+   The host figure may instead come from a measurement: pass a
+   :class:`HostCost` and the ``rows`` this run will process, and the estimate
+   is taken from it. An explicit ``cpu_seconds`` still wins -- a caller who
+   measured the thing itself should not be overridden by a model of it.
+
+   What is refused is guessing. With neither a figure nor a profile,
+   ``collaborative`` declines to invent one, because a fabricated number
+   underneath a real decision is worse than no decision: the split changes
+   which engine runs which rows, so an error in it is self-reinforcing.
+
+   ``device_fixed_seconds`` is what one device job costs before it has
+   processed a row -- launching it, polling it, reading its records -- a
+   per-invocation term the proportional form omitted and one measurement
+   put at a few milliseconds beside a 12.3 ms host time (2026-09-27). With it
+   the balance is ``(1 - s) * cpu = fixed + s * device``, and a share that
+   cannot beat the host alone (the fixed cost is already most of the host
+   time) is a ``cpu`` split that says why, not a split predicted to win by
+   a margin the fixed cost eats.
+
+
+.. py:function:: batch_count(payload_bytes: int, *, resident: bool, knee_bytes: int) -> int
+
+   How many batches one engine's share should be delivered in.
+
+   **Batching exists to hide the transfer behind the compute.** Each batch's
+   transfer overlaps the previous batch's work, so the pipelined cost falls
+   toward the transfer time alone. With the data already RESIDENT on the
+   engine there is no transfer to hide and every batch is pure per-call
+   overhead, so the answer is one.
+
+   Measured on one link with a 45.8 MiB payload:
+
+   ==========  ==========  ==========
+   batches     streamed    resident
+   ==========  ==========  ==========
+   1           22.08 ms    **5.27 ms**
+   3           **18.78**   5.91 ms
+   12          22.59 ms    --
+   ==========  ==========  ==========
+
+   The optima are opposite, so a single tuned batch count is wrong for one of
+   them -- which is why this takes ``resident`` rather than a constant.
+
+   Streamed, the count targets the link's transfer knee rather than a fitted
+   model. ``knee_bytes`` is the payload below which a transfer loses rate to
+   per-transfer setup; it is a property of the link and has to be measured on
+   it, so there is no default here. Fitting ``T(B) = transfer + work/B + c*B``
+   to the measured points above gives ``c`` anywhere from 83 to 568
+   microseconds depending on which pair is fitted, so the model does not
+   generalize and the measured knee is the honest thing to encode. At a
+   15 MiB knee, 45.8 MiB rounds to 3, which is what measured fastest.
+
+

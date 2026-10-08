@@ -1,0 +1,792 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../../genindex.html"><link rel="search" title="Search" href="../../../search.html"><link rel="next" title="dau_scheduler.rows" href="../rows/index.html"><link rel="prev" title="dau_scheduler.posture" href="../posture/index.html">
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
+        <title>dau_scheduler.profile - dau scheduler v0.1.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/searchlite.css?v=4235115c" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/styles/custom.css?v=890fd012" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">dau scheduler <code style='font-size: var(--font-size--small--4);color: var(--sd-color-primary);'>v0.1.0</code></div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  <span class="sidebar-brand-text">dau scheduler <code style='font-size: var(--font-size--small--4);color: var(--sd-color-primary);'>v0.1.0</code></span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/src/tutorial/split-a-query.html">Split a query across two engines</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/src/how-to/measure-host-cost.html">Measure host cost</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/src/how-to/choose-a-merge-rule.html">Choose a merge rule</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/src/how-to/develop.html">Develop and contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/src/reference/postures.html">Postures and work splits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/src/reference/merge-rules.html">Merge rules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/src/reference/rows-and-execution.html">Row sources and execution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../docs/src/explanation/design.html">Why rows, measured costs and refusals</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../../index.html">API Reference</a><input aria-label="Toggle navigation of API Reference" checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../test_all/index.html">test_all</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../test_rows/index.html">test_rows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../test_merge/index.html">test_merge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../test_split/index.html">test_split</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../test_readme/index.html">test_readme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../test_profile/index.html">test_profile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../test_posture/index.html">test_posture</a></li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="../index.html">dau_scheduler</a><input aria-label="Toggle navigation of dau_scheduler" checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../errors/index.html">dau_scheduler.errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../merge/index.html">dau_scheduler.merge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../posture/index.html">dau_scheduler.posture</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">dau_scheduler.profile</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../rows/index.html">dau_scheduler.rows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../split/index.html">dau_scheduler.split</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../../../_sources/autoapi/dau_scheduler/profile/index.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="module-dau_scheduler.profile">
+<span id="dau-scheduler-profile"></span><h1>dau_scheduler.profile<a class="headerlink" href="#module-dau_scheduler.profile" title="Link to this heading">¶</a></h1>
+<p>Measured host cost: profile the first run instead of modelling it.</p>
+<p>The closed form in <a class="reference internal" href="../posture/index.html#module-dau_scheduler.posture" title="dau_scheduler.posture"><code class="xref py py-mod docutils literal notranslate"><span class="pre">dau_scheduler.posture</span></code></a> needs one number for each
+engine. For an engine whose work is analytic – a fixed rate over a known
+number of rows – that number can be derived. For a general-purpose query
+engine on a general-purpose processor it cannot, and an analytic model of one
+would be guesswork.</p>
+<p>It does not need to be modelled. <strong>Callers run the same query many times over
+changing data, and the first execution has nothing to split onto anyway</strong> –
+so profiling it is free and turns the estimate into a measurement.</p>
+<p><strong>Fixed cost is separated from per-row cost, and this is not a nicety.</strong> A
+query engine does plan-time work that does not scale with data, and on a
+frame of a few hundred rows it is most of the total. Folding that into a
+per-row rate would over-estimate a six-million-row query by orders of
+magnitude. So a profile carries <code class="docutils literal notranslate"><span class="pre">fixed_seconds</span></code> and
+<code class="docutils literal notranslate"><span class="pre">per_row_seconds</span></code> separately and estimates <code class="docutils literal notranslate"><span class="pre">fixed</span> <span class="pre">+</span> <span class="pre">per_row</span> <span class="pre">*</span> <span class="pre">rows</span></code>.</p>
+<p>A single profile cannot fully separate the two – it attributes the nodes
+known to be plan-time and treats the rest as scaling. Profiling at two row
+counts would fit the line properly, and the shape here supports that later
+without changing callers.</p>
+<p>A profile is keyed by <code class="docutils literal notranslate"><span class="pre">(plan,</span> <span class="pre">host)</span></code> because it is not portable between
+machines: two hosts running the same kernel differed by 1.41x when measured
+side by side (the benchmarks ledger, 2026-08-16), so a profile keyed by plan
+alone silently steers a split on the wrong machine.</p>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.profile.NodeCost" title="dau_scheduler.profile.NodeCost"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NodeCost</span></code></a></p></td>
+<td><p>One plan node's measured cost, and whether it scales with rows.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.profile.QueryProfile" title="dau_scheduler.profile.QueryProfile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QueryProfile</span></code></a></p></td>
+<td><p>A measured host cost for one plan on one host.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.profile.LinkRate" title="dau_scheduler.profile.LinkRate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LinkRate</span></code></a></p></td>
+<td><p>The measured host-to-device transfer rate of one link: the term the</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.profile.ProfileCache" title="dau_scheduler.profile.ProfileCache"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProfileCache</span></code></a></p></td>
+<td><p>Profiles on disk, keyed by plan and host, and link rates keyed by</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.profile.host_identity" title="dau_scheduler.profile.host_identity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">host_identity</span></code></a>(→ str)</p></td>
+<td><p>A name for the machine a profile was measured on.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.profile.profile_from_spans" title="dau_scheduler.profile.profile_from_spans"><code class="xref py py-obj docutils literal notranslate"><span class="pre">profile_from_spans</span></code></a>(→ QueryProfile)</p></td>
+<td><p>Build a profile from an engine's per-node timings.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="dau_scheduler.profile.host_identity">
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.profile.</span></span><span class="sig-name descname"><span class="pre">host_identity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#host_identity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.host_identity" title="Link to this definition">¶</a></dt>
+<dd><p>A name for the machine a profile was measured on.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dau_scheduler.profile.NodeCost">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dau_scheduler.profile.</span></span><span class="sig-name descname"><span class="pre">NodeCost</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**data:</span> <span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#NodeCost"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.NodeCost" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></p>
+<p>One plan node’s measured cost, and whether it scales with rows.</p>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.</p>
+<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.profile.NodeCost.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span></em><a class="headerlink" href="#dau_scheduler.profile.NodeCost.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.profile.NodeCost.node">
+<span class="sig-name descname"><span class="pre">node</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dau_scheduler.profile.NodeCost.node" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.profile.NodeCost.seconds">
+<span class="sig-name descname"><span class="pre">seconds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#dau_scheduler.profile.NodeCost.seconds" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.profile.NodeCost.scales_with_rows">
+<span class="sig-name descname"><span class="pre">scales_with_rows</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#dau_scheduler.profile.NodeCost.scales_with_rows" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.profile.NodeCost.check">
+<span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.profile.NodeCost" title="dau_scheduler.profile.NodeCost"><span class="pre">NodeCost</span></a></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#NodeCost.check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.NodeCost.check" title="Link to this definition">¶</a></dt>
+<dd><p>Re-run the invariants and return <code class="docutils literal notranslate"><span class="pre">self</span></code> (see <a class="reference internal" href="#dau_scheduler.profile.QueryProfile.check" title="dau_scheduler.profile.QueryProfile.check"><code class="xref py py-meth docutils literal notranslate"><span class="pre">QueryProfile.check()</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.profile.NodeCost._seconds_is_finite">
+<span class="sig-name descname"><span class="pre">_seconds_is_finite</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.profile.NodeCost" title="dau_scheduler.profile.NodeCost"><span class="pre">NodeCost</span></a></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#NodeCost._seconds_is_finite"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.NodeCost._seconds_is_finite" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dau_scheduler.profile.QueryProfile">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dau_scheduler.profile.</span></span><span class="sig-name descname"><span class="pre">QueryProfile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**data:</span> <span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#QueryProfile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.QueryProfile" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></p>
+<p>A measured host cost for one plan on one host.</p>
+<p><code class="docutils literal notranslate"><span class="pre">selectivity</span></code> is the fraction of rows surviving the query’s filters when
+the caller measured it. It is left <code class="docutils literal notranslate"><span class="pre">None</span></code> rather than inferred: nothing
+in a timing profile reveals row counts, and a guessed selectivity poisons
+everything downstream that prices bytes.</p>
+<p><code class="docutils literal notranslate"><span class="pre">engine_version</span></code> records which build of the engine was measured. It
+defaults to <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> – unknown – and NOT to whatever is installed, which
+would let a hand-written profile claim to have been measured under an
+engine it never ran on.</p>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.</p>
+<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.profile.QueryProfile.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span></em><a class="headerlink" href="#dau_scheduler.profile.QueryProfile.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.profile.QueryProfile.plan_key">
+<span class="sig-name descname"><span class="pre">plan_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dau_scheduler.profile.QueryProfile.plan_key" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.profile.QueryProfile.host">
+<span class="sig-name descname"><span class="pre">host</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dau_scheduler.profile.QueryProfile.host" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.profile.QueryProfile.rows">
+<span class="sig-name descname"><span class="pre">rows</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#dau_scheduler.profile.QueryProfile.rows" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.profile.QueryProfile.fixed_seconds">
+<span class="sig-name descname"><span class="pre">fixed_seconds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#dau_scheduler.profile.QueryProfile.fixed_seconds" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.profile.QueryProfile.per_row_seconds">
+<span class="sig-name descname"><span class="pre">per_row_seconds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#dau_scheduler.profile.QueryProfile.per_row_seconds" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.profile.QueryProfile.nodes">
+<span class="sig-name descname"><span class="pre">nodes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#dau_scheduler.profile.NodeCost" title="dau_scheduler.profile.NodeCost"><span class="pre">NodeCost</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="headerlink" href="#dau_scheduler.profile.QueryProfile.nodes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.profile.QueryProfile.selectivity">
+<span class="sig-name descname"><span class="pre">selectivity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#dau_scheduler.profile.QueryProfile.selectivity" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.profile.QueryProfile.engine_version">
+<span class="sig-name descname"><span class="pre">engine_version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">''</span></em><a class="headerlink" href="#dau_scheduler.profile.QueryProfile.engine_version" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.profile.QueryProfile.check">
+<span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.profile.QueryProfile" title="dau_scheduler.profile.QueryProfile"><span class="pre">QueryProfile</span></a></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#QueryProfile.check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.QueryProfile.check" title="Link to this definition">¶</a></dt>
+<dd><p>Re-run the invariants and return <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<p>Construction validates, but <code class="docutils literal notranslate"><span class="pre">model_copy(update=...)</span></code> does not, so
+every use site (<code class="docutils literal notranslate"><span class="pre">estimate</span></code>, <code class="docutils literal notranslate"><span class="pre">is_stale_for</span></code>, the cache) calls this
+rather than trusting that the instance went through <code class="docutils literal notranslate"><span class="pre">__init__</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.profile.QueryProfile._costs_are_sane">
+<span class="sig-name descname"><span class="pre">_costs_are_sane</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.profile.QueryProfile" title="dau_scheduler.profile.QueryProfile"><span class="pre">QueryProfile</span></a></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#QueryProfile._costs_are_sane"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.QueryProfile._costs_are_sane" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.profile.QueryProfile.estimate">
+<span class="sig-name descname"><span class="pre">estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#QueryProfile.estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.QueryProfile.estimate" title="Link to this definition">¶</a></dt>
+<dd><p>Host seconds for <code class="docutils literal notranslate"><span class="pre">rows</span></code>, as <code class="docutils literal notranslate"><span class="pre">fixed</span> <span class="pre">+</span> <span class="pre">per_row</span> <span class="pre">*</span> <span class="pre">rows</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.profile.QueryProfile.is_stale_for">
+<span class="sig-name descname"><span class="pre">is_stale_for</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#QueryProfile.is_stale_for"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.QueryProfile.is_stale_for" title="Link to this definition">¶</a></dt>
+<dd><p>Whether this measurement can still price <code class="docutils literal notranslate"><span class="pre">rows</span></code> on the engine here
+now.</p>
+<p>Two things invalidate a measurement, and <strong>both are answered by this
+one predicate on purpose</strong>: a caller that has to remember to ask a
+second question is how a version stamp comes to be recorded on every
+profile and consulted by nothing.</p>
+<p><em>Row count.</em> Extrapolating one measurement across orders of magnitude
+is where a profile-guided split goes confidently wrong, and
+confidently wrong is worse than absent: the split decides which engine
+runs which rows, so the error is self-reinforcing.</p>
+<p><em>Engine version.</em> The argument for keying on the host – two machines
+measured 1.41x apart, so a profile keyed by plan alone steers the
+split on the wrong one – applies verbatim to the engine being
+measured, and this module exists BECAUSE an analytic model of that
+engine would be guesswork. A measurement taken under one build says
+nothing about another.</p>
+<p>A profile with no recorded version is <strong>unknown, not current</strong>, and is
+stale for the same reason a guessed selectivity is refused: it may
+have been measured under anything.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dau_scheduler.profile.profile_from_spans">
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.profile.</span></span><span class="sig-name descname"><span class="pre">profile_from_spans</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spans</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plan_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_fixed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">lambda</span> <span class="pre">_node:</span> <span class="pre">...</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selectivity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine_version</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.profile.QueryProfile" title="dau_scheduler.profile.QueryProfile"><span class="pre">QueryProfile</span></a></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#profile_from_spans"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.profile_from_spans" title="Link to this definition">¶</a></dt>
+<dd><p>Build a profile from an engine’s per-node timings.</p>
+<p><code class="docutils literal notranslate"><span class="pre">spans</span></code> are <code class="docutils literal notranslate"><span class="pre">(start,</span> <span class="pre">end,</span> <span class="pre">node</span> <span class="pre">name)</span></code> in MICROSECONDS, as a profiling
+query engine reports them. <code class="docutils literal notranslate"><span class="pre">is_fixed</span></code> names the plan-time nodes – the
+ones that must not be divided by the row count.</p>
+<p><strong>Nodes overlap (an engine runs some in parallel) and leave gaps, so
+summing ``end - start`` is NOT elapsed time.</strong> It double-counts the
+overlap and drops the gaps entirely: with optimization 0-1000, scan
+1000-11000 and filter 5000-15000, the true elapsed cost is 15 ms and the
+sum reports 21 ms.</p>
+<p>So the span is taken as elapsed wall time, the fixed nodes are measured as
+a UNION of their intervals, and everything else – including the gaps,
+which are real elapsed cost – is attributed to scaling work.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dau_scheduler.profile.LinkRate">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dau_scheduler.profile.</span></span><span class="sig-name descname"><span class="pre">LinkRate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**data:</span> <span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#LinkRate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.LinkRate" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pydantic.BaseModel</span></code></p>
+<p>The measured host-to-device transfer rate of one link: the term the
+adaptive cut model and a streamed split price every byte crossing with.</p>
+<p>Measured, not declared: a platform states its bus width and lane count,
+but what a transfer actually sustains depends on the host, the slot, the
+driver and the transfer size, and the sweeps of record put the same card
+at different rates in different hosts. So the rate is keyed by (host,
+device), like a host profile, and measured where it will be used.
+<code class="docutils literal notranslate"><span class="pre">transfer_bytes</span></code> is part of the identity, not a note: a link’s rate at
+one transfer size says little about another (per-transfer setup makes
+small transfers materially slower), so a rate is measured at the size
+the caller will move and cached under it. <code class="docutils literal notranslate"><span class="pre">samples</span></code> keeps the
+individual rates so the spread is visible beside the figure the model
+uses. <code class="docutils literal notranslate"><span class="pre">measured_at</span></code> (seconds since the epoch) is what staleness is
+judged by: a driver change, a link renegotiation or a reboot cannot
+invalidate an entry, so an old one is re-measured rather than trusted.</p>
+<p>Create a new model by parsing and validating input data from keyword arguments.</p>
+<p>Raises [<cite>ValidationError</cite>][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.</p>
+<p><cite>self</cite> is explicitly positional-only to allow <cite>self</cite> as a field name.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.profile.LinkRate.model_config">
+<span class="sig-name descname"><span class="pre">model_config</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span></em><a class="headerlink" href="#dau_scheduler.profile.LinkRate.model_config" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for the model, should be a dictionary conforming to [<cite>ConfigDict</cite>][pydantic.config.ConfigDict].</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.profile.LinkRate.host">
+<span class="sig-name descname"><span class="pre">host</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dau_scheduler.profile.LinkRate.host" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.profile.LinkRate.device">
+<span class="sig-name descname"><span class="pre">device</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dau_scheduler.profile.LinkRate.device" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.profile.LinkRate.bytes_per_second">
+<span class="sig-name descname"><span class="pre">bytes_per_second</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#dau_scheduler.profile.LinkRate.bytes_per_second" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.profile.LinkRate.transfer_bytes">
+<span class="sig-name descname"><span class="pre">transfer_bytes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#dau_scheduler.profile.LinkRate.transfer_bytes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.profile.LinkRate.samples">
+<span class="sig-name descname"><span class="pre">samples</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">()</span></em><a class="headerlink" href="#dau_scheduler.profile.LinkRate.samples" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.profile.LinkRate.measured_at">
+<span class="sig-name descname"><span class="pre">measured_at</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#dau_scheduler.profile.LinkRate.measured_at" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.profile.LinkRate.is_stale">
+<span class="sig-name descname"><span class="pre">is_stale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">now</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_age_seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#LinkRate.is_stale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.LinkRate.is_stale" title="Link to this definition">¶</a></dt>
+<dd><p>Older than <code class="docutils literal notranslate"><span class="pre">max_age_seconds</span></code> at <code class="docutils literal notranslate"><span class="pre">now</span></code>, or never dated.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.profile.LinkRate._rate_is_usable">
+<span class="sig-name descname"><span class="pre">_rate_is_usable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.profile.LinkRate" title="dau_scheduler.profile.LinkRate"><span class="pre">LinkRate</span></a></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#LinkRate._rate_is_usable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.LinkRate._rate_is_usable" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.profile.LinkRate.check">
+<span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.profile.LinkRate" title="dau_scheduler.profile.LinkRate"><span class="pre">LinkRate</span></a></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#LinkRate.check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.LinkRate.check" title="Link to this definition">¶</a></dt>
+<dd><p>Re-run the invariants and return <code class="docutils literal notranslate"><span class="pre">self</span></code> (see <a class="reference internal" href="#dau_scheduler.profile.QueryProfile.check" title="dau_scheduler.profile.QueryProfile.check"><code class="xref py py-meth docutils literal notranslate"><span class="pre">QueryProfile.check()</span></code></a>).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dau_scheduler.profile.ProfileCache">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dau_scheduler.profile.</span></span><span class="sig-name descname"><span class="pre">ProfileCache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#ProfileCache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.ProfileCache" title="Link to this definition">¶</a></dt>
+<dd><p>Profiles on disk, keyed by plan and host, and link rates keyed by
+device and host.</p>
+<p>Deliberately a plain directory of JSON rather than anything cleverer: a
+profile is small, human-readable, and worth being able to delete by hand
+when it goes stale.</p>
+<p>The engine version is deliberately <strong>not</strong> part of the key. A host is a
+key because you cannot re-measure on a machine you are not on; an engine
+version is not, because you can always re-measure under the one you have.
+So it is staleness (<a class="reference internal" href="#dau_scheduler.profile.QueryProfile.is_stale_for" title="dau_scheduler.profile.QueryProfile.is_stale_for"><code class="xref py py-meth docutils literal notranslate"><span class="pre">QueryProfile.is_stale_for()</span></code></a>), handled exactly as
+a row count that has moved too far, rather than a second slot on disk.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.profile.ProfileCache.root">
+<span class="sig-name descname"><span class="pre">root</span></span><a class="headerlink" href="#dau_scheduler.profile.ProfileCache.root" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.profile.ProfileCache._under_root">
+<span class="sig-name descname"><span class="pre">_under_root</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pathlib.Path</span></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#ProfileCache._under_root"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.ProfileCache._under_root" title="Link to this definition">¶</a></dt>
+<dd><p>A file directly under the cache root. Every key component is
+percent-encoded with no safe characters, so a plan key or host that
+contains a slash, <code class="docutils literal notranslate"><span class="pre">..</span></code> or a space becomes one flat, reversible file
+name and cannot name a path outside the root. The check is kept
+anyway: a cache that writes where it is told is the failure mode
+this guards.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.profile.ProfileCache._component">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#ProfileCache._component"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.ProfileCache._component" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.profile.ProfileCache._path">
+<span class="sig-name descname"><span class="pre">_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plan_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pathlib.Path</span></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#ProfileCache._path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.ProfileCache._path" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.profile.ProfileCache.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plan_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.profile.QueryProfile" title="dau_scheduler.profile.QueryProfile"><span class="pre">QueryProfile</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#ProfileCache.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.ProfileCache.get" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.profile.ProfileCache.put">
+<span class="sig-name descname"><span class="pre">put</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#dau_scheduler.profile.QueryProfile" title="dau_scheduler.profile.QueryProfile"><span class="pre">QueryProfile</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pathlib.Path</span></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#ProfileCache.put"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.ProfileCache.put" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.profile.ProfileCache.entries">
+<span class="sig-name descname"><span class="pre">entries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">collections.abc.Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#ProfileCache.entries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.ProfileCache.entries" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.profile.ProfileCache._link_path">
+<span class="sig-name descname"><span class="pre">_link_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transfer_bytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pathlib.Path</span></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#ProfileCache._link_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.ProfileCache._link_path" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.profile.ProfileCache.get_link_rate">
+<span class="sig-name descname"><span class="pre">get_link_rate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transfer_bytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.profile.LinkRate" title="dau_scheduler.profile.LinkRate"><span class="pre">LinkRate</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#ProfileCache.get_link_rate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.ProfileCache.get_link_rate" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.profile.ProfileCache.put_link_rate">
+<span class="sig-name descname"><span class="pre">put_link_rate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#dau_scheduler.profile.LinkRate" title="dau_scheduler.profile.LinkRate"><span class="pre">LinkRate</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pathlib.Path</span></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/profile.html#ProfileCache.put_link_rate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.profile.ProfileCache.put_link_rate" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../rows/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">dau_scheduler.rows</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../posture/index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">dau_scheduler.posture</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; the dau-scheduler authors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">dau_scheduler.profile</a><ul>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+<li><a class="reference internal" href="#module-contents">Module Contents</a><ul>
+<li><a class="reference internal" href="#dau_scheduler.profile.host_identity"><code class="docutils literal notranslate"><span class="pre">host_identity()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.NodeCost"><code class="docutils literal notranslate"><span class="pre">NodeCost</span></code></a><ul>
+<li><a class="reference internal" href="#dau_scheduler.profile.NodeCost.model_config"><code class="docutils literal notranslate"><span class="pre">NodeCost.model_config</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.NodeCost.node"><code class="docutils literal notranslate"><span class="pre">NodeCost.node</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.NodeCost.seconds"><code class="docutils literal notranslate"><span class="pre">NodeCost.seconds</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.NodeCost.scales_with_rows"><code class="docutils literal notranslate"><span class="pre">NodeCost.scales_with_rows</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.NodeCost.check"><code class="docutils literal notranslate"><span class="pre">NodeCost.check()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.NodeCost._seconds_is_finite"><code class="docutils literal notranslate"><span class="pre">NodeCost._seconds_is_finite()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dau_scheduler.profile.QueryProfile"><code class="docutils literal notranslate"><span class="pre">QueryProfile</span></code></a><ul>
+<li><a class="reference internal" href="#dau_scheduler.profile.QueryProfile.model_config"><code class="docutils literal notranslate"><span class="pre">QueryProfile.model_config</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.QueryProfile.plan_key"><code class="docutils literal notranslate"><span class="pre">QueryProfile.plan_key</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.QueryProfile.host"><code class="docutils literal notranslate"><span class="pre">QueryProfile.host</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.QueryProfile.rows"><code class="docutils literal notranslate"><span class="pre">QueryProfile.rows</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.QueryProfile.fixed_seconds"><code class="docutils literal notranslate"><span class="pre">QueryProfile.fixed_seconds</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.QueryProfile.per_row_seconds"><code class="docutils literal notranslate"><span class="pre">QueryProfile.per_row_seconds</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.QueryProfile.nodes"><code class="docutils literal notranslate"><span class="pre">QueryProfile.nodes</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.QueryProfile.selectivity"><code class="docutils literal notranslate"><span class="pre">QueryProfile.selectivity</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.QueryProfile.engine_version"><code class="docutils literal notranslate"><span class="pre">QueryProfile.engine_version</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.QueryProfile.check"><code class="docutils literal notranslate"><span class="pre">QueryProfile.check()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.QueryProfile._costs_are_sane"><code class="docutils literal notranslate"><span class="pre">QueryProfile._costs_are_sane()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.QueryProfile.estimate"><code class="docutils literal notranslate"><span class="pre">QueryProfile.estimate()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.QueryProfile.is_stale_for"><code class="docutils literal notranslate"><span class="pre">QueryProfile.is_stale_for()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dau_scheduler.profile.profile_from_spans"><code class="docutils literal notranslate"><span class="pre">profile_from_spans()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.LinkRate"><code class="docutils literal notranslate"><span class="pre">LinkRate</span></code></a><ul>
+<li><a class="reference internal" href="#dau_scheduler.profile.LinkRate.model_config"><code class="docutils literal notranslate"><span class="pre">LinkRate.model_config</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.LinkRate.host"><code class="docutils literal notranslate"><span class="pre">LinkRate.host</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.LinkRate.device"><code class="docutils literal notranslate"><span class="pre">LinkRate.device</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.LinkRate.bytes_per_second"><code class="docutils literal notranslate"><span class="pre">LinkRate.bytes_per_second</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.LinkRate.transfer_bytes"><code class="docutils literal notranslate"><span class="pre">LinkRate.transfer_bytes</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.LinkRate.samples"><code class="docutils literal notranslate"><span class="pre">LinkRate.samples</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.LinkRate.measured_at"><code class="docutils literal notranslate"><span class="pre">LinkRate.measured_at</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.LinkRate.is_stale"><code class="docutils literal notranslate"><span class="pre">LinkRate.is_stale()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.LinkRate._rate_is_usable"><code class="docutils literal notranslate"><span class="pre">LinkRate._rate_is_usable()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.LinkRate.check"><code class="docutils literal notranslate"><span class="pre">LinkRate.check()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dau_scheduler.profile.ProfileCache"><code class="docutils literal notranslate"><span class="pre">ProfileCache</span></code></a><ul>
+<li><a class="reference internal" href="#dau_scheduler.profile.ProfileCache.root"><code class="docutils literal notranslate"><span class="pre">ProfileCache.root</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.ProfileCache._under_root"><code class="docutils literal notranslate"><span class="pre">ProfileCache._under_root()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.ProfileCache._component"><code class="docutils literal notranslate"><span class="pre">ProfileCache._component()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.ProfileCache._path"><code class="docutils literal notranslate"><span class="pre">ProfileCache._path()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.ProfileCache.get"><code class="docutils literal notranslate"><span class="pre">ProfileCache.get()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.ProfileCache.put"><code class="docutils literal notranslate"><span class="pre">ProfileCache.put()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.ProfileCache.entries"><code class="docutils literal notranslate"><span class="pre">ProfileCache.entries()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.ProfileCache._link_path"><code class="docutils literal notranslate"><span class="pre">ProfileCache._link_path()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.ProfileCache.get_link_rate"><code class="docutils literal notranslate"><span class="pre">ProfileCache.get_link_rate()</span></code></a></li>
+<li><a class="reference internal" href="#dau_scheduler.profile.ProfileCache.put_link_rate"><code class="docutils literal notranslate"><span class="pre">ProfileCache.put_link_rate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../_static/documentation_options.js?v=01f34227"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-searchlite-index="searchlite-index.json" defer="defer" src="../../../_static/searchlite.js?v=a5320898"></script>
+    <script data-searchlite-adopt="true" defer="defer" src="../../../_static/searchlite-ui.js?v=4e4bdd69"></script>
+    <script src="../../../_static/js/custom.js?v=956e5d78"></script>
+    </body>
+</html>

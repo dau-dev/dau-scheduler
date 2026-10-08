@@ -1,0 +1,90 @@
+test_rows
+=========
+
+.. py:module:: test_rows
+
+.. autoapi-nested-parse::
+
+   Naming an arm's rows: offsets always, values only when someone reads them.
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   test_rows.test_a_range_is_two_integers_at_any_row_count
+   test_rows.test_a_slice_carries_absolute_offsets
+   test_rows.test_a_range_refuses_the_arm_that_reads_values
+   test_rows.test_iterating_a_range_reaches_the_same_refusal
+   test_rows.test_a_range_cannot_be_inverted
+   test_rows.test_a_batch_repr_does_not_print_the_table
+   test_rows.test_a_sequence_is_wrapped_in_place
+   test_rows.test_a_whole_table_slice_does_not_copy
+   test_rows.test_an_iterator_is_drained_because_it_cannot_serve_two_arms
+   test_rows.test_a_sub_range_must_lie_inside_its_parent
+   test_rows.test_a_sub_range_may_be_empty_or_the_whole_parent
+   test_rows.test_a_row_batch_refuses_a_negative_start
+
+
+Module Contents
+---------------
+
+.. py:function:: test_a_range_is_two_integers_at_any_row_count() -> None
+
+   The source a split between two engines that each hold the data wants:
+   six million rows and not one of them exists.
+
+
+.. py:function:: test_a_slice_carries_absolute_offsets() -> None
+
+   Relative indices in, absolute offsets out: the offset is the number an
+   arm slices its own resident copy at, so it has to name the whole table.
+
+
+.. py:function:: test_a_range_refuses_the_arm_that_reads_values() -> None
+
+   Refuse rather than approximate, and refuse rather than materialize the
+   table behind the caller's back to keep an arm fed.
+
+
+.. py:function:: test_iterating_a_range_reaches_the_same_refusal() -> None
+
+   An arm written against a row iterator would otherwise see no rows and
+   return a confident empty answer.
+
+
+.. py:function:: test_a_range_cannot_be_inverted() -> None
+
+.. py:function:: test_a_batch_repr_does_not_print_the_table() -> None
+
+   It lands in the refusal message above, and a six-million-row repr is
+   not a message.
+
+
+.. py:function:: test_a_sequence_is_wrapped_in_place() -> None
+
+   A caller who already has the rows pays nothing to hand them over --
+   identity is what pins that, because a copy compares equal and fails only
+   ``is``.
+
+
+.. py:function:: test_a_whole_table_slice_does_not_copy() -> None
+
+   A degenerate share hands one arm everything; copying the caller's
+   sequence to say so is the same cost in miniature.
+
+
+.. py:function:: test_an_iterator_is_drained_because_it_cannot_serve_two_arms() -> None
+
+.. py:function:: test_a_sub_range_must_lie_inside_its_parent(bounds) -> None
+
+   Python slicing would clamp or wrap these; a boundary that arithmetic
+   got wrong must refuse rather than hand an arm a different row set.
+
+
+.. py:function:: test_a_sub_range_may_be_empty_or_the_whole_parent() -> None
+
+.. py:function:: test_a_row_batch_refuses_a_negative_start() -> None
+

@@ -1,0 +1,214 @@
+```{toctree}
+---
+maxdepth: 2
+hidden: true
+---
+
+
+
+docs/src/tutorial/split-a-query.md
+
+docs/src/how-to/measure-host-cost.md
+
+docs/src/how-to/choose-a-merge-rule.md
+
+docs/src/how-to/develop.md
+
+docs/src/reference/postures.md
+
+docs/src/reference/merge-rules.md
+
+docs/src/reference/rows-and-execution.md
+
+docs/src/explanation/design.md
+
+
+```
+
+# dau scheduler
+
+Split row-parallel dataframe work across two compute engines and merge the partial results
+
+[![Build Status](https://github.com/dau-dev/dau-scheduler/actions/workflows/build.yaml/badge.svg?branch=main&event=push)](https://github.com/dau-dev/dau-scheduler/actions/workflows/build.yaml)
+[![codecov](https://codecov.io/gh/dau-dev/dau-scheduler/branch/main/graph/badge.svg)](https://codecov.io/gh/dau-dev/dau-scheduler)
+[![License](https://img.shields.io/github/license/dau-dev/dau-scheduler)](https://github.com/dau-dev/dau-scheduler)
+[![PyPI](https://img.shields.io/pypi/v/dau-scheduler.svg)](https://pypi.python.org/pypi/dau-scheduler)
+
+## Overview
+
+When a machine has two engines that can both run the same query — two
+processors, a processor and an accelerator, a local worker and a remote one —
+the usual choice is all-or-nothing: run it here, or send it there. Running it in
+both places at once is often faster than either, but only for some queries, and
+only at the right split.
+
+`dau-scheduler` makes that decision and makes the result correct. It answers
+three questions:
+
+- **Should this be split, and by how much?** A closed form over each engine's
+  measured throughput gives the share of rows that finishes both arms at the
+  same time. When the engines are comparable the predicted gain approaches
+  2x; when one is far faster than the other it shrinks toward 1x, and the
+  split reports that figure rather than hiding it. A device job's fixed cost
+  can rule a split out entirely, in which case the answer is host-only and
+  says why.
+- **Can this query survive being split?** Splitting rows means each engine
+  computes a partial answer, and not every result can be reassembled from
+  partials. Sums and counts add. A mean needs its sum and count carried
+  separately rather than averaged. A top-k merges two k-lists. A grouped
+  aggregation needs a key merge with the group straddling the boundary folded
+  back together. An exact distinct count cannot be combined without the
+  elements themselves. This library writes that taxonomy down and refuses
+  any aggregate the caller has not declared mergeable under it.
+- **What if it can't?** Refusal is by name and default-deny. A result the merge
+  step does not know how to combine is refused, explicitly and with a reason,
+  rather than silently mis-merged into a wrong answer.
+
+Two commitments shape the rest of the design. **Rows, not stages** — splitting a
+query by pipeline stage ships every intermediate across the link between the
+engines, so the split is always over rows. And **cost is measured, not
+assumed** — host cost is profiled per `(plan, host)` pair and re-measured when
+the profile goes stale, because a speedup ratio is meaningless without naming
+the machine it was measured on.
+
+The library is engine-agnostic. Both arms are injected as callables, and nothing
+here knows what is on the other end.
+
+## Install
+
+Python 3.12 or newer, and pydantic; nothing else.
+
+```bash
+pip install dau-scheduler
+```
+
+## Usage
+
+An arm is a callable. It is handed the query, the rows it owns, and the
+broadcast side of a join if there is one, and it returns the partial result an
+unsplit run would have produced for those rows. Both arms below are the same
+plain-Python function, because the executor never learns what is on either end
+of the seam.
+
+```python
+from dau_scheduler import ADDITIVE, MergeRule, execute_split, merge_totals, plan_split
+
+query = {"filter": lambda row: row["day"] < 30}
+rows = [{"revenue": (seed * 31) % 1000, "day": seed % 60} for seed in range(100_000)]
+
+
+def arm(query, rows, build):
+    kept = [row for row in rows.values() if query["filter"](row)]
+    return {"revenue": sum(row["revenue"] for row in kept), "len": len(kept)}
+
+
+# how much each engine gets, from one whole-query estimate per engine
+split = plan_split("collaborative", cpu_seconds=0.0276, device_seconds=0.0186)
+split.device_share  # 0.597...
+split.predicted_speedup  # 2.48...
+
+# how the two partial answers become one
+merge = MergeRule(
+    terminal="reductions",
+    combine=lambda partials: merge_totals(partials, ("revenue", "len")),
+    mergeable=ADDITIVE,
+)
+
+execution = execute_split(
+    query,
+    rows,
+    split,
+    merge,
+    device=arm,
+    host=arm,
+    aggregates=[("revenue", "sum"), ("len", "count")],
+)
+execution.result  # the same object an unsplit run returns
+execution.overlap_seconds  # how long both arms were in flight together
+```
+
+`aggregates` is what makes the refusal possible. Ask for something that cannot
+be reassembled and it is refused before either engine starts:
+
+```python
+from dau_scheduler import SplitError
+
+try:
+    execute_split(query, rows, split, merge, device=arm, host=arm, aggregates=[("average", "mean")])
+except SplitError as refusal:
+    print(refusal)
+# average: a mean is not row-partitionable; carry the sum and the count as
+# separate outputs and divide after the merge
+```
+
+### Rows an arm never reads
+
+An engine running against data it already holds needs one number, not a list of
+rows: a row **count** if it holds its own copy, an **offset** if it holds a
+resident frame. `RowRange` is exactly that, and it costs two integers however
+many rows it names, so a share sweep over six million rows allocates nothing
+proportional to the row count. An arm that does need the values asks for them
+and gets a typed refusal from a range rather than a table materialized behind
+the caller's back.
+
+```python
+from dau_scheduler import RowRange
+
+
+def resident_arm(query, rows, build):
+    # an engine that holds the table: it reads the offset and the length,
+    # never a row
+    return {"revenue": 0, "len": len(rows)}
+
+
+execute_split(query, RowRange(0, 6_000_000), split, merge, device=resident_arm, host=resident_arm)
+```
+
+### Measured host cost
+
+`plan_split` refuses to guess. The host figure can come from a measurement
+instead: profile the first run — which has nothing to split onto anyway — and
+price every later run from it.
+
+```python
+from dau_scheduler import ProfileCache, plan_split, profile_from_spans
+
+# (start_us, end_us, node name) per plan node, as the engine reported them
+engine_timings = [(0, 11_200, "optimization"), (11_200, 12_900, "scan"), (12_900, 14_600, "filter")]
+profile = profile_from_spans(
+    engine_timings,
+    rows=1_000,
+    plan_key="revenue-by-day",
+    is_fixed=lambda node: node.startswith("optimization"),
+    engine_version="1.42.1",
+)
+ProfileCache("profiles").put(profile)
+
+if profile.is_stale_for(6_000_000, engine_version="1.42.1"):
+    pass  # re-measure rather than extrapolate across orders of magnitude
+plan_split("collaborative", device_seconds=0.0186, profile=profile, rows=6_000_000)
+```
+
+Plan-time cost is kept separate from per-row cost, because a query engine's
+optimizer does not get slower with more rows and folding it into a per-row rate
+over-estimates a large query by orders of magnitude.
+
+## Documentation
+
+The full documentation is at
+[dau-dev.github.io/dau-scheduler](https://dau-dev.github.io/dau-scheduler/).
+
+- **Tutorial**: [Split a query across two engines](docs/src/tutorial/split-a-query.md).
+- **How-to**: [Measure host cost](docs/src/how-to/measure-host-cost.md) · [Choose a merge rule](docs/src/how-to/choose-a-merge-rule.md) · [Develop and contribute](docs/src/how-to/develop.md).
+- **Reference**: [Postures and work splits](docs/src/reference/postures.md) · [Merge rules](docs/src/reference/merge-rules.md) · [Row sources and execution](docs/src/reference/rows-and-execution.md).
+- **Explanation**: [Why rows, measured costs and refusals](docs/src/explanation/design.md).
+
+## What is here
+
+| module    | what it decides                                                     |
+| --------- | ------------------------------------------------------------------- |
+| `posture` | the share of rows each engine gets, and how that share is delivered |
+| `merge`   | which results survive a row split, and how the partials combine     |
+| `rows`    | which rows an arm owns, by offset and optionally by value           |
+| `split`   | running both arms at once and merging what comes back               |
+| `profile` | measured host cost, keyed by plan and machine, with staleness       |
