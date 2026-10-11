@@ -75,7 +75,7 @@ replace = 'version = "{new_version}"'
 [tool.coverage.run]
 branch = true
 omit = [
-    "dau_scheduler/tests/integration/",
+    "dau_scheduler/tests/integration/*",
 ]
 
 [tool.coverage.report]
