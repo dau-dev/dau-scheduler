@@ -270,4 +270,5 @@ def test_cache_entries_stay_directly_under_the_root(tmp_path) -> None:
 
 def test_the_cache_root_expands_a_home_directory(tmp_path, monkeypatch) -> None:
     monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setenv("USERPROFILE", str(tmp_path))
     assert ProfileCache("~/profiles").root == tmp_path / "profiles"
