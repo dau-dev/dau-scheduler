@@ -7,7 +7,7 @@
 
     <title>test_split &#8212; dau scheduler v0.1.0</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
-    <link rel="stylesheet" type="text/css" href="../../_static/fuma.css?v=9324ae27" />
+    <link rel="stylesheet" type="text/css" href="../../_static/fuma.css?v=ca04d621" />
     <link rel="stylesheet" type="text/css" href="../../_static/fuma-code.css?v=a950e949" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
@@ -23,7 +23,7 @@
     <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     <script data-searchlite-index="searchlite-index.json" defer="defer" src="../../_static/searchlite.js?v=a5320898"></script>
-    <script defer="defer" src="../../_static/fuma.js?v=88a16a98"></script>
+    <script defer="defer" src="../../_static/fuma.js?v=9c325f6c"></script>
     <script src="../../_static/js/custom.js?v=956e5d78"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -39,6 +39,7 @@
             root.style.colorScheme = stored === "dark" ? "dark" : "light";
           }
           if (localStorage.getItem("fuma-sidebar") === "collapsed") root.dataset.sidebarCollapsed = "true";
+          if (localStorage.getItem("fuma-toc") === "collapsed") root.dataset.tocCollapsed = "true";
         } catch (e) {}
       })();
     </script>
@@ -152,13 +153,13 @@
     </a>
   </li>
   <li class="fd-tree-item">
-    <a class="fd-link" href="../test_profile/index.html">
-      <span class="fd-link-text">test_profile</span>
+    <a class="fd-link" href="../test_posture/index.html">
+      <span class="fd-link-text">test_posture</span>
     </a>
   </li>
   <li class="fd-tree-item">
-    <a class="fd-link" href="../test_posture/index.html">
-      <span class="fd-link-text">test_posture</span>
+    <a class="fd-link" href="../test_profile/index.html">
+      <span class="fd-link-text">test_profile</span>
     </a>
   </li>
   <li class="fd-tree-item">
@@ -389,10 +390,10 @@ table at several shares, including the degenerate 0.0 and 1.0.</p>
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#test_split._split" title="test_split._split"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_split</span></code></a>(→ dau_scheduler.WorkSplit)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_split._split" title="test_split._split"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_split</span></code></a>(share) → dau_scheduler.WorkSplit</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#test_split._rule" title="test_split._rule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_rule</span></code></a>(→ dau_scheduler.MergeRule)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_split._rule" title="test_split._rule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_rule</span></code></a>() → dau_scheduler.MergeRule</p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#test_split._run" title="test_split._run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_run</span></code></a>(query, rows, build)</p></td>
@@ -401,64 +402,64 @@ table at several shares, including the degenerate 0.0 and 1.0.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#test_split._execute" title="test_split._execute"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_execute</span></code></a>(rows, split, **kwargs)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#test_split.test_the_merged_answer_is_the_unsplit_answer_at_every_share" title="test_split.test_the_merged_answer_is_the_unsplit_answer_at_every_share"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_the_merged_answer_is_the_unsplit_answer_at_every_share</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_split.test_the_merged_answer_is_the_unsplit_answer_at_every_share" title="test_split.test_the_merged_answer_is_the_unsplit_answer_at_every_share"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_the_merged_answer_is_the_unsplit_answer_at_every_share</span></code></a>() → None</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#test_split.test_the_arms_split_the_rows_at_the_planned_share" title="test_split.test_the_arms_split_the_rows_at_the_planned_share"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_the_arms_split_the_rows_at_the_planned_share</span></code></a>(→ None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_split.test_the_arms_split_the_rows_at_the_planned_share" title="test_split.test_the_arms_split_the_rows_at_the_planned_share"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_the_arms_split_the_rows_at_the_planned_share</span></code></a>() → None</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#test_split.test_the_leading_rows_go_to_the_first_arm" title="test_split.test_the_leading_rows_go_to_the_first_arm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_the_leading_rows_go_to_the_first_arm</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_split.test_the_leading_rows_go_to_the_first_arm" title="test_split.test_the_leading_rows_go_to_the_first_arm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_the_leading_rows_go_to_the_first_arm</span></code></a>() → None</p></td>
 <td><p>Part of the contract, not an implementation detail: a grouped first and</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#test_split.test_a_degenerate_share_launches_one_engine" title="test_split.test_a_degenerate_share_launches_one_engine"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_degenerate_share_launches_one_engine</span></code></a>(→ None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_split.test_a_degenerate_share_launches_one_engine" title="test_split.test_a_degenerate_share_launches_one_engine"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_degenerate_share_launches_one_engine</span></code></a>() → None</p></td>
 <td><p>At 0.0 and 1.0 there is no second arm to overlap with, and starting one</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#test_split.test_an_empty_table_still_answers" title="test_split.test_an_empty_table_still_answers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_an_empty_table_still_answers</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_split.test_an_empty_table_still_answers" title="test_split.test_an_empty_table_still_answers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_an_empty_table_still_answers</span></code></a>() → None</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#test_split.test_the_two_arms_are_in_flight_together" title="test_split.test_the_two_arms_are_in_flight_together"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_the_two_arms_are_in_flight_together</span></code></a>(→ None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_split.test_the_two_arms_are_in_flight_together" title="test_split.test_the_two_arms_are_in_flight_together"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_the_two_arms_are_in_flight_together</span></code></a>() → None</p></td>
 <td><p>The test a serialized executor cannot pass. Each arm waits for the</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#test_split.test_a_blocking_arm_overlaps_the_other" title="test_split.test_a_blocking_arm_overlaps_the_other"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_blocking_arm_overlaps_the_other</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_split.test_a_blocking_arm_overlaps_the_other" title="test_split.test_a_blocking_arm_overlaps_the_other"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_blocking_arm_overlaps_the_other</span></code></a>() → None</p></td>
 <td><p>The arms overlap when they release the interpreter, which is what an</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#test_split.test_a_row_range_splits_a_table_neither_arm_reads" title="test_split.test_a_row_range_splits_a_table_neither_arm_reads"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_row_range_splits_a_table_neither_arm_reads</span></code></a>(→ None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_split.test_a_row_range_splits_a_table_neither_arm_reads" title="test_split.test_a_row_range_splits_a_table_neither_arm_reads"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_row_range_splits_a_table_neither_arm_reads</span></code></a>() → None</p></td>
 <td><p>A real split's arms each need one number: an engine holding its own</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#test_split.test_a_row_range_refuses_the_arm_that_reads_values" title="test_split.test_a_row_range_refuses_the_arm_that_reads_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_row_range_refuses_the_arm_that_reads_values</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_split.test_a_row_range_refuses_the_arm_that_reads_values" title="test_split.test_a_row_range_refuses_the_arm_that_reads_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_row_range_refuses_the_arm_that_reads_values</span></code></a>() → None</p></td>
 <td><p>The executor does not paper over the mismatch by materializing the</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#test_split.test_the_callers_own_rows_reach_the_arm_uncopied" title="test_split.test_the_callers_own_rows_reach_the_arm_uncopied"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_the_callers_own_rows_reach_the_arm_uncopied</span></code></a>(→ None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_split.test_the_callers_own_rows_reach_the_arm_uncopied" title="test_split.test_the_callers_own_rows_reach_the_arm_uncopied"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_the_callers_own_rows_reach_the_arm_uncopied</span></code></a>() → None</p></td>
 <td><p>A materialized batch is WRAPPED, not re-tupled -- identity is what pins</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#test_split.test_the_accounting_covers_the_marshalling_it_makes_the_caller_pay" title="test_split.test_the_accounting_covers_the_marshalling_it_makes_the_caller_pay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_the_accounting_covers_the_marshalling_it_makes_the_caller_pay</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_split.test_the_accounting_covers_the_marshalling_it_makes_the_caller_pay" title="test_split.test_the_accounting_covers_the_marshalling_it_makes_the_caller_pay"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_the_accounting_covers_the_marshalling_it_makes_the_caller_pay</span></code></a>() → None</p></td>
 <td><p>A timing field that excludes the dominant term is worse than no field,</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#test_split.test_a_refusal_arrives_before_either_arm_starts" title="test_split.test_a_refusal_arrives_before_either_arm_starts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_refusal_arrives_before_either_arm_starts</span></code></a>(→ None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_split.test_a_refusal_arrives_before_either_arm_starts" title="test_split.test_a_refusal_arrives_before_either_arm_starts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_refusal_arrives_before_either_arm_starts</span></code></a>() → None</p></td>
 <td><p>A refusal that arrives after the work is a refusal that already cost</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#test_split.test_a_declared_aggregate_passes_the_gate" title="test_split.test_a_declared_aggregate_passes_the_gate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_declared_aggregate_passes_the_gate</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_split.test_a_declared_aggregate_passes_the_gate" title="test_split.test_a_declared_aggregate_passes_the_gate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_declared_aggregate_passes_the_gate</span></code></a>() → None</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#test_split.test_a_broadcast_build_side_reaches_both_arms_whole" title="test_split.test_a_broadcast_build_side_reaches_both_arms_whole"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_broadcast_build_side_reaches_both_arms_whole</span></code></a>(→ None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_split.test_a_broadcast_build_side_reaches_both_arms_whole" title="test_split.test_a_broadcast_build_side_reaches_both_arms_whole"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_broadcast_build_side_reaches_both_arms_whole</span></code></a>() → None</p></td>
 <td><p>The build side of a join is a TABLE, not part of the row range being</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#test_split.test_a_failed_arm_reports_its_failure_rather_than_a_short_answer" title="test_split.test_a_failed_arm_reports_its_failure_rather_than_a_short_answer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_failed_arm_reports_its_failure_rather_than_a_short_answer</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_split.test_a_failed_arm_reports_its_failure_rather_than_a_short_answer" title="test_split.test_a_failed_arm_reports_its_failure_rather_than_a_short_answer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_failed_arm_reports_its_failure_rather_than_a_short_answer</span></code></a>() → None</p></td>
 <td><p>An arm that could not complete carries a partial that says so, and</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#test_split.test_the_boundary_snaps_to_the_device_granularity" title="test_split.test_the_boundary_snaps_to_the_device_granularity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_the_boundary_snaps_to_the_device_granularity</span></code></a>(→ None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_split.test_the_boundary_snaps_to_the_device_granularity" title="test_split.test_the_boundary_snaps_to_the_device_granularity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_the_boundary_snaps_to_the_device_granularity</span></code></a>() → None</p></td>
 <td><p>A device whose job length must sit on a DMA grid can only take a row</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#test_split.test_the_degenerate_shares_survive_a_granularity" title="test_split.test_the_degenerate_shares_survive_a_granularity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_the_degenerate_shares_survive_a_granularity</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_split.test_the_degenerate_shares_survive_a_granularity" title="test_split.test_the_degenerate_shares_survive_a_granularity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_the_degenerate_shares_survive_a_granularity</span></code></a>() → None</p></td>
 <td><p>0.0 still launches no device arm, and 1.0 still hands the device</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#test_split.test_an_invalid_granularity_is_refused_before_the_rows_are_consumed" title="test_split.test_an_invalid_granularity_is_refused_before_the_rows_are_consumed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_an_invalid_granularity_is_refused_before_the_rows_are_consumed</span></code></a>(→ None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_split.test_an_invalid_granularity_is_refused_before_the_rows_are_consumed" title="test_split.test_an_invalid_granularity_is_refused_before_the_rows_are_consumed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_an_invalid_granularity_is_refused_before_the_rows_are_consumed</span></code></a>() → None</p></td>
 <td><p>A one-shot iterable must survive a refused call, or the retry with a</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#test_split.test_a_copied_split_is_checked_before_anything_runs" title="test_split.test_a_copied_split_is_checked_before_anything_runs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_copied_split_is_checked_before_anything_runs</span></code></a>(→ None)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_split.test_a_copied_split_is_checked_before_anything_runs" title="test_split.test_a_copied_split_is_checked_before_anything_runs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_copied_split_is_checked_before_anything_runs</span></code></a>() → None</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">model_copy(update=...)</span></code> skips validation, so a split that was edited</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#test_split.test_an_execution_report_refuses_impossible_figures" title="test_split.test_an_execution_report_refuses_impossible_figures"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_an_execution_report_refuses_impossible_figures</span></code></a>(→ None)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_split.test_an_execution_report_refuses_impossible_figures" title="test_split.test_an_execution_report_refuses_impossible_figures"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_an_execution_report_refuses_impossible_figures</span></code></a>() → None</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -693,7 +694,10 @@ into an invalid share is refused at the executor rather than run.</p>
     </article>
   </main>
 <nav id="fd-toc" aria-label="On this page">
-  <p class="fd-toc-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="fd-icon "><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg>On this page</p>
+  <div class="fd-toc-header">
+    <p class="fd-toc-title"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="fd-icon "><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg>On this page</p>
+    <button type="button" class="fd-icon-button fd-toc-collapse" aria-label="Collapse page navigation" title="Collapse page navigation" aria-controls="fd-toc" aria-expanded="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="fd-icon "><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M15 3v18"/></svg></button>
+  </div>
   <div class="fd-toc-body"><svg class="fd-toc-rail" aria-hidden="true" preserveAspectRatio="none">
       <path class="fd-toc-track" fill="none" />
       <path class="fd-toc-thumb" fill="none" />
@@ -811,6 +815,7 @@ into an invalid share is refused at the executor rather than run.</p>
     <a class="fd-toc-action" href="../../_sources/autoapi/test_split/index.rst.txt" rel="nofollow" title="View source"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="fd-icon "><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg><span>View source</span></a>
   </div>
 </nav>
+<button type="button" id="fd-toc-restore" class="fd-icon-button" aria-label="Expand page navigation" title="Expand page navigation" aria-controls="fd-toc" aria-expanded="false"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="fd-icon "><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M15 3v18"/></svg></button>
 </div>
 <dialog id="fd-search-dialog" aria-label="Search">
   <form class="fd-search-panel" method="dialog" role="search">

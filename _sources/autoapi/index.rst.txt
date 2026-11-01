@@ -11,8 +11,8 @@ This page contains auto-generated API reference documentation [#f1]_.
    /autoapi/test_merge/index
    /autoapi/test_split/index
    /autoapi/test_readme/index
-   /autoapi/test_profile/index
    /autoapi/test_posture/index
+   /autoapi/test_profile/index
    /autoapi/dau_scheduler/index
 
 .. [#f1] Created with `sphinx-autoapi <https://github.com/readthedocs/sphinx-autoapi>`_
