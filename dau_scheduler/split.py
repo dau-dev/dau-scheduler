@@ -33,9 +33,10 @@ contribution to that; the rest belongs to whoever allocated the rows.
 from __future__ import annotations
 
 import math
+import threading
 import time
 from collections.abc import Callable, Iterable
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import Future, ThreadPoolExecutor, wait
 from typing import Any, ClassVar
 
 from pydantic import BaseModel, model_validator
@@ -177,12 +178,22 @@ def execute_split(
         arms.append(("host", host, source.slice(boundary, len(source))))
     materialize = time.perf_counter() - marshalled
 
-    with ThreadPoolExecutor(max_workers=len(arms), thread_name_prefix="dau-split") as pool:
-        # every arm is submitted before ANY result is collected. Collecting
-        # one before submitting the next would serialize the split: still
-        # correct, still reporting a speedup, and worthless.
-        futures = [(name, len(arm_rows), pool.submit(_timed, arm, query, arm_rows, build)) for name, arm, arm_rows in arms]
-        finished = [(name, count, future.result()) for name, count, future in futures]
+    # every other arm is submitted before the first runs, and before ANY
+    # result is collected. Collecting one before starting the next would
+    # serialize the split: still correct, still reporting a speedup, and
+    # worthless. The first arm runs on this thread: a pool started and joined
+    # per call cost ~0.45 ms of a 5 ms resident q6 split on a 4-core host.
+    (first_name, first_arm, first_rows), *rest = arms
+    futures: list[tuple[str, int, Future]] = [
+        (name, len(arm_rows), _pool().submit(_timed, arm, query, arm_rows, build)) for name, arm, arm_rows in rest
+    ]
+    try:
+        finished = [(first_name, len(first_rows), _timed(first_arm, query, first_rows, build))]
+    finally:
+        # an arm that raised still lets the others finish before it is
+        # reported, as the per-call pool's exit did
+        wait([future for _name, _count, future in futures])
+    finished += [(name, count, future.result()) for name, count, future in futures]
 
     spans = {name: (start, end) for name, _count, (_partial, start, end) in finished}
     counts = {name: count for name, count, _timing in finished}
@@ -222,6 +233,22 @@ def _device_row_count(share: float, rows: int, granularity: int = 1) -> int:
     # clamp to the largest count on the grid, not to the table: a table that
     # is itself off the grid must leave its ragged tail to the other arm
     return min(rows - rows % granularity, max(0, snapped))
+
+
+_POOL: ThreadPoolExecutor | None = None
+_POOL_LOCK = threading.Lock()
+
+
+def _pool() -> ThreadPoolExecutor:
+    """The worker pool the arms after the first run on, started once and
+    sized by ``ThreadPoolExecutor``'s default. A split started from inside an
+    arm runs its own first arm inline, so each level of nesting holds at most
+    one more worker."""
+    global _POOL
+    with _POOL_LOCK:
+        if _POOL is None:
+            _POOL = ThreadPoolExecutor(thread_name_prefix="dau-split")
+        return _POOL
 
 
 def _timed(arm: SplitArm, query: Any, rows: RowSource, build: RowSource | None) -> tuple[Any, float, float]:

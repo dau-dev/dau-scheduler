@@ -142,6 +142,40 @@ def test_the_two_arms_are_in_flight_together() -> None:
     assert execution.wall_seconds < execution.device_seconds + execution.host_seconds
 
 
+def test_the_first_arm_runs_here_and_the_rest_on_one_pool() -> None:
+    """The leading arm runs on the calling thread and the other on a worker
+    the pool keeps, not one started and joined for every split."""
+    seen: dict[str, list[int]] = {"device": [], "host": []}
+
+    def arm_for(name):
+        def arm(query, rows, build):
+            seen[name].append(threading.get_ident())
+            return _run(query, rows, build)
+
+        return arm
+
+    for _ in range(3):
+        _execute(ROWS, _split(0.5), device=arm_for("device"), host=arm_for("host"))
+    assert set(seen["device"]) == {threading.get_ident()}
+    assert threading.get_ident() not in seen["host"]
+
+
+def test_an_arm_that_raises_lets_the_other_finish_first() -> None:
+    finished = threading.Event()
+
+    def slow(query, rows, build):
+        time.sleep(0.02)
+        finished.set()
+        return _run(query, rows, build)
+
+    def broken(query, rows, build):
+        raise RuntimeError("device went away")
+
+    with pytest.raises(RuntimeError, match="device went away"):
+        _execute(ROWS, _split(0.5), device=broken, host=slow)
+    assert finished.is_set()
+
+
 def test_a_blocking_arm_overlaps_the_other() -> None:
     """The arms overlap when they release the interpreter, which is what an
     arm waiting on a link and an arm inside a native engine both do."""
