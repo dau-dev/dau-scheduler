@@ -48,6 +48,8 @@ Functions
    test_split.test_a_degenerate_share_launches_one_engine
    test_split.test_an_empty_table_still_answers
    test_split.test_the_two_arms_are_in_flight_together
+   test_split.test_the_first_arm_runs_here_and_the_rest_on_one_pool
+   test_split.test_an_arm_that_raises_lets_the_other_finish_first
    test_split.test_a_blocking_arm_overlaps_the_other
    test_split.test_a_row_range_splits_a_table_neither_arm_reads
    test_split.test_a_row_range_refuses_the_arm_that_reads_values
@@ -127,6 +129,14 @@ Module Contents
    break the barrier and fail here rather than quietly report a speedup it
    never delivered.
 
+
+.. py:function:: test_the_first_arm_runs_here_and_the_rest_on_one_pool() -> None
+
+   The leading arm runs on the calling thread and the other on a worker
+   the pool keeps, not one started and joined for every split.
+
+
+.. py:function:: test_an_arm_that_raises_lets_the_other_finish_first() -> None
 
 .. py:function:: test_a_blocking_arm_overlaps_the_other() -> None
 
