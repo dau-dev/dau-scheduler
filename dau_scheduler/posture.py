@@ -127,11 +127,22 @@ def plan_split(
     cannot beat the host alone (the fixed cost is already most of the host
     time) is a ``cpu`` split that says why, not a split predicted to win by
     a margin the fixed cost eats.
+
+    The host has a fixed cost too, and a profile states it:
+    ``profile.estimate(0)``. The host pays it whatever share it is handed,
+    so with a profile the balance is
+    ``host_fixed + (1 - s) * (cpu - host_fixed) = device_fixed + s * device``.
+    Scaling it down with the host's share priced q1's host arm (2.3 ms fixed
+    in 46) 25% under what its slice took, and the split ran slower than the
+    device alone (2026-11-17). A host fixed cost larger than the whole
+    device job leaves the device the whole query.
     """
+    host_fixed_seconds = 0.0
     if cpu_seconds is None and profile is not None:
         if rows is None:
             raise ValueError("a profile prices a row count; pass rows= alongside profile=")
         cpu_seconds = profile.estimate(rows)
+        host_fixed_seconds = min(profile.estimate(0), cpu_seconds)
     if posture == "cpu":
         return WorkSplit(
             posture=posture,
@@ -163,7 +174,7 @@ def plan_split(
             raise PostureError(f"estimates must be positive, got cpu={cpu_seconds}, device={device_seconds}")
         if device_fixed_seconds < 0:
             raise PostureError(f"device_fixed_seconds must be non-negative, got {device_fixed_seconds}")
-        share = (cpu_seconds - device_fixed_seconds) / (cpu_seconds + device_seconds)
+        share = (cpu_seconds - device_fixed_seconds) / (cpu_seconds - host_fixed_seconds + device_seconds)
         if share <= 0:
             return WorkSplit(
                 posture="cpu",
@@ -174,12 +185,25 @@ def plan_split(
                 ),
                 predicted_speedup=1.0,
             )
+        if share >= 1:
+            return WorkSplit(
+                posture="offload",
+                device_share=1.0,
+                rationale=(
+                    f"no share beats the device alone: the host costs {host_fixed_seconds * 1e3:.2f} ms before its first row "
+                    f"and the device finishes in {(device_fixed_seconds + device_seconds) * 1e3:.2f} ms"
+                ),
+                predicted_speedup=cpu_seconds / (device_fixed_seconds + device_seconds),
+            )
         wall = device_fixed_seconds + share * device_seconds
         fixed_note = f" after {device_fixed_seconds * 1e3:.2f} ms of device fixed cost" if device_fixed_seconds else ""
+        host_note = f" (host {host_fixed_seconds * 1e3:.2f} ms fixed)" if host_fixed_seconds else ""
         return WorkSplit(
             posture=posture,
             device_share=share,
-            rationale=(f"balance point: host {cpu_seconds * 1e3:.2f} ms, device {device_seconds * 1e3:.2f} ms{fixed_note}, both finish together"),
+            rationale=(
+                f"balance point: host {cpu_seconds * 1e3:.2f} ms{host_note}, device {device_seconds * 1e3:.2f} ms{fixed_note}, both finish together"
+            ),
             predicted_speedup=cpu_seconds / wall,
         )
 
