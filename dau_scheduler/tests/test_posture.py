@@ -220,3 +220,26 @@ def test_the_device_fixed_cost_moves_the_balance_and_can_rule_the_split_out() ->
     assert "no share beats the host alone" in ruled_out.rationale
     with pytest.raises(PostureError, match="non-negative"):
         plan_split("collaborative", cpu_seconds=0.013, device_seconds=0.100, device_fixed_seconds=-0.001)
+
+
+def test_the_host_fixed_cost_is_paid_whatever_share_the_host_gets() -> None:
+    """A profile's fixed cost does not shrink with the host's slice, so the
+    balance hands the device more, and the two halves still finish together
+    with the fixed cost charged whole."""
+    from dau_scheduler import QueryProfile
+
+    profile = QueryProfile(plan_key="q", host="h", rows=1_000_000, fixed_seconds=0.002, per_row_seconds=44e-9)
+    split = plan_split("collaborative", device_seconds=0.012, profile=profile, rows=1_000_000, device_fixed_seconds=0.0003)
+    proportional = plan_split("collaborative", cpu_seconds=0.046, device_seconds=0.012, device_fixed_seconds=0.0003)
+    assert split.device_share > proportional.device_share
+    host = 0.002 + (1 - split.device_share) * 0.044
+    device = 0.0003 + split.device_share * 0.012
+    assert host == pytest.approx(device), "both engines finish together"
+    assert split.predicted_speedup == pytest.approx(0.046 / device)
+    assert "host 46.00 ms (host 2.00 ms fixed)" in split.rationale
+
+    # a host that costs more before its first row than the whole device job
+    slow_start = QueryProfile(plan_key="q", host="h", rows=1_000_000, fixed_seconds=0.020, per_row_seconds=1e-9)
+    device_only = plan_split("collaborative", device_seconds=0.012, profile=slow_start, rows=1_000_000)
+    assert device_only.posture == "offload" and device_only.device_share == 1.0
+    assert "no share beats the device alone" in device_only.rationale
