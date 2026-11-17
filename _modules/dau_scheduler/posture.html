@@ -788,11 +788,22 @@ window.runMermaid = runMermaid;</script>
 <span class="sd">    cannot beat the host alone (the fixed cost is already most of the host</span>
 <span class="sd">    time) is a ``cpu`` split that says why, not a split predicted to win by</span>
 <span class="sd">    a margin the fixed cost eats.</span>
+
+<span class="sd">    The host has a fixed cost too, and a profile states it:</span>
+<span class="sd">    ``profile.estimate(0)``. The host pays it whatever share it is handed,</span>
+<span class="sd">    so with a profile the balance is</span>
+<span class="sd">    ``host_fixed + (1 - s) * (cpu - host_fixed) = device_fixed + s * device``.</span>
+<span class="sd">    Scaling it down with the host's share priced q1's host arm (2.3 ms fixed</span>
+<span class="sd">    in 46) 25% under what its slice took, and the split ran slower than the</span>
+<span class="sd">    device alone (2026-11-17). A host fixed cost larger than the whole</span>
+<span class="sd">    device job leaves the device the whole query.</span>
 <span class="sd">    """</span>
+    <span class="n">host_fixed_seconds</span> <span class="o">=</span> <span class="mf">0.0</span>
     <span class="k">if</span> <span class="n">cpu_seconds</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">profile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">rows</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"a profile prices a row count; pass rows= alongside profile="</span><span class="p">)</span>
         <span class="n">cpu_seconds</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+        <span class="n">host_fixed_seconds</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">cpu_seconds</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">posture</span> <span class="o">==</span> <span class="s2">"cpu"</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">WorkSplit</span><span class="p">(</span>
             <span class="n">posture</span><span class="o">=</span><span class="n">posture</span><span class="p">,</span>
@@ -824,7 +835,7 @@ window.runMermaid = runMermaid;</script>
             <span class="k">raise</span> <span class="n">PostureError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"estimates must be positive, got cpu=</span><span class="si">{</span><span class="n">cpu_seconds</span><span class="si">}</span><span class="s2">, device=</span><span class="si">{</span><span class="n">device_seconds</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">device_fixed_seconds</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">PostureError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"device_fixed_seconds must be non-negative, got </span><span class="si">{</span><span class="n">device_fixed_seconds</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-        <span class="n">share</span> <span class="o">=</span> <span class="p">(</span><span class="n">cpu_seconds</span> <span class="o">-</span> <span class="n">device_fixed_seconds</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">cpu_seconds</span> <span class="o">+</span> <span class="n">device_seconds</span><span class="p">)</span>
+        <span class="n">share</span> <span class="o">=</span> <span class="p">(</span><span class="n">cpu_seconds</span> <span class="o">-</span> <span class="n">device_fixed_seconds</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">cpu_seconds</span> <span class="o">-</span> <span class="n">host_fixed_seconds</span> <span class="o">+</span> <span class="n">device_seconds</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">share</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">WorkSplit</span><span class="p">(</span>
                 <span class="n">posture</span><span class="o">=</span><span class="s2">"cpu"</span><span class="p">,</span>
@@ -835,12 +846,25 @@ window.runMermaid = runMermaid;</script>
                 <span class="p">),</span>
                 <span class="n">predicted_speedup</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
             <span class="p">)</span>
+        <span class="k">if</span> <span class="n">share</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">WorkSplit</span><span class="p">(</span>
+                <span class="n">posture</span><span class="o">=</span><span class="s2">"offload"</span><span class="p">,</span>
+                <span class="n">device_share</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                <span class="n">rationale</span><span class="o">=</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">"no share beats the device alone: the host costs </span><span class="si">{</span><span class="n">host_fixed_seconds</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1e3</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms before its first row "</span>
+                    <span class="sa">f</span><span class="s2">"and the device finishes in </span><span class="si">{</span><span class="p">(</span><span class="n">device_fixed_seconds</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">device_seconds</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1e3</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms"</span>
+                <span class="p">),</span>
+                <span class="n">predicted_speedup</span><span class="o">=</span><span class="n">cpu_seconds</span> <span class="o">/</span> <span class="p">(</span><span class="n">device_fixed_seconds</span> <span class="o">+</span> <span class="n">device_seconds</span><span class="p">),</span>
+            <span class="p">)</span>
         <span class="n">wall</span> <span class="o">=</span> <span class="n">device_fixed_seconds</span> <span class="o">+</span> <span class="n">share</span> <span class="o">*</span> <span class="n">device_seconds</span>
         <span class="n">fixed_note</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">" after </span><span class="si">{</span><span class="n">device_fixed_seconds</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1e3</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms of device fixed cost"</span> <span class="k">if</span> <span class="n">device_fixed_seconds</span> <span class="k">else</span> <span class="s2">""</span>
+        <span class="n">host_note</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">" (host </span><span class="si">{</span><span class="n">host_fixed_seconds</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1e3</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms fixed)"</span> <span class="k">if</span> <span class="n">host_fixed_seconds</span> <span class="k">else</span> <span class="s2">""</span>
         <span class="k">return</span> <span class="n">WorkSplit</span><span class="p">(</span>
             <span class="n">posture</span><span class="o">=</span><span class="n">posture</span><span class="p">,</span>
             <span class="n">device_share</span><span class="o">=</span><span class="n">share</span><span class="p">,</span>
-            <span class="n">rationale</span><span class="o">=</span><span class="p">(</span><span class="sa">f</span><span class="s2">"balance point: host </span><span class="si">{</span><span class="n">cpu_seconds</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1e3</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms, device </span><span class="si">{</span><span class="n">device_seconds</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1e3</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms</span><span class="si">{</span><span class="n">fixed_note</span><span class="si">}</span><span class="s2">, both finish together"</span><span class="p">),</span>
+            <span class="n">rationale</span><span class="o">=</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"balance point: host </span><span class="si">{</span><span class="n">cpu_seconds</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1e3</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms</span><span class="si">{</span><span class="n">host_note</span><span class="si">}</span><span class="s2">, device </span><span class="si">{</span><span class="n">device_seconds</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1e3</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms</span><span class="si">{</span><span class="n">fixed_note</span><span class="si">}</span><span class="s2">, both finish together"</span>
+            <span class="p">),</span>
             <span class="n">predicted_speedup</span><span class="o">=</span><span class="n">cpu_seconds</span> <span class="o">/</span> <span class="n">wall</span><span class="p">,</span>
         <span class="p">)</span>
 

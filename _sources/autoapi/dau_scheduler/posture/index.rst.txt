@@ -193,6 +193,15 @@ Module Contents
    time) is a ``cpu`` split that says why, not a split predicted to win by
    a margin the fixed cost eats.
 
+   The host has a fixed cost too, and a profile states it:
+   ``profile.estimate(0)``. The host pays it whatever share it is handed,
+   so with a profile the balance is
+   ``host_fixed + (1 - s) * (cpu - host_fixed) = device_fixed + s * device``.
+   Scaling it down with the host's share priced q1's host arm (2.3 ms fixed
+   in 46) 25% under what its slice took, and the split ran slower than the
+   device alone (2026-11-17). A host fixed cost larger than the whole
+   device job leaves the device the whole query.
+
 
 .. py:function:: batch_count(payload_bytes: int, *, resident: bool, knee_bytes: int) -> int
 

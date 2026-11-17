@@ -304,6 +304,9 @@
   <li class="fd-toc-item" data-depth="2">
     <a href="#test_posture.test_the_device_fixed_cost_moves_the_balance_and_can_rule_the_split_out">test_the_device_fixed_cost_moves_the_balance_and_can_rule_the_split_out()</a>
   </li>
+  <li class="fd-toc-item" data-depth="2">
+    <a href="#test_posture.test_the_host_fixed_cost_is_paid_whatever_share_the_host_gets">test_the_host_fixed_cost_is_paid_whatever_share_the_host_gets()</a>
+  </li>
 </ul>
 </div>
   </div>
@@ -399,6 +402,9 @@
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#test_posture.test_the_device_fixed_cost_moves_the_balance_and_can_rule_the_split_out" title="test_posture.test_the_device_fixed_cost_moves_the_balance_and_can_rule_the_split_out"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_the_device_fixed_cost_moves_the_balance_and_can_rule_the_split_out</span></code></a>() → None</p></td>
 <td><p>A device job costs something before its first row. The balance point</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_posture.test_the_host_fixed_cost_is_paid_whatever_share_the_host_gets" title="test_posture.test_the_host_fixed_cost_is_paid_whatever_share_the_host_gets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_the_host_fixed_cost_is_paid_whatever_share_the_host_gets</span></code></a>() → None</p></td>
+<td><p>A profile's fixed cost does not shrink with the host's slice, so the</p></td>
 </tr>
 </tbody>
 </table>
@@ -557,6 +563,14 @@ against the wall that includes it, and when the fixed cost is most of
 the host’s whole time no share can win and the answer is host-only.</p>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="test_posture.test_the_host_fixed_cost_is_paid_whatever_share_the_host_gets">
+<span class="sig-prename descclassname"><span class="pre">test_posture.</span></span><span class="sig-name descname"><span class="pre">test_the_host_fixed_cost_is_paid_whatever_share_the_host_gets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#test_posture.test_the_host_fixed_cost_is_paid_whatever_share_the_host_gets" title="Link to this definition">¶</a></dt>
+<dd><p>A profile’s fixed cost does not shrink with the host’s slice, so the
+balance hands the device more, and the two halves still finish together
+with the fixed cost charged whole.</p>
+</dd></dl>
+
 </section>
 </section>
 
@@ -667,6 +681,9 @@ the host’s whole time no share can win and the answer is host-only.</p>
   </li>
   <li class="fd-toc-item" data-depth="2">
     <a href="#test_posture.test_the_device_fixed_cost_moves_the_balance_and_can_rule_the_split_out">test_the_device_fixed_cost_moves_the_balance_and_can_rule_the_split_out()</a>
+  </li>
+  <li class="fd-toc-item" data-depth="2">
+    <a href="#test_posture.test_the_host_fixed_cost_is_paid_whatever_share_the_host_gets">test_the_host_fixed_cost_is_paid_whatever_share_the_host_gets()</a>
   </li>
 </ul>
 

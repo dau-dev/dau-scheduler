@@ -500,6 +500,14 @@ the balance is <code class="docutils literal notranslate"><span class="pre">(1</
 cannot beat the host alone (the fixed cost is already most of the host
 time) is a <code class="docutils literal notranslate"><span class="pre">cpu</span></code> split that says why, not a split predicted to win by
 a margin the fixed cost eats.</p>
+<p>The host has a fixed cost too, and a profile states it:
+<code class="docutils literal notranslate"><span class="pre">profile.estimate(0)</span></code>. The host pays it whatever share it is handed,
+so with a profile the balance is
+<code class="docutils literal notranslate"><span class="pre">host_fixed</span> <span class="pre">+</span> <span class="pre">(1</span> <span class="pre">-</span> <span class="pre">s)</span> <span class="pre">*</span> <span class="pre">(cpu</span> <span class="pre">-</span> <span class="pre">host_fixed)</span> <span class="pre">=</span> <span class="pre">device_fixed</span> <span class="pre">+</span> <span class="pre">s</span> <span class="pre">*</span> <span class="pre">device</span></code>.
+Scaling it down with the host’s share priced q1’s host arm (2.3 ms fixed
+in 46) 25% under what its slice took, and the split ran slower than the
+device alone (2026-11-17). A host fixed cost larger than the whole
+device job leaves the device the whole query.</p>
 </dd></dl>
 
 <dl class="py function">

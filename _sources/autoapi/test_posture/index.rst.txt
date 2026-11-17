@@ -43,6 +43,7 @@ Functions
    test_posture.test_batch_count_rejects_impossible_inputs
    test_posture.test_the_knee_has_no_default
    test_posture.test_the_device_fixed_cost_moves_the_balance_and_can_rule_the_split_out
+   test_posture.test_the_host_fixed_cost_is_paid_whatever_share_the_host_gets
 
 
 Module Contents
@@ -167,5 +168,12 @@ Module Contents
    hands the device less by exactly that much, the predicted speedup is
    against the wall that includes it, and when the fixed cost is most of
    the host's whole time no share can win and the answer is host-only.
+
+
+.. py:function:: test_the_host_fixed_cost_is_paid_whatever_share_the_host_gets() -> None
+
+   A profile's fixed cost does not shrink with the host's slice, so the
+   balance hands the device more, and the two halves still finish together
+   with the fixed cost charged whole.
 
 
