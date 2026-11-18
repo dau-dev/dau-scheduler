@@ -57,8 +57,9 @@ layer exists to make impossible.
 
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable, Sequence
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
+from types import MappingProxyType
 from typing import Any
 
 from .errors import SplitError
@@ -94,13 +95,15 @@ BOUNDARY_STATS: frozenset[str] = frozenset({"min", "max", "first", "last"})
 # Why a named aggregate cannot be merged, in the words the caller needs to fix
 # it. Anything not here gets the generic refusal, which still names the
 # aggregate and the result shape it was asked of.
-AGGREGATE_REFUSALS: dict[str, str] = {
-    "mean": "a mean is not row-partitionable; carry the sum and the count as separate outputs and divide after the merge",
-    "n_unique": "an exact distinct count is not row-partitionable: counts over disjoint ranges cannot be combined without the elements themselves",
-    "median": "a median is not row-partitionable: an order statistic of the whole needs the values, not two partial answers",
-    "std": "a standard deviation is not row-partitionable; carry count, sum and sum-of-squares and derive it after the merge",
-    "var": "a variance is not row-partitionable; carry count, sum and sum-of-squares and derive it after the merge",
-}
+AGGREGATE_REFUSALS: Mapping[str, str] = MappingProxyType(
+    {
+        "mean": "a mean is not row-partitionable; carry the sum and the count as separate outputs and divide after the merge",
+        "n_unique": "an exact distinct count is not row-partitionable: counts over disjoint ranges cannot be combined without the elements themselves",
+        "median": "a median is not row-partitionable: an order statistic of the whole needs the values, not two partial answers",
+        "std": "a standard deviation is not row-partitionable; carry count, sum and sum-of-squares and derive it after the merge",
+        "var": "a variance is not row-partitionable; carry count, sum and sum-of-squares and derive it after the merge",
+    }
+)
 
 
 def _no_combine(_partials: Sequence[Any]) -> Any:

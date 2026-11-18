@@ -55,15 +55,16 @@ class _GriddedArm:
     """An arm that can only take row counts on a grid, the way a device whose
     job length must sit on a DMA grid can."""
 
-    def __init__(self, row_granularity: int) -> None:
+    def __init__(self, row_granularity: int, run=_run) -> None:
         self.row_granularity = row_granularity
+        self.run = run
 
     def __call__(self, query, rows, build):
-        return _run(query, rows, build)
+        return self.run(query, rows, build)
 
 
 def _execute(rows, split, **kwargs):
-    kwargs.setdefault("device", _run)
+    kwargs.setdefault("device", _GriddedArm(1))
     kwargs.setdefault("host", _run)
     return execute_split(QUERY, rows, split, _rule(), **kwargs)
 
@@ -96,7 +97,7 @@ def test_the_leading_rows_go_to_the_first_arm() -> None:
 
         return run
 
-    _execute(ROWS, _split(0.6), device=arm("device"), host=arm("host"))
+    _execute(ROWS, _split(0.6), device=_GriddedArm(1, arm("device")), host=arm("host"))
     assert seen == {"device": (0, 300), "host": (300, 200)}
 
 
@@ -111,7 +112,7 @@ def test_a_degenerate_share_launches_one_engine() -> None:
 
     for share in (0.0, 1.0):
         launched.clear()
-        execution = _execute(ROWS, _split(share), device=counting, host=counting)
+        execution = _execute(ROWS, _split(share), device=_GriddedArm(1, counting), host=counting)
         assert launched == [len(ROWS)], share
         assert execution.overlap_seconds == 0.0, share
     assert _execute(ROWS, _split(0.0)).device_rows == 0
@@ -136,7 +137,7 @@ def test_the_two_arms_are_in_flight_together() -> None:
         time.sleep(0.005)
         return _run(query, rows, build)
 
-    execution = _execute(ROWS, _split(0.5), device=arm, host=arm)
+    execution = _execute(ROWS, _split(0.5), device=_GriddedArm(1, arm), host=arm)
     assert not both_arrived.broken
     assert execution.overlap_seconds > 0
     assert execution.wall_seconds < execution.device_seconds + execution.host_seconds
@@ -155,7 +156,7 @@ def test_the_first_arm_runs_here_and_the_rest_on_one_pool() -> None:
         return arm
 
     for _ in range(3):
-        _execute(ROWS, _split(0.5), device=arm_for("device"), host=arm_for("host"))
+        _execute(ROWS, _split(0.5), device=_GriddedArm(1, arm_for("device")), host=arm_for("host"))
     assert set(seen["device"]) == {threading.get_ident()}
     assert threading.get_ident() not in seen["host"]
 
@@ -172,7 +173,7 @@ def test_an_arm_that_raises_lets_the_other_finish_first() -> None:
         raise RuntimeError("device went away")
 
     with pytest.raises(RuntimeError, match="device went away"):
-        _execute(ROWS, _split(0.5), device=broken, host=slow)
+        _execute(ROWS, _split(0.5), device=_GriddedArm(1, broken), host=slow)
     assert finished.is_set()
 
 
@@ -184,7 +185,7 @@ def test_a_blocking_arm_overlaps_the_other() -> None:
         time.sleep(0.05)
         return _run(query, rows, build)
 
-    execution = _execute(ROWS, _split(0.5), device=arm, host=arm)
+    execution = _execute(ROWS, _split(0.5), device=_GriddedArm(1, arm), host=arm)
     assert execution.overlap_seconds > 0.02
     assert execution.wall_seconds < execution.device_seconds + execution.host_seconds
 
@@ -208,7 +209,7 @@ def test_a_row_range_splits_a_table_neither_arm_reads() -> None:
         RowRange(0, 6_000_000),
         _split(0.6),
         _rule(),
-        device=resident("device", 11),
+        device=_GriddedArm(1, resident("device", 11)),
         host=resident("host", 31),
     )
     assert seen == {"device": (0, 3_600_000), "host": (3_600_000, 2_400_000)}
@@ -265,7 +266,7 @@ def test_a_refusal_arrives_before_either_arm_starts() -> None:
         return _run(query, rows, build)
 
     with pytest.raises(SplitError, match="average: a mean is not row-partitionable"):
-        _execute(ROWS, _split(0.5), device=arm, host=arm, aggregates=[("average", "mean")])
+        _execute(ROWS, _split(0.5), device=_GriddedArm(1, arm), host=arm, aggregates=[("average", "mean")])
     assert started == []
 
 
@@ -286,7 +287,7 @@ def test_a_broadcast_build_side_reaches_both_arms_whole() -> None:
         kept = [row for row in rows.values() if query["filter"](row) and any(row["key"] == other["key"] for other in build.values())]
         return {"total": sum(row["value"] for row in kept), "len": len(kept)}
 
-    execution = _execute(ROWS, _split(0.5), device=arm, host=arm, build_rows=build_rows)
+    execution = _execute(ROWS, _split(0.5), device=_GriddedArm(1, arm), host=arm, build_rows=build_rows)
     assert seen == [len(build_rows), len(build_rows)]
     expected = [row for row in ROWS if row["day"] < 30 and row["key"] in (0, 3)]
     assert execution.result == {"total": sum(row["value"] for row in expected), "len": len(expected)}
@@ -308,7 +309,7 @@ def test_a_failed_arm_reports_its_failure_rather_than_a_short_answer() -> None:
     def working(query, rows, build):
         return {"total": 10, "error": None}
 
-    execution = execute_split(QUERY, ROWS, _split(0.5), rule, device=failing, host=working)
+    execution = execute_split(QUERY, ROWS, _split(0.5), rule, device=_GriddedArm(1, failing), host=working)
     assert execution.result == {"total": 0, "error": "capacity exceeded"}
 
 
@@ -360,12 +361,34 @@ def test_an_invalid_granularity_is_refused_before_the_rows_are_consumed() -> Non
     assert next(rows) is ROWS[0], "the refusal consumed nothing"
 
 
+def test_a_device_arm_without_a_granularity_is_refused() -> None:
+    """A device arm states its row grid, 1 when it has none. One that does
+    not -- a plain function, or a misspelled attribute -- is refused before
+    the rows are consumed rather than run at a granularity of 1, which would
+    put a gridded device's job off its grid."""
+
+    class Misspelled:
+        row_granulatiry = 8
+
+        def __call__(self, query, rows, build):
+            return _run(query, rows, build)
+
+    for arm in (_run, Misspelled()):
+        rows = iter(ROWS)
+        with pytest.raises(SplitError, match="does not state row_granularity"):
+            _execute(rows, _split(0.5), device=arm)
+        assert next(rows) is ROWS[0], "the refusal consumed nothing"
+
+
 def test_a_copied_split_is_checked_before_anything_runs() -> None:
     """``model_copy(update=...)`` skips validation, so a split that was edited
     into an invalid share is refused at the executor rather than run."""
     broken = _split(0.5).model_copy(update={"device_share": 1.5})
     with pytest.raises(ValueError, match="not a fraction"):
         _execute(ROWS, broken)
+    renamed = _split(0.5).model_copy(update={"posture": "turbo"})
+    with pytest.raises(ValueError, match="posture"):
+        _execute(ROWS, renamed)
 
 
 def test_an_execution_report_refuses_impossible_figures() -> None:
@@ -391,7 +414,7 @@ def test_an_execution_report_refuses_impossible_figures() -> None:
         ({"device_rows": -1}, "device_rows"),
         ({"device_granularity": 0}, "device_granularity"),
         ({"overlap_seconds": 2.0}, "shorter arm"),
-        ({"posture": "turbo"}, "unknown posture"),
+        ({"posture": "turbo"}, "posture"),
     ):
         with pytest.raises(ValueError, match=message):
             SplitExecution.model_validate({**fields, **bad})

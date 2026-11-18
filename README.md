@@ -59,9 +59,10 @@ pip install dau-scheduler
 
 An arm is a callable. It is handed the query, the rows it owns, and the
 broadcast side of a join if there is one, and it returns the partial result an
-unsplit run would have produced for those rows. Both arms below are the same
-plain-Python function, because the executor never learns what is on either end
-of the seam.
+unsplit run would have produced for those rows. The device arm also states
+`row_granularity`, the row multiple its jobs must sit on (1 for an engine with
+no grid). Both arms below are the same plain-Python object, because the
+executor never learns what is on either end of the seam.
 
 ```python
 from dau_scheduler import ADDITIVE, MergeRule, execute_split, merge_totals, plan_split
@@ -70,9 +71,15 @@ query = {"filter": lambda row: row["day"] < 30}
 rows = [{"revenue": (seed * 31) % 1000, "day": seed % 60} for seed in range(100_000)]
 
 
-def arm(query, rows, build):
-    kept = [row for row in rows.values() if query["filter"](row)]
-    return {"revenue": sum(row["revenue"] for row in kept), "len": len(kept)}
+class Arm:
+    row_granularity = 1
+
+    def __call__(self, query, rows, build):
+        kept = [row for row in rows.values() if query["filter"](row)]
+        return {"revenue": sum(row["revenue"] for row in kept), "len": len(kept)}
+
+
+arm = Arm()
 
 
 # how much each engine gets, from one whole-query estimate per engine
@@ -128,10 +135,16 @@ the caller's back.
 from dau_scheduler import RowRange
 
 
-def resident_arm(query, rows, build):
-    # an engine that holds the table: it reads the offset and the length,
-    # never a row
-    return {"revenue": 0, "len": len(rows)}
+class ResidentArm:
+    row_granularity = 1
+
+    def __call__(self, query, rows, build):
+        # an engine that holds the table: it reads the offset and the length,
+        # never a row
+        return {"revenue": 0, "len": len(rows)}
+
+
+resident_arm = ResidentArm()
 
 
 execute_split(query, RowRange(0, 6_000_000), split, merge, device=resident_arm, host=resident_arm)
