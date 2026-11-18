@@ -15,6 +15,7 @@ import pytest
 
 from dau_scheduler import (
     ADDITIVE,
+    DeviceArm,
     MergeRule,
     RowBatch,
     RowRange,
@@ -418,3 +419,21 @@ def test_an_execution_report_refuses_impossible_figures() -> None:
     ):
         with pytest.raises(ValueError, match=message):
             SplitExecution.model_validate({**fields, **bad})
+
+
+def test_a_device_arm_may_state_its_grid_as_a_read_only_property() -> None:
+    """Device engines are often frozen models that derive the grid from
+    their configuration, so the protocol asks only to read it."""
+
+    class Frozen:
+        @property
+        def row_granularity(self) -> int:
+            return 2
+
+        def __call__(self, query, rows, build):
+            return _run(query, rows, build)
+
+    arm: DeviceArm = Frozen()
+    assert isinstance(arm, DeviceArm)
+    result = _execute(iter(ROWS), _split(0.5), device=arm)
+    assert result.device_rows % 2 == 0
