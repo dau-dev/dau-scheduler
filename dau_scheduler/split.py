@@ -70,7 +70,8 @@ class DeviceArm(Protocol):
     at 1, since a misspelled attribute would put the device job off its grid.
     """
 
-    row_granularity: int
+    @property
+    def row_granularity(self) -> int: ...
 
     def __call__(self, query: Any, rows: RowSource, build: RowSource | None, /) -> Any: ...
 
