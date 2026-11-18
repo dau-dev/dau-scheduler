@@ -12,7 +12,7 @@ authors = [
 description = "Split row-parallel dataframe work across two compute engines and merge the partial results"
 readme = "README.md"
 license = { text = "Apache-2.0" }
-version = "0.2.0"
+version = "0.3.0"
 requires-python = ">=3.12"
 keywords = []
 
@@ -57,7 +57,7 @@ Repository = "https://github.com/dau-dev/dau-scheduler"
 Homepage = "https://github.com/dau-dev/dau-scheduler"
 
 [tool.bumpversion]
-current_version = "0.2.0"
+current_version = "0.3.0"
 commit = true
 tag = true
 commit_args = "-s"
