@@ -842,8 +842,9 @@ Package Contents
    at 1, since a misspelled attribute would put the device job off its grid.
 
 
-   .. py:attribute:: row_granularity
-      :type:  int
+   .. py:property:: row_granularity
+      :type: int
+
 
 
    .. py:method:: __call__(query: Any, rows: dau_scheduler.rows.RowSource, build: dau_scheduler.rows.RowSource | None, /) -> Any

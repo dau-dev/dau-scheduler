@@ -65,6 +65,7 @@ Functions
    test_split.test_a_device_arm_without_a_granularity_is_refused
    test_split.test_a_copied_split_is_checked_before_anything_runs
    test_split.test_an_execution_report_refuses_impossible_figures
+   test_split.test_a_device_arm_may_state_its_grid_as_a_read_only_property
 
 
 Module Contents
@@ -234,4 +235,10 @@ Module Contents
 
 
 .. py:function:: test_an_execution_report_refuses_impossible_figures() -> None
+
+.. py:function:: test_a_device_arm_may_state_its_grid_as_a_read_only_property() -> None
+
+   Device engines are often frozen models that derive the grid from
+   their configuration, so the protocol asks only to read it.
+
 
