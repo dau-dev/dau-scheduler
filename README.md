@@ -49,7 +49,7 @@ here knows what is on the other end.
 
 ## Install
 
-Python 3.12 or newer, and pydantic; nothing else.
+Python 3.12 or newer.
 
 ```bash
 pip install dau-scheduler
