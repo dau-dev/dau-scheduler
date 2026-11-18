@@ -11,11 +11,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from itertools import groupby
+from typing import cast
 
 import pytest
 
 from dau_scheduler import (
     ADDITIVE,
+    AGGREGATE_REFUSALS,
     BOUNDARY_STATS,
     DEFERRED_MEAN,
     MergeRule,
@@ -277,6 +279,13 @@ def test_check_split_refuses_a_distinct_count_by_name() -> None:
 def test_the_order_statistics_and_moments_are_refused_by_name(kind: str) -> None:
     with pytest.raises(SplitError, match="output: a .*not row-partitionable"):
         check_split(_reductions(), [("output", kind)])
+
+
+def test_the_refusal_reasons_are_read_only() -> None:
+    """The table is shared by every caller in the process; one that edits
+    it would change the refusal every other split sees."""
+    with pytest.raises(TypeError):
+        cast(dict[str, str], AGGREGATE_REFUSALS)["mean"] = "fine"
 
 
 def test_an_unknown_aggregate_is_refused_rather_than_summed() -> None:

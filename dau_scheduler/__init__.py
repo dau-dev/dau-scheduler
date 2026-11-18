@@ -17,7 +17,7 @@ from .merge import (
 from .posture import POSTURES, HostCost, Posture, WorkSplit, batch_count, plan_split
 from .profile import LinkRate, NodeCost, ProfileCache, QueryProfile, host_identity, profile_from_spans
 from .rows import RowBatch, RowRange, RowSource, as_row_source
-from .split import SplitArm, SplitExecution, execute_split
+from .split import DeviceArm, SplitArm, SplitExecution, execute_split
 
 __all__ = (
     "ADDITIVE",
@@ -25,6 +25,7 @@ __all__ = (
     "BOUNDARY_STATS",
     "DEFERRED_MEAN",
     "POSTURES",
+    "DeviceArm",
     "HostCost",
     "LinkRate",
     "MergeRule",

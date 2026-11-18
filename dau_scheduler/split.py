@@ -37,15 +37,16 @@ import threading
 import time
 from collections.abc import Callable, Iterable
 from concurrent.futures import Future, ThreadPoolExecutor, wait
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Protocol, runtime_checkable
 
 from pydantic import BaseModel, model_validator
 
+from .errors import SplitError
 from .merge import MergeRule, check_split
-from .posture import POSTURES, WorkSplit
+from .posture import Posture, WorkSplit
 from .rows import RowSource, as_row_source
 
-__all__ = ("SplitArm", "SplitExecution", "execute_split")
+__all__ = ("DeviceArm", "SplitArm", "SplitExecution", "execute_split")
 
 # One engine's half of a split: run the query over ITS rows and return the
 # partial result, exactly as an unsplit run would for those rows.
@@ -54,12 +55,24 @@ __all__ = ("SplitArm", "SplitExecution", "execute_split")
 # being split, and halving it would drop every match whose build row landed
 # in the other arm while the totals still looked like totals.
 SplitArm = Callable[[Any, RowSource, "RowSource | None"], Any]
-#: An arm may carry ``row_granularity``: the row multiple it can accept, for
-#: an engine whose job length must sit on a fixed row grid (a transfer unit,
-#: a lane width). The executor reads it off
-#: the arm rather than taking it as a parameter, so the fact travels with the
-#: engine that has it and cannot be omitted by a caller. A plain function has
-#: none and is taken at 1.
+
+
+@runtime_checkable
+class DeviceArm(Protocol):
+    """The device's half of a split: a :data:`SplitArm` that also states
+    ``row_granularity``, the row multiple it can accept, for an engine whose
+    job length must sit on a fixed row grid (a transfer unit, a lane width).
+    An engine with no grid states 1.
+
+    The executor reads it off the arm rather than taking it as a parameter,
+    so the fact travels with the engine that has it and cannot be omitted by
+    a caller. It is required: an arm without it is refused rather than taken
+    at 1, since a misspelled attribute would put the device job off its grid.
+    """
+
+    row_granularity: int
+
+    def __call__(self, query: Any, rows: RowSource, build: RowSource | None, /) -> Any: ...
 
 
 class SplitExecution(BaseModel):
@@ -77,7 +90,7 @@ class SplitExecution(BaseModel):
 
     model_config: ClassVar = {"frozen": True}
 
-    posture: str
+    posture: Posture
     device_share: float
     terminal: str
     device_rows: int
@@ -94,8 +107,6 @@ class SplitExecution(BaseModel):
 
     @model_validator(mode="after")
     def _figures_are_sane(self) -> SplitExecution:
-        if self.posture not in POSTURES:
-            raise ValueError(f"unknown posture {self.posture!r}; known: {POSTURES}")
         if not math.isfinite(self.device_share) or not 0.0 <= self.device_share <= 1.0:
             raise ValueError(f"device_share {self.device_share} is not a fraction")
         for name in ("device_rows", "host_rows", "device_granularity"):
@@ -117,7 +128,7 @@ def execute_split(
     split: WorkSplit,
     merge: MergeRule,
     *,
-    device: SplitArm,
+    device: DeviceArm,
     host: SplitArm,
     build_rows: RowSource | Iterable[Any] | None = None,
     aggregates: Iterable[tuple[str, str]] = (),
@@ -145,8 +156,8 @@ def execute_split(
     ``merge`` before anything runs (see
     :func:`dau_scheduler.merge.check_split`).
 
-    A ``device`` arm carrying ``row_granularity`` (see :data:`SplitArm`) can
-    only take a row count that divides it -- an engine whose job length must
+    The ``device`` arm states ``row_granularity`` (see :class:`DeviceArm`)
+    and can only take a row count that divides it -- an engine whose job length must
     sit on a fixed row grid. The boundary is snapped to the nearest such multiple
     and the count actually given is reported as ``device_rows``. It is an
     execution fact about the engine, not part of the share the planner
@@ -158,7 +169,9 @@ def execute_split(
     # is a refusal that already cost the work -- and before touching the
     # rows, which may be a one-shot iterable a retry could not replay
     split.check()
-    device_granularity = int(getattr(device, "row_granularity", 1))
+    if not isinstance(device, DeviceArm):
+        raise SplitError(f"the device arm {device!r} does not state row_granularity; an engine with no row grid states 1")
+    device_granularity = int(device.row_granularity)
     if device_granularity < 1:
         raise ValueError(f"the device arm's row_granularity must be at least 1, got {device_granularity}")
     check_split(merge, aggregates)

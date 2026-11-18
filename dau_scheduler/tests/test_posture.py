@@ -130,8 +130,8 @@ def test_unknown_posture_is_refused() -> None:
 def test_split_validates_its_own_fields() -> None:
     with pytest.raises(ValueError, match="not a fraction"):
         WorkSplit(posture="cpu", device_share=1.5, rationale="x")
-    with pytest.raises(ValueError, match="unknown posture"):
-        WorkSplit(posture="nope", device_share=0.5, rationale="x")
+    with pytest.raises(ValueError, match="posture"):
+        WorkSplit(posture=cast(Posture, "nope"), device_share=0.5, rationale="x")
 
 
 def test_every_posture_is_reachable_or_refused_by_name() -> None:

@@ -37,7 +37,7 @@ first rather than running beside it.
 from __future__ import annotations
 
 import math
-from typing import ClassVar, Literal, Protocol, runtime_checkable
+from typing import ClassVar, Literal, Protocol, get_args, runtime_checkable
 
 from pydantic import BaseModel, model_validator
 
@@ -47,7 +47,7 @@ __all__ = ("POSTURES", "HostCost", "Posture", "PostureError", "WorkSplit", "batc
 
 Posture = Literal["cpu", "offload", "collaborative", "adaptive"]
 
-POSTURES: tuple[str, ...] = ("cpu", "offload", "collaborative", "adaptive")
+POSTURES: tuple[str, ...] = get_args(Posture)
 
 
 @runtime_checkable
@@ -67,29 +67,28 @@ class WorkSplit(BaseModel):
 
     model_config: ClassVar = {"frozen": True, "extra": "forbid"}
 
-    posture: str
+    posture: Posture
     device_share: float
     rationale: str
     predicted_speedup: float | None = None
 
     def check(self) -> WorkSplit:
-        """Re-run the invariants and return ``self``.
+        """Re-run validation and return ``self``.
 
         Construction validates, but ``model_copy(update=...)`` does not, so
         every consumer calls this before acting on a split rather than
         trusting that the instance it was handed went through ``__init__``.
         """
-        if not math.isfinite(self.device_share) or not 0.0 <= self.device_share <= 1.0:
-            raise ValueError(f"device_share {self.device_share} is not a fraction")
-        if self.posture not in POSTURES:
-            raise ValueError(f"unknown posture {self.posture!r}; known: {POSTURES}")
-        if self.predicted_speedup is not None and (not math.isfinite(self.predicted_speedup) or self.predicted_speedup <= 0):
-            raise ValueError(f"predicted_speedup must be finite and positive, got {self.predicted_speedup}")
+        type(self).model_validate(self.model_dump())
         return self
 
     @model_validator(mode="after")
     def _share_is_a_fraction(self) -> WorkSplit:
-        return self.check()
+        if not math.isfinite(self.device_share) or not 0.0 <= self.device_share <= 1.0:
+            raise ValueError(f"device_share {self.device_share} is not a fraction")
+        if self.predicted_speedup is not None and (not math.isfinite(self.predicted_speedup) or self.predicted_speedup <= 0):
+            raise ValueError(f"predicted_speedup must be finite and positive, got {self.predicted_speedup}")
+        return self
 
 
 def plan_split(

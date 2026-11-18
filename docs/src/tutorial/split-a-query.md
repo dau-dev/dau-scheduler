@@ -1,7 +1,7 @@
 # Split a query across two engines
 
 This tutorial runs one query on two engines at once and reads the result back as
-if nothing had been split. Both engines are plain Python functions here, so it
+if nothing had been split. Both engines are plain Python objects here, so it
 runs on any machine with `dau-scheduler` installed; the library never learns what
 is on either end.
 
@@ -19,12 +19,19 @@ rows = [{"revenue": (seed * 31) % 1000, "day": seed % 60} for seed in range(100_
 
 An arm is a callable that takes the query, the rows it owns and the broadcast
 side of a join (none here), and returns the partial answer an unsplit run would
-have produced for those rows.
+have produced for those rows. The device arm also states `row_granularity`, the
+row multiple its jobs must sit on; this engine has no grid, so it states 1.
 
 ```python
-def arm(query, rows, build):
-    kept = [row for row in rows.values() if query["filter"](row)]
-    return {"revenue": sum(row["revenue"] for row in kept), "len": len(kept)}
+class Arm:
+    row_granularity = 1
+
+    def __call__(self, query, rows, build):
+        kept = [row for row in rows.values() if query["filter"](row)]
+        return {"revenue": sum(row["revenue"] for row in kept), "len": len(kept)}
+
+
+arm = Arm()
 ```
 
 `rows` arrives as a row source. `rows.values()` is how an arm that needs the
