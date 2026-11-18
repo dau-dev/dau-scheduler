@@ -289,10 +289,12 @@ grouped <code class="docutils literal notranslate"><span class="pre">first</span
 it. An arm with no rows is not launched.</p>
 <p><code class="docutils literal notranslate"><span class="pre">build_rows</span></code> is the broadcast side of a join, handed to both arms whole.
 <code class="docutils literal notranslate"><span class="pre">aggregates</span></code> is checked against <code class="docutils literal notranslate"><span class="pre">merge</span></code> before anything runs.</p>
-<p>A device arm with a <code class="docutils literal notranslate"><span class="pre">row_granularity</span></code> attribute takes a row count that divides
-it; the boundary is snapped to the nearest multiple and the count given is
-reported as <code class="docutils literal notranslate"><span class="pre">device_rows</span></code>. It rides the arm, not the split, because it is a
-fact about the engine rather than part of the share the planner chose.</p>
+<p>The device arm is a <code class="docutils literal notranslate"><span class="pre">DeviceArm</span></code>: an arm that also states <code class="docutils literal notranslate"><span class="pre">row_granularity</span></code>, the
+row multiple it can take (1 for an engine with no grid). The boundary is snapped
+to the nearest multiple and the count given is reported as <code class="docutils literal notranslate"><span class="pre">device_rows</span></code>. It
+rides the arm, not the split, because it is a fact about the engine rather than
+part of the share the planner chose. A device arm that does not state it is
+refused with <code class="docutils literal notranslate"><span class="pre">SplitError</span></code> before either arm starts.</p>
 </section>
 <section id="splitexecution">
 <h2><code class="docutils literal notranslate"><span class="pre">SplitExecution</span></code><a class="headerlink" href="#splitexecution" title="Link to this heading">¶</a></h2>

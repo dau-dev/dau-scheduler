@@ -681,7 +681,7 @@ window.runMermaid = runMermaid;</script>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">runtime_checkable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">get_args</span><span class="p">,</span> <span class="n">runtime_checkable</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">model_validator</span>
 
@@ -691,7 +691,7 @@ window.runMermaid = runMermaid;</script>
 
 <span class="n">Posture</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"cpu"</span><span class="p">,</span> <span class="s2">"offload"</span><span class="p">,</span> <span class="s2">"collaborative"</span><span class="p">,</span> <span class="s2">"adaptive"</span><span class="p">]</span>
 
-<span class="n">POSTURES</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"cpu"</span><span class="p">,</span> <span class="s2">"offload"</span><span class="p">,</span> <span class="s2">"collaborative"</span><span class="p">,</span> <span class="s2">"adaptive"</span><span class="p">)</span>
+<span class="n">POSTURES</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_args</span><span class="p">(</span><span class="n">Posture</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="HostCost">
@@ -719,7 +719,7 @@ window.runMermaid = runMermaid;</script>
 
     <span class="n">model_config</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"frozen"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">"extra"</span><span class="p">:</span> <span class="s2">"forbid"</span><span class="p">}</span>
 
-    <span class="n">posture</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">posture</span><span class="p">:</span> <span class="n">Posture</span>
     <span class="n">device_share</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">rationale</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">predicted_speedup</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -727,18 +727,13 @@ window.runMermaid = runMermaid;</script>
 <div class="viewcode-block" id="WorkSplit.check">
 <a class="viewcode-back" href="../../autoapi/dau_scheduler/posture/index.html#dau_scheduler.WorkSplit.check">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WorkSplit</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">"""Re-run the invariants and return ``self``.</span>
+<span class="w">        </span><span class="sd">"""Re-run validation and return ``self``.</span>
 
 <span class="sd">        Construction validates, but ``model_copy(update=...)`` does not, so</span>
 <span class="sd">        every consumer calls this before acting on a split rather than</span>
 <span class="sd">        trusting that the instance it was handed went through ``__init__``.</span>
 <span class="sd">        """</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device_share</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_share</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"device_share </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">device_share</span><span class="si">}</span><span class="s2"> is not a fraction"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">posture</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">POSTURES</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"unknown posture </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">posture</span><span class="si">!r}</span><span class="s2">; known: </span><span class="si">{</span><span class="n">POSTURES</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">predicted_speedup</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predicted_speedup</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">predicted_speedup</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"predicted_speedup must be finite and positive, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">predicted_speedup</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">model_validate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_dump</span><span class="p">())</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
@@ -746,7 +741,11 @@ window.runMermaid = runMermaid;</script>
 <a class="viewcode-back" href="../../autoapi/dau_scheduler/posture/index.html#dau_scheduler.WorkSplit._share_is_a_fraction">[docs]</a>
     <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">"after"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_share_is_a_fraction</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">WorkSplit</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">check</span><span class="p">()</span></div>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device_share</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_share</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"device_share </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">device_share</span><span class="si">}</span><span class="s2"> is not a fraction"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">predicted_speedup</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predicted_speedup</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">predicted_speedup</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"predicted_speedup must be finite and positive, got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">predicted_speedup</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
 </div>
 
 

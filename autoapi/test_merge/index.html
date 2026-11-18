@@ -350,6 +350,9 @@
     <a href="#test_merge.test_the_order_statistics_and_moments_are_refused_by_name">test_the_order_statistics_and_moments_are_refused_by_name()</a>
   </li>
   <li class="fd-toc-item" data-depth="2">
+    <a href="#test_merge.test_the_refusal_reasons_are_read_only">test_the_refusal_reasons_are_read_only()</a>
+  </li>
+  <li class="fd-toc-item" data-depth="2">
     <a href="#test_merge.test_an_unknown_aggregate_is_refused_rather_than_summed">test_an_unknown_aggregate_is_refused_rather_than_summed()</a>
   </li>
   <li class="fd-toc-item" data-depth="2">
@@ -493,25 +496,28 @@ failing.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#test_merge.test_the_order_statistics_and_moments_are_refused_by_name" title="test_merge.test_the_order_statistics_and_moments_are_refused_by_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_the_order_statistics_and_moments_are_refused_by_name</span></code></a>(kind) → None</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#test_merge.test_an_unknown_aggregate_is_refused_rather_than_summed" title="test_merge.test_an_unknown_aggregate_is_refused_rather_than_summed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_an_unknown_aggregate_is_refused_rather_than_summed</span></code></a>() → None</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_merge.test_the_refusal_reasons_are_read_only" title="test_merge.test_the_refusal_reasons_are_read_only"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_the_refusal_reasons_are_read_only</span></code></a>() → None</p></td>
+<td><p>The table is shared by every caller in the process; one that edits</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_merge.test_an_unknown_aggregate_is_refused_rather_than_summed" title="test_merge.test_an_unknown_aggregate_is_refused_rather_than_summed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_an_unknown_aggregate_is_refused_rather_than_summed</span></code></a>() → None</p></td>
 <td><p>Default-deny: an aggregate nobody has heard of is not added on the</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#test_merge.test_a_declared_mean_passes_when_the_partials_carry_it" title="test_merge.test_a_declared_mean_passes_when_the_partials_carry_it"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_declared_mean_passes_when_the_partials_carry_it</span></code></a>() → None</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_merge.test_a_declared_mean_passes_when_the_partials_carry_it" title="test_merge.test_a_declared_mean_passes_when_the_partials_carry_it"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_declared_mean_passes_when_the_partials_carry_it</span></code></a>() → None</p></td>
 <td><p>Whether a mean survives is a property of what the ENGINES emit, not</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#test_merge.test_boundary_stats_are_declarable_too" title="test_merge.test_boundary_stats_are_declarable_too"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_boundary_stats_are_declarable_too</span></code></a>() → None</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_merge.test_boundary_stats_are_declarable_too" title="test_merge.test_boundary_stats_are_declarable_too"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_boundary_stats_are_declarable_too</span></code></a>() → None</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#test_merge.test_a_shape_that_cannot_split_refuses_before_any_aggregate" title="test_merge.test_a_shape_that_cannot_split_refuses_before_any_aggregate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_shape_that_cannot_split_refuses_before_any_aggregate</span></code></a>() → None</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_merge.test_a_shape_that_cannot_split_refuses_before_any_aggregate" title="test_merge.test_a_shape_that_cannot_split_refuses_before_any_aggregate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_shape_that_cannot_split_refuses_before_any_aggregate</span></code></a>() → None</p></td>
 <td><p>A windowed result whose window spans the boundary reads rows from both</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#test_merge.test_a_rule_with_no_combine_says_so" title="test_merge.test_a_rule_with_no_combine_says_so"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_rule_with_no_combine_says_so</span></code></a>() → None</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_merge.test_a_rule_with_no_combine_says_so" title="test_merge.test_a_rule_with_no_combine_says_so"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_rule_with_no_combine_says_so</span></code></a>() → None</p></td>
 <td><p>The default is not a silent identity. A rule declared without a combine</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#test_merge.test_one_partial_is_the_answer" title="test_merge.test_one_partial_is_the_answer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_one_partial_is_the_answer</span></code></a>() → None</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#test_merge.test_one_partial_is_the_answer" title="test_merge.test_one_partial_is_the_answer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_one_partial_is_the_answer</span></code></a>() → None</p></td>
 <td><p>A degenerate share ran the whole query on one engine, so no merge is</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#test_merge.test_a_failed_arm_is_not_merged_into_a_short_answer" title="test_merge.test_a_failed_arm_is_not_merged_into_a_short_answer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_failed_arm_is_not_merged_into_a_short_answer</span></code></a>() → None</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#test_merge.test_a_failed_arm_is_not_merged_into_a_short_answer" title="test_merge.test_a_failed_arm_is_not_merged_into_a_short_answer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_a_failed_arm_is_not_merged_into_a_short_answer</span></code></a>() → None</p></td>
 <td><p>An engine that invalidated its own work returns a partial that says so.</p></td>
 </tr>
 </tbody>
@@ -733,6 +739,13 @@ half.</p>
 <dd></dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="test_merge.test_the_refusal_reasons_are_read_only">
+<span class="sig-prename descclassname"><span class="pre">test_merge.</span></span><span class="sig-name descname"><span class="pre">test_the_refusal_reasons_are_read_only</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#test_merge.test_the_refusal_reasons_are_read_only" title="Link to this definition">¶</a></dt>
+<dd><p>The table is shared by every caller in the process; one that edits
+it would change the refusal every other split sees.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="test_merge.test_an_unknown_aggregate_is_refused_rather_than_summed">
 <span class="sig-prename descclassname"><span class="pre">test_merge.</span></span><span class="sig-name descname"><span class="pre">test_an_unknown_aggregate_is_refused_rather_than_summed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#test_merge.test_an_unknown_aggregate_is_refused_rather_than_summed" title="Link to this definition">¶</a></dt>
 <dd><p>Default-deny: an aggregate nobody has heard of is not added on the
@@ -937,6 +950,9 @@ half the rows, so the failure is what reaches the caller.</p>
   </li>
   <li class="fd-toc-item" data-depth="2">
     <a href="#test_merge.test_the_order_statistics_and_moments_are_refused_by_name">test_the_order_statistics_and_moments_are_refused_by_name()</a>
+  </li>
+  <li class="fd-toc-item" data-depth="2">
+    <a href="#test_merge.test_the_refusal_reasons_are_read_only">test_the_refusal_reasons_are_read_only()</a>
   </li>
   <li class="fd-toc-item" data-depth="2">
     <a href="#test_merge.test_an_unknown_aggregate_is_refused_rather_than_summed">test_an_unknown_aggregate_is_refused_rather_than_summed()</a>

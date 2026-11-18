@@ -244,6 +244,15 @@
     <a href="#dau_scheduler.split.SplitArm">SplitArm</a>
   </li>
   <li class="fd-toc-item" data-depth="2">
+    <a href="#dau_scheduler.split.DeviceArm">DeviceArm</a>
+  </li>
+  <li class="fd-toc-item" data-depth="3">
+    <a href="#dau_scheduler.split.DeviceArm.row_granularity">DeviceArm.row_granularity</a>
+  </li>
+  <li class="fd-toc-item" data-depth="3">
+    <a href="#dau_scheduler.split.DeviceArm.__call__">DeviceArm.__call__()</a>
+  </li>
+  <li class="fd-toc-item" data-depth="2">
     <a href="#dau_scheduler.split.SplitExecution">SplitExecution</a>
   </li>
   <li class="fd-toc-item" data-depth="3">
@@ -355,7 +364,10 @@ contribution to that; the rest belongs to whoever allocated the rows.</p>
 <h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h2>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.split.SplitExecution" title="dau_scheduler.split.SplitExecution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SplitExecution</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.split.DeviceArm" title="dau_scheduler.split.DeviceArm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DeviceArm</span></code></a></p></td>
+<td><p>The device's half of a split: a <a class="reference internal" href="#dau_scheduler.split.SplitArm" title="dau_scheduler.split.SplitArm"><code class="xref py py-data docutils literal notranslate"><span class="pre">SplitArm</span></code></a> that also states</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.split.SplitExecution" title="dau_scheduler.split.SplitExecution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SplitExecution</span></code></a></p></td>
 <td><p>One executed split: what each engine ran, how long, and the answer.</p></td>
 </tr>
 </tbody>
@@ -377,6 +389,30 @@ contribution to that; the rest belongs to whoever allocated the rows.</p>
 <dt class="sig sig-object py" id="dau_scheduler.split.SplitArm">
 <span class="sig-prename descclassname"><span class="pre">dau_scheduler.split.</span></span><span class="sig-name descname"><span class="pre">SplitArm</span></span><a class="headerlink" href="#dau_scheduler.split.SplitArm" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dau_scheduler.split.DeviceArm">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dau_scheduler.split.</span></span><span class="sig-name descname"><span class="pre">DeviceArm</span></span><a class="reference internal" href="../../../_modules/dau_scheduler/split.html#DeviceArm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.split.DeviceArm" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">Protocol</span></code></p>
+<p>The device’s half of a split: a <a class="reference internal" href="#dau_scheduler.split.SplitArm" title="dau_scheduler.split.SplitArm"><code class="xref py py-data docutils literal notranslate"><span class="pre">SplitArm</span></code></a> that also states
+<code class="docutils literal notranslate"><span class="pre">row_granularity</span></code>, the row multiple it can accept, for an engine whose
+job length must sit on a fixed row grid (a transfer unit, a lane width).
+An engine with no grid states 1.</p>
+<p>The executor reads it off the arm rather than taking it as a parameter,
+so the fact travels with the engine that has it and cannot be omitted by
+a caller. It is required: an arm without it is refused rather than taken
+at 1, since a misspelled attribute would put the device job off its grid.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.split.DeviceArm.row_granularity">
+<span class="sig-name descname"><span class="pre">row_granularity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#dau_scheduler.split.DeviceArm.row_granularity" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dau_scheduler.split.DeviceArm.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../rows/index.html#dau_scheduler.rows.RowSource" title="dau_scheduler.rows.RowSource"><span class="pre">dau_scheduler.rows.RowSource</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">build</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../rows/index.html#dau_scheduler.rows.RowSource" title="dau_scheduler.rows.RowSource"><span class="pre">dau_scheduler.rows.RowSource</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/split.html#DeviceArm.__call__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.split.DeviceArm.__call__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="dau_scheduler.split.SplitExecution">
@@ -402,7 +438,7 @@ validated to form a valid model.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dau_scheduler.split.SplitExecution.posture">
-<span class="sig-name descname"><span class="pre">posture</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dau_scheduler.split.SplitExecution.posture" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">posture</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dau_scheduler.posture.Posture</span></em><a class="headerlink" href="#dau_scheduler.split.SplitExecution.posture" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -474,7 +510,7 @@ validated to form a valid model.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="dau_scheduler.split.execute_split">
-<span class="sig-prename descclassname"><span class="pre">dau_scheduler.split.</span></span><span class="sig-name descname"><span class="pre">execute_split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../rows/index.html#dau_scheduler.rows.RowSource" title="dau_scheduler.rows.RowSource"><span class="pre">dau_scheduler.rows.RowSource</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">collections.abc.Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../posture/index.html#dau_scheduler.posture.WorkSplit" title="dau_scheduler.posture.WorkSplit"><span class="pre">dau_scheduler.posture.WorkSplit</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">merge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../merge/index.html#dau_scheduler.merge.MergeRule" title="dau_scheduler.merge.MergeRule"><span class="pre">dau_scheduler.merge.MergeRule</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SplitArm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SplitArm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">build_rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../rows/index.html#dau_scheduler.rows.RowSource" title="dau_scheduler.rows.RowSource"><span class="pre">dau_scheduler.rows.RowSource</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">collections.abc.Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.split.SplitExecution" title="dau_scheduler.split.SplitExecution"><span class="pre">SplitExecution</span></a></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/split.html#execute_split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.split.execute_split" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.split.</span></span><span class="sig-name descname"><span class="pre">execute_split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../rows/index.html#dau_scheduler.rows.RowSource" title="dau_scheduler.rows.RowSource"><span class="pre">dau_scheduler.rows.RowSource</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">collections.abc.Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">split</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../posture/index.html#dau_scheduler.posture.WorkSplit" title="dau_scheduler.posture.WorkSplit"><span class="pre">dau_scheduler.posture.WorkSplit</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">merge</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../merge/index.html#dau_scheduler.merge.MergeRule" title="dau_scheduler.merge.MergeRule"><span class="pre">dau_scheduler.merge.MergeRule</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#dau_scheduler.split.DeviceArm" title="dau_scheduler.split.DeviceArm"><span class="pre">DeviceArm</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SplitArm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">build_rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../rows/index.html#dau_scheduler.rows.RowSource" title="dau_scheduler.rows.RowSource"><span class="pre">dau_scheduler.rows.RowSource</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">collections.abc.Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aggregates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">collections.abc.Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.split.SplitExecution" title="dau_scheduler.split.SplitExecution"><span class="pre">SplitExecution</span></a></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/split.html#execute_split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.split.execute_split" title="Link to this definition">¶</a></dt>
 <dd><p>Run <code class="docutils literal notranslate"><span class="pre">split</span></code>’s share of the rows on one engine and the rest on the
 other, at the same time, and merge the partials into the query’s answer.</p>
 <p><code class="docutils literal notranslate"><span class="pre">query</span></code> is passed to both arms untouched; this module never inspects it.</p>
@@ -493,8 +529,8 @@ reads values – or any iterable of rows, which is wrapped and charged to
 <p><code class="docutils literal notranslate"><span class="pre">aggregates</span></code> are <code class="docutils literal notranslate"><span class="pre">(output</span> <span class="pre">name,</span> <span class="pre">aggregate</span> <span class="pre">kind)</span></code> pairs checked against
 <code class="docutils literal notranslate"><span class="pre">merge</span></code> before anything runs (see
 <a class="reference internal" href="../merge/index.html#dau_scheduler.merge.check_split" title="dau_scheduler.merge.check_split"><code class="xref py py-func docutils literal notranslate"><span class="pre">dau_scheduler.merge.check_split()</span></code></a>).</p>
-<p>A <code class="docutils literal notranslate"><span class="pre">device</span></code> arm carrying <code class="docutils literal notranslate"><span class="pre">row_granularity</span></code> (see <a class="reference internal" href="#dau_scheduler.split.SplitArm" title="dau_scheduler.split.SplitArm"><code class="xref py py-data docutils literal notranslate"><span class="pre">SplitArm</span></code></a>) can
-only take a row count that divides it – an engine whose job length must
+<p>The <code class="docutils literal notranslate"><span class="pre">device</span></code> arm states <code class="docutils literal notranslate"><span class="pre">row_granularity</span></code> (see <a class="reference internal" href="#dau_scheduler.split.DeviceArm" title="dau_scheduler.split.DeviceArm"><code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceArm</span></code></a>)
+and can only take a row count that divides it – an engine whose job length must
 sit on a fixed row grid. The boundary is snapped to the nearest such multiple
 and the count actually given is reported as <code class="docutils literal notranslate"><span class="pre">device_rows</span></code>. It is an
 execution fact about the engine, not part of the share the planner
@@ -545,6 +581,15 @@ chose, which is why it rides the arm rather than the
   </li>
   <li class="fd-toc-item" data-depth="2">
     <a href="#dau_scheduler.split.SplitArm">SplitArm</a>
+  </li>
+  <li class="fd-toc-item" data-depth="2">
+    <a href="#dau_scheduler.split.DeviceArm">DeviceArm</a>
+  </li>
+  <li class="fd-toc-item" data-depth="3">
+    <a href="#dau_scheduler.split.DeviceArm.row_granularity">DeviceArm.row_granularity</a>
+  </li>
+  <li class="fd-toc-item" data-depth="3">
+    <a href="#dau_scheduler.split.DeviceArm.__call__">DeviceArm.__call__()</a>
   </li>
   <li class="fd-toc-item" data-depth="2">
     <a href="#dau_scheduler.split.SplitExecution">SplitExecution</a>

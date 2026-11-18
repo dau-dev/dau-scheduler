@@ -681,15 +681,16 @@ window.runMermaid = runMermaid;</script>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">concurrent.futures</span><span class="w"> </span><span class="kn">import</span> <span class="n">Future</span><span class="p">,</span> <span class="n">ThreadPoolExecutor</span><span class="p">,</span> <span class="n">wait</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">runtime_checkable</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">model_validator</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">SplitError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.merge</span><span class="w"> </span><span class="kn">import</span> <span class="n">MergeRule</span><span class="p">,</span> <span class="n">check_split</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.posture</span><span class="w"> </span><span class="kn">import</span> <span class="n">POSTURES</span><span class="p">,</span> <span class="n">WorkSplit</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.posture</span><span class="w"> </span><span class="kn">import</span> <span class="n">Posture</span><span class="p">,</span> <span class="n">WorkSplit</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.rows</span><span class="w"> </span><span class="kn">import</span> <span class="n">RowSource</span><span class="p">,</span> <span class="n">as_row_source</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"SplitArm"</span><span class="p">,</span> <span class="s2">"SplitExecution"</span><span class="p">,</span> <span class="s2">"execute_split"</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"DeviceArm"</span><span class="p">,</span> <span class="s2">"SplitArm"</span><span class="p">,</span> <span class="s2">"SplitExecution"</span><span class="p">,</span> <span class="s2">"execute_split"</span><span class="p">)</span>
 
 <span class="c1"># One engine's half of a split: run the query over ITS rows and return the</span>
 <span class="c1"># partial result, exactly as an unsplit run would for those rows.</span>
@@ -698,12 +699,30 @@ window.runMermaid = runMermaid;</script>
 <span class="c1"># being split, and halving it would drop every match whose build row landed</span>
 <span class="c1"># in the other arm while the totals still looked like totals.</span>
 <span class="n">SplitArm</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Any</span><span class="p">,</span> <span class="n">RowSource</span><span class="p">,</span> <span class="s2">"RowSource | None"</span><span class="p">],</span> <span class="n">Any</span><span class="p">]</span>
-<span class="c1">#: An arm may carry ``row_granularity``: the row multiple it can accept, for</span>
-<span class="c1">#: an engine whose job length must sit on a fixed row grid (a transfer unit,</span>
-<span class="c1">#: a lane width). The executor reads it off</span>
-<span class="c1">#: the arm rather than taking it as a parameter, so the fact travels with the</span>
-<span class="c1">#: engine that has it and cannot be omitted by a caller. A plain function has</span>
-<span class="c1">#: none and is taken at 1.</span>
+
+
+<div class="viewcode-block" id="DeviceArm">
+<a class="viewcode-back" href="../../autoapi/dau_scheduler/split/index.html#dau_scheduler.DeviceArm">[docs]</a>
+<span class="nd">@runtime_checkable</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DeviceArm</span><span class="p">(</span><span class="n">Protocol</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""The device's half of a split: a :data:`SplitArm` that also states</span>
+<span class="sd">    ``row_granularity``, the row multiple it can accept, for an engine whose</span>
+<span class="sd">    job length must sit on a fixed row grid (a transfer unit, a lane width).</span>
+<span class="sd">    An engine with no grid states 1.</span>
+
+<span class="sd">    The executor reads it off the arm rather than taking it as a parameter,</span>
+<span class="sd">    so the fact travels with the engine that has it and cannot be omitted by</span>
+<span class="sd">    a caller. It is required: an arm without it is refused rather than taken</span>
+<span class="sd">    at 1, since a misspelled attribute would put the device job off its grid.</span>
+<span class="sd">    """</span>
+
+    <span class="n">row_granularity</span><span class="p">:</span> <span class="nb">int</span>
+
+<div class="viewcode-block" id="DeviceArm.__call__">
+<a class="viewcode-back" href="../../autoapi/dau_scheduler/split/index.html#dau_scheduler.DeviceArm.__call__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">rows</span><span class="p">:</span> <span class="n">RowSource</span><span class="p">,</span> <span class="n">build</span><span class="p">:</span> <span class="n">RowSource</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span> <span class="o">...</span></div>
+</div>
+
 
 
 <div class="viewcode-block" id="SplitExecution">
@@ -723,7 +742,7 @@ window.runMermaid = runMermaid;</script>
 
     <span class="n">model_config</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"frozen"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
 
-    <span class="n">posture</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">posture</span><span class="p">:</span> <span class="n">Posture</span>
     <span class="n">device_share</span><span class="p">:</span> <span class="nb">float</span>
     <span class="n">terminal</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">device_rows</span><span class="p">:</span> <span class="nb">int</span>
@@ -742,8 +761,6 @@ window.runMermaid = runMermaid;</script>
 <a class="viewcode-back" href="../../autoapi/dau_scheduler/split/index.html#dau_scheduler.SplitExecution._figures_are_sane">[docs]</a>
     <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">"after"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_figures_are_sane</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SplitExecution</span><span class="p">:</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">posture</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">POSTURES</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"unknown posture </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">posture</span><span class="si">!r}</span><span class="s2">; known: </span><span class="si">{</span><span class="n">POSTURES</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">device_share</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">device_share</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"device_share </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">device_share</span><span class="si">}</span><span class="s2"> is not a fraction"</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"device_rows"</span><span class="p">,</span> <span class="s2">"host_rows"</span><span class="p">,</span> <span class="s2">"device_granularity"</span><span class="p">):</span>
@@ -769,7 +786,7 @@ window.runMermaid = runMermaid;</script>
     <span class="n">split</span><span class="p">:</span> <span class="n">WorkSplit</span><span class="p">,</span>
     <span class="n">merge</span><span class="p">:</span> <span class="n">MergeRule</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">device</span><span class="p">:</span> <span class="n">SplitArm</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">DeviceArm</span><span class="p">,</span>
     <span class="n">host</span><span class="p">:</span> <span class="n">SplitArm</span><span class="p">,</span>
     <span class="n">build_rows</span><span class="p">:</span> <span class="n">RowSource</span> <span class="o">|</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">aggregates</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(),</span>
@@ -797,8 +814,8 @@ window.runMermaid = runMermaid;</script>
 <span class="sd">    ``merge`` before anything runs (see</span>
 <span class="sd">    :func:`dau_scheduler.merge.check_split`).</span>
 
-<span class="sd">    A ``device`` arm carrying ``row_granularity`` (see :data:`SplitArm`) can</span>
-<span class="sd">    only take a row count that divides it -- an engine whose job length must</span>
+<span class="sd">    The ``device`` arm states ``row_granularity`` (see :class:`DeviceArm`)</span>
+<span class="sd">    and can only take a row count that divides it -- an engine whose job length must</span>
 <span class="sd">    sit on a fixed row grid. The boundary is snapped to the nearest such multiple</span>
 <span class="sd">    and the count actually given is reported as ``device_rows``. It is an</span>
 <span class="sd">    execution fact about the engine, not part of the share the planner</span>
@@ -810,7 +827,9 @@ window.runMermaid = runMermaid;</script>
     <span class="c1"># is a refusal that already cost the work -- and before touching the</span>
     <span class="c1"># rows, which may be a one-shot iterable a retry could not replay</span>
     <span class="n">split</span><span class="o">.</span><span class="n">check</span><span class="p">()</span>
-    <span class="n">device_granularity</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="s2">"row_granularity"</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">device</span><span class="p">,</span> <span class="n">DeviceArm</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">SplitError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"the device arm </span><span class="si">{</span><span class="n">device</span><span class="si">!r}</span><span class="s2"> does not state row_granularity; an engine with no row grid states 1"</span><span class="p">)</span>
+    <span class="n">device_granularity</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">device</span><span class="o">.</span><span class="n">row_granularity</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">device_granularity</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"the device arm's row_granularity must be at least 1, got </span><span class="si">{</span><span class="n">device_granularity</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
     <span class="n">check_split</span><span class="p">(</span><span class="n">merge</span><span class="p">,</span> <span class="n">aggregates</span><span class="p">)</span>

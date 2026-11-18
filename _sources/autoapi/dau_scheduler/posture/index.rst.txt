@@ -94,8 +94,6 @@ Module Contents
 
 .. py:data:: POSTURES
    :type:  tuple[str, ...]
-   :value: ('cpu', 'offload', 'collaborative', 'adaptive')
-
 
 .. py:class:: HostCost
 
@@ -134,7 +132,7 @@ Module Contents
 
 
    .. py:attribute:: posture
-      :type:  str
+      :type:  Posture
 
 
    .. py:attribute:: device_share
@@ -153,7 +151,7 @@ Module Contents
 
    .. py:method:: check() -> WorkSplit
 
-      Re-run the invariants and return ``self``.
+      Re-run validation and return ``self``.
 
       Construction validates, but ``model_copy(update=...)`` does not, so
       every consumer calls this before acting on a split rather than

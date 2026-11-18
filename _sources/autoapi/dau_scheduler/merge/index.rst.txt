@@ -108,7 +108,7 @@ Module Contents
    :type:  frozenset[str]
 
 .. py:data:: AGGREGATE_REFUSALS
-   :type:  dict[str, str]
+   :type:  collections.abc.Mapping[str, str]
 
 .. py:class:: MergeRule
 

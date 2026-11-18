@@ -62,6 +62,7 @@ Functions
    test_split.test_the_boundary_snaps_to_the_device_granularity
    test_split.test_the_degenerate_shares_survive_a_granularity
    test_split.test_an_invalid_granularity_is_refused_before_the_rows_are_consumed
+   test_split.test_a_device_arm_without_a_granularity_is_refused
    test_split.test_a_copied_split_is_checked_before_anything_runs
    test_split.test_an_execution_report_refuses_impossible_figures
 
@@ -90,13 +91,16 @@ Module Contents
    One arm: the whole query over the rows it was given.
 
 
-.. py:class:: _GriddedArm(row_granularity: int)
+.. py:class:: _GriddedArm(row_granularity: int, run=_run)
 
    An arm that can only take row counts on a grid, the way a device whose
    job length must sit on a DMA grid can.
 
 
    .. py:attribute:: row_granularity
+
+
+   .. py:attribute:: run
 
 
    .. py:method:: __call__(query, rows, build)
@@ -213,6 +217,14 @@ Module Contents
 
    A one-shot iterable must survive a refused call, or the retry with a
    corrected argument runs over nothing.
+
+
+.. py:function:: test_a_device_arm_without_a_granularity_is_refused() -> None
+
+   A device arm states its row grid, 1 when it has none. One that does
+   not -- a plain function, or a misspelled attribute -- is refused before
+   the rows are consumed rather than run at a granularity of 1, which would
+   put a gridded device's job off its grid.
 
 
 .. py:function:: test_a_copied_split_is_checked_before_anything_runs() -> None

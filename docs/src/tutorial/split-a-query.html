@@ -260,7 +260,7 @@
   <section class="tex2jax_ignore mathjax_ignore" id="split-a-query-across-two-engines">
 <h1>Split a query across two engines<a class="headerlink" href="#split-a-query-across-two-engines" title="Link to this heading">¶</a></h1>
 <p>This tutorial runs one query on two engines at once and reads the result back as
-if nothing had been split. Both engines are plain Python functions here, so it
+if nothing had been split. Both engines are plain Python objects here, so it
 runs on any machine with <code class="docutils literal notranslate"><span class="pre">dau-scheduler</span></code> installed; the library never learns what
 is on either end.</p>
 <section id="a-query-and-its-rows">
@@ -276,10 +276,17 @@ untouched.</p>
 <h2>2. An arm<a class="headerlink" href="#an-arm" title="Link to this heading">¶</a></h2>
 <p>An arm is a callable that takes the query, the rows it owns and the broadcast
 side of a join (none here), and returns the partial answer an unsplit run would
-have produced for those rows.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">arm</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">build</span><span class="p">):</span>
-    <span class="n">kept</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">query</span><span class="p">[</span><span class="s2">"filter"</span><span class="p">](</span><span class="n">row</span><span class="p">)]</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s2">"revenue"</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">"revenue"</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">kept</span><span class="p">),</span> <span class="s2">"len"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">kept</span><span class="p">)}</span>
+have produced for those rows. The device arm also states <code class="docutils literal notranslate"><span class="pre">row_granularity</span></code>, the
+row multiple its jobs must sit on; this engine has no grid, so it states 1.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Arm</span><span class="p">:</span>
+    <span class="n">row_granularity</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">build</span><span class="p">):</span>
+        <span class="n">kept</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">query</span><span class="p">[</span><span class="s2">"filter"</span><span class="p">](</span><span class="n">row</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"revenue"</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">"revenue"</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">kept</span><span class="p">),</span> <span class="s2">"len"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">kept</span><span class="p">)}</span>
+
+
+<span class="n">arm</span> <span class="o">=</span> <span class="n">Arm</span><span class="p">()</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">rows</span></code> arrives as a row source. <code class="docutils literal notranslate"><span class="pre">rows.values()</span></code> is how an arm that needs the

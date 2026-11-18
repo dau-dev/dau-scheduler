@@ -51,6 +51,7 @@ Classes
 
 .. autoapisummary::
 
+   dau_scheduler.split.DeviceArm
    dau_scheduler.split.SplitExecution
 
 
@@ -66,6 +67,29 @@ Module Contents
 ---------------
 
 .. py:data:: SplitArm
+
+.. py:class:: DeviceArm
+
+   Bases: :py:obj:`Protocol`
+
+
+   The device's half of a split: a :data:`SplitArm` that also states
+   ``row_granularity``, the row multiple it can accept, for an engine whose
+   job length must sit on a fixed row grid (a transfer unit, a lane width).
+   An engine with no grid states 1.
+
+   The executor reads it off the arm rather than taking it as a parameter,
+   so the fact travels with the engine that has it and cannot be omitted by
+   a caller. It is required: an arm without it is refused rather than taken
+   at 1, since a misspelled attribute would put the device job off its grid.
+
+
+   .. py:attribute:: row_granularity
+      :type:  int
+
+
+   .. py:method:: __call__(query: Any, rows: dau_scheduler.rows.RowSource, build: dau_scheduler.rows.RowSource | None, /) -> Any
+
 
 .. py:class:: SplitExecution(/, **data: Any)
 
@@ -98,7 +122,7 @@ Module Contents
 
 
    .. py:attribute:: posture
-      :type:  str
+      :type:  dau_scheduler.posture.Posture
 
 
    .. py:attribute:: device_share
@@ -156,7 +180,7 @@ Module Contents
    .. py:method:: _figures_are_sane() -> SplitExecution
 
 
-.. py:function:: execute_split(query: Any, rows: dau_scheduler.rows.RowSource | collections.abc.Iterable[Any], split: dau_scheduler.posture.WorkSplit, merge: dau_scheduler.merge.MergeRule, *, device: SplitArm, host: SplitArm, build_rows: dau_scheduler.rows.RowSource | collections.abc.Iterable[Any] | None = None, aggregates: collections.abc.Iterable[tuple[str, str]] = ()) -> SplitExecution
+.. py:function:: execute_split(query: Any, rows: dau_scheduler.rows.RowSource | collections.abc.Iterable[Any], split: dau_scheduler.posture.WorkSplit, merge: dau_scheduler.merge.MergeRule, *, device: DeviceArm, host: SplitArm, build_rows: dau_scheduler.rows.RowSource | collections.abc.Iterable[Any] | None = None, aggregates: collections.abc.Iterable[tuple[str, str]] = ()) -> SplitExecution
 
    Run ``split``'s share of the rows on one engine and the rest on the
    other, at the same time, and merge the partials into the query's answer.
@@ -181,8 +205,8 @@ Module Contents
    ``merge`` before anything runs (see
    :func:`dau_scheduler.merge.check_split`).
 
-   A ``device`` arm carrying ``row_granularity`` (see :data:`SplitArm`) can
-   only take a row count that divides it -- an engine whose job length must
+   The ``device`` arm states ``row_granularity`` (see :class:`DeviceArm`)
+   and can only take a row count that divides it -- an engine whose job length must
    sit on a fixed row grid. The boundary is snapped to the nearest such multiple
    and the count actually given is reported as ``device_rows``. It is an
    execution fact about the engine, not part of the share the planner

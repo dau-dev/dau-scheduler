@@ -30,10 +30,12 @@ it. An arm with no rows is not launched.
 `build_rows` is the broadcast side of a join, handed to both arms whole.
 `aggregates` is checked against `merge` before anything runs.
 
-A device arm with a `row_granularity` attribute takes a row count that divides
-it; the boundary is snapped to the nearest multiple and the count given is
-reported as `device_rows`. It rides the arm, not the split, because it is a
-fact about the engine rather than part of the share the planner chose.
+The device arm is a `DeviceArm`: an arm that also states `row_granularity`, the
+row multiple it can take (1 for an engine with no grid). The boundary is snapped
+to the nearest multiple and the count given is reported as `device_rows`. It
+rides the arm, not the split, because it is a fact about the engine rather than
+part of the share the planner chose. A device arm that does not state it is
+refused with `SplitError` before either arm starts.
 
 ## `SplitExecution`
 

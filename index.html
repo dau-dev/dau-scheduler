@@ -305,8 +305,14 @@ here knows what is on the other end.</p>
 </section>
 <section id="install">
 <h2>Install<a class="headerlink" href="#install" title="Link to this heading">¶</a></h2>
-<p>Python 3.12 or newer, and pydantic; nothing else.</p>
+<p>Python 3.12 or newer.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>dau-scheduler
+</pre></div>
+</div>
+<p>For development:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/dau-dev/dau-scheduler.git
+<span class="nb">cd</span><span class="w"> </span>dau-scheduler
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">".[develop]"</span>
 </pre></div>
 </div>
 </section>
@@ -314,18 +320,25 @@ here knows what is on the other end.</p>
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
 <p>An arm is a callable. It is handed the query, the rows it owns, and the
 broadcast side of a join if there is one, and it returns the partial result an
-unsplit run would have produced for those rows. Both arms below are the same
-plain-Python function, because the executor never learns what is on either end
-of the seam.</p>
+unsplit run would have produced for those rows. The device arm also states
+<code class="docutils literal notranslate"><span class="pre">row_granularity</span></code>, the row multiple its jobs must sit on (1 for an engine with
+no grid). Both arms below are the same plain-Python object, because the
+executor never learns what is on either end of the seam.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dau_scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="n">ADDITIVE</span><span class="p">,</span> <span class="n">MergeRule</span><span class="p">,</span> <span class="n">execute_split</span><span class="p">,</span> <span class="n">merge_totals</span><span class="p">,</span> <span class="n">plan_split</span>
 
 <span class="n">query</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"filter"</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">"day"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">}</span>
 <span class="n">rows</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">"revenue"</span><span class="p">:</span> <span class="p">(</span><span class="n">seed</span> <span class="o">*</span> <span class="mi">31</span><span class="p">)</span> <span class="o">%</span> <span class="mi">1000</span><span class="p">,</span> <span class="s2">"day"</span><span class="p">:</span> <span class="n">seed</span> <span class="o">%</span> <span class="mi">60</span><span class="p">}</span> <span class="k">for</span> <span class="n">seed</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100_000</span><span class="p">)]</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">arm</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">build</span><span class="p">):</span>
-    <span class="n">kept</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">query</span><span class="p">[</span><span class="s2">"filter"</span><span class="p">](</span><span class="n">row</span><span class="p">)]</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s2">"revenue"</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">"revenue"</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">kept</span><span class="p">),</span> <span class="s2">"len"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">kept</span><span class="p">)}</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Arm</span><span class="p">:</span>
+    <span class="n">row_granularity</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">build</span><span class="p">):</span>
+        <span class="n">kept</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">query</span><span class="p">[</span><span class="s2">"filter"</span><span class="p">](</span><span class="n">row</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"revenue"</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">"revenue"</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">kept</span><span class="p">),</span> <span class="s2">"len"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">kept</span><span class="p">)}</span>
+
+
+<span class="n">arm</span> <span class="o">=</span> <span class="n">Arm</span><span class="p">()</span>
 
 
 <span class="c1"># how much each engine gets, from one whole-query estimate per engine</span>
@@ -377,10 +390,16 @@ the caller’s back.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dau_scheduler</span><span class="w"> </span><span class="kn">import</span> <span class="n">RowRange</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">resident_arm</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">build</span><span class="p">):</span>
-    <span class="c1"># an engine that holds the table: it reads the offset and the length,</span>
-    <span class="c1"># never a row</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s2">"revenue"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"len"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)}</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ResidentArm</span><span class="p">:</span>
+    <span class="n">row_granularity</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">build</span><span class="p">):</span>
+        <span class="c1"># an engine that holds the table: it reads the offset and the length,</span>
+        <span class="c1"># never a row</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"revenue"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"len"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)}</span>
+
+
+<span class="n">resident_arm</span> <span class="o">=</span> <span class="n">ResidentArm</span><span class="p">()</span>
 
 
 <span class="n">execute_split</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">RowRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6_000_000</span><span class="p">),</span> <span class="n">split</span><span class="p">,</span> <span class="n">merge</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">resident_arm</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">resident_arm</span><span class="p">)</span>

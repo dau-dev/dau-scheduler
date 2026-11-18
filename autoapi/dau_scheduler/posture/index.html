@@ -406,7 +406,7 @@ first rather than running beside it.</p>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="dau_scheduler.posture.POSTURES">
-<span class="sig-prename descclassname"><span class="pre">dau_scheduler.posture.</span></span><span class="sig-name descname"><span class="pre">POSTURES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('cpu',</span> <span class="pre">'offload',</span> <span class="pre">'collaborative',</span> <span class="pre">'adaptive')</span></em><a class="headerlink" href="#dau_scheduler.posture.POSTURES" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.posture.</span></span><span class="sig-name descname"><span class="pre">POSTURES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dau_scheduler.posture.POSTURES" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py class">
@@ -441,7 +441,7 @@ validated to form a valid model.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dau_scheduler.posture.WorkSplit.posture">
-<span class="sig-name descname"><span class="pre">posture</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#dau_scheduler.posture.WorkSplit.posture" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">posture</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Posture</span></em><a class="headerlink" href="#dau_scheduler.posture.WorkSplit.posture" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -462,7 +462,7 @@ validated to form a valid model.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="dau_scheduler.posture.WorkSplit.check">
 <span class="sig-name descname"><span class="pre">check</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.posture.WorkSplit" title="dau_scheduler.posture.WorkSplit"><span class="pre">WorkSplit</span></a></span></span><a class="reference internal" href="../../../_modules/dau_scheduler/posture.html#WorkSplit.check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.posture.WorkSplit.check" title="Link to this definition">¶</a></dt>
-<dd><p>Re-run the invariants and return <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<dd><p>Re-run validation and return <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
 <p>Construction validates, but <code class="docutils literal notranslate"><span class="pre">model_copy(update=...)</span></code> does not, so
 every consumer calls this before acting on a split rather than
 trusting that the instance it was handed went through <code class="docutils literal notranslate"><span class="pre">__init__</span></code>.</p>

@@ -701,8 +701,9 @@ window.runMermaid = runMermaid;</script>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Sequence</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Sequence</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">types</span><span class="w"> </span><span class="kn">import</span> <span class="n">MappingProxyType</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">SplitError</span>
@@ -738,13 +739,15 @@ window.runMermaid = runMermaid;</script>
 <span class="c1"># Why a named aggregate cannot be merged, in the words the caller needs to fix</span>
 <span class="c1"># it. Anything not here gets the generic refusal, which still names the</span>
 <span class="c1"># aggregate and the result shape it was asked of.</span>
-<span class="n">AGGREGATE_REFUSALS</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">"mean"</span><span class="p">:</span> <span class="s2">"a mean is not row-partitionable; carry the sum and the count as separate outputs and divide after the merge"</span><span class="p">,</span>
-    <span class="s2">"n_unique"</span><span class="p">:</span> <span class="s2">"an exact distinct count is not row-partitionable: counts over disjoint ranges cannot be combined without the elements themselves"</span><span class="p">,</span>
-    <span class="s2">"median"</span><span class="p">:</span> <span class="s2">"a median is not row-partitionable: an order statistic of the whole needs the values, not two partial answers"</span><span class="p">,</span>
-    <span class="s2">"std"</span><span class="p">:</span> <span class="s2">"a standard deviation is not row-partitionable; carry count, sum and sum-of-squares and derive it after the merge"</span><span class="p">,</span>
-    <span class="s2">"var"</span><span class="p">:</span> <span class="s2">"a variance is not row-partitionable; carry count, sum and sum-of-squares and derive it after the merge"</span><span class="p">,</span>
-<span class="p">}</span>
+<span class="n">AGGREGATE_REFUSALS</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">MappingProxyType</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">"mean"</span><span class="p">:</span> <span class="s2">"a mean is not row-partitionable; carry the sum and the count as separate outputs and divide after the merge"</span><span class="p">,</span>
+        <span class="s2">"n_unique"</span><span class="p">:</span> <span class="s2">"an exact distinct count is not row-partitionable: counts over disjoint ranges cannot be combined without the elements themselves"</span><span class="p">,</span>
+        <span class="s2">"median"</span><span class="p">:</span> <span class="s2">"a median is not row-partitionable: an order statistic of the whole needs the values, not two partial answers"</span><span class="p">,</span>
+        <span class="s2">"std"</span><span class="p">:</span> <span class="s2">"a standard deviation is not row-partitionable; carry count, sum and sum-of-squares and derive it after the merge"</span><span class="p">,</span>
+        <span class="s2">"var"</span><span class="p">:</span> <span class="s2">"a variance is not row-partitionable; carry count, sum and sum-of-squares and derive it after the merge"</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_no_combine</span><span class="p">(</span><span class="n">_partials</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
