@@ -55,6 +55,14 @@ Python 3.12 or newer.
 pip install dau-scheduler
 ```
 
+For development:
+
+```bash
+git clone https://github.com/dau-dev/dau-scheduler.git
+cd dau-scheduler
+pip install -e ".[develop]"
+```
+
 ## Usage
 
 An arm is a callable. It is handed the query, the rows it owns, and the
