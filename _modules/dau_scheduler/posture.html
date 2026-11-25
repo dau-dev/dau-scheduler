@@ -542,13 +542,13 @@ window.runMermaid = runMermaid;</script>
     </a>
   </li>
   <li class="fd-tree-item">
-    <a class="fd-link" href="../../autoapi/test_merge/index.html">
-      <span class="fd-link-text">test_merge</span>
+    <a class="fd-link" href="../../autoapi/test_split/index.html">
+      <span class="fd-link-text">test_split</span>
     </a>
   </li>
   <li class="fd-tree-item">
-    <a class="fd-link" href="../../autoapi/test_split/index.html">
-      <span class="fd-link-text">test_split</span>
+    <a class="fd-link" href="../../autoapi/test_merge/index.html">
+      <span class="fd-link-text">test_merge</span>
     </a>
   </li>
   <li class="fd-tree-item">
@@ -681,7 +681,8 @@ window.runMermaid = runMermaid;</script>
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">get_args</span><span class="p">,</span> <span class="n">runtime_checkable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrEnum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Protocol</span><span class="p">,</span> <span class="n">runtime_checkable</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">model_validator</span>
 
@@ -689,9 +690,22 @@ window.runMermaid = runMermaid;</script>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"POSTURES"</span><span class="p">,</span> <span class="s2">"HostCost"</span><span class="p">,</span> <span class="s2">"Posture"</span><span class="p">,</span> <span class="s2">"PostureError"</span><span class="p">,</span> <span class="s2">"WorkSplit"</span><span class="p">,</span> <span class="s2">"batch_count"</span><span class="p">,</span> <span class="s2">"plan_split"</span><span class="p">)</span>
 
-<span class="n">Posture</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"cpu"</span><span class="p">,</span> <span class="s2">"offload"</span><span class="p">,</span> <span class="s2">"collaborative"</span><span class="p">,</span> <span class="s2">"adaptive"</span><span class="p">]</span>
 
-<span class="n">POSTURES</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_args</span><span class="p">(</span><span class="n">Posture</span><span class="p">)</span>
+<div class="viewcode-block" id="Posture">
+<a class="viewcode-back" href="../../autoapi/dau_scheduler/posture/index.html#dau_scheduler.Posture">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Posture</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""How a query's work divides between the host and the second engine.</span>
+<span class="sd">    A member equals its value, so ``"adaptive"`` is accepted wherever a</span>
+<span class="sd">    posture is."""</span>
+
+    <span class="n">CPU</span> <span class="o">=</span> <span class="s2">"cpu"</span>
+    <span class="n">OFFLOAD</span> <span class="o">=</span> <span class="s2">"offload"</span>
+    <span class="n">COLLABORATIVE</span> <span class="o">=</span> <span class="s2">"collaborative"</span>
+    <span class="n">ADAPTIVE</span> <span class="o">=</span> <span class="s2">"adaptive"</span></div>
+
+
+
+<span class="n">POSTURES</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Posture</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">Posture</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="HostCost">
@@ -753,7 +767,7 @@ window.runMermaid = runMermaid;</script>
 <div class="viewcode-block" id="plan_split">
 <a class="viewcode-back" href="../../autoapi/dau_scheduler/posture/index.html#dau_scheduler.plan_split">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">plan_split</span><span class="p">(</span>
-    <span class="n">posture</span><span class="p">:</span> <span class="n">Posture</span> <span class="o">=</span> <span class="s2">"collaborative"</span><span class="p">,</span>
+    <span class="n">posture</span><span class="p">:</span> <span class="n">Posture</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Posture</span><span class="o">.</span><span class="n">COLLABORATIVE</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">cpu_seconds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">device_seconds</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -798,12 +812,16 @@ window.runMermaid = runMermaid;</script>
 <span class="sd">    device job leaves the device the whole query.</span>
 <span class="sd">    """</span>
     <span class="n">host_fixed_seconds</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">posture</span> <span class="o">=</span> <span class="n">Posture</span><span class="p">(</span><span class="n">posture</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PostureError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"unknown posture </span><span class="si">{</span><span class="n">posture</span><span class="si">!r}</span><span class="s2">; known: </span><span class="si">{</span><span class="p">[</span><span class="n">known</span><span class="o">.</span><span class="n">value</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">known</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">POSTURES</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
     <span class="k">if</span> <span class="n">cpu_seconds</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">profile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">rows</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"a profile prices a row count; pass rows= alongside profile="</span><span class="p">)</span>
         <span class="n">cpu_seconds</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
         <span class="n">host_fixed_seconds</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">estimate</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">cpu_seconds</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">posture</span> <span class="o">==</span> <span class="s2">"cpu"</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">posture</span> <span class="ow">is</span> <span class="n">Posture</span><span class="o">.</span><span class="n">CPU</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">WorkSplit</span><span class="p">(</span>
             <span class="n">posture</span><span class="o">=</span><span class="n">posture</span><span class="p">,</span>
             <span class="n">device_share</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
@@ -811,7 +829,7 @@ window.runMermaid = runMermaid;</script>
             <span class="n">predicted_speedup</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">posture</span> <span class="o">==</span> <span class="s2">"offload"</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">posture</span> <span class="ow">is</span> <span class="n">Posture</span><span class="o">.</span><span class="n">OFFLOAD</span><span class="p">:</span>
         <span class="c1"># NOT the wall-clock optimum, and deliberately so: this posture</span>
         <span class="c1"># minimizes host occupancy, which is a different objective. It costs</span>
         <span class="c1"># real speedup against `collaborative` and buys back the whole host.</span>
@@ -823,7 +841,7 @@ window.runMermaid = runMermaid;</script>
             <span class="n">predicted_speedup</span><span class="o">=</span><span class="n">speedup</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">posture</span> <span class="o">==</span> <span class="s2">"collaborative"</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">posture</span> <span class="ow">is</span> <span class="n">Posture</span><span class="o">.</span><span class="n">COLLABORATIVE</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">cpu_seconds</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">device_seconds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">PostureError</span><span class="p">(</span>
                 <span class="s2">"collaborative needs whole-query estimates for both engines (cpu_seconds, device_seconds). "</span>
@@ -837,7 +855,7 @@ window.runMermaid = runMermaid;</script>
         <span class="n">share</span> <span class="o">=</span> <span class="p">(</span><span class="n">cpu_seconds</span> <span class="o">-</span> <span class="n">device_fixed_seconds</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">cpu_seconds</span> <span class="o">-</span> <span class="n">host_fixed_seconds</span> <span class="o">+</span> <span class="n">device_seconds</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">share</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">WorkSplit</span><span class="p">(</span>
-                <span class="n">posture</span><span class="o">=</span><span class="s2">"cpu"</span><span class="p">,</span>
+                <span class="n">posture</span><span class="o">=</span><span class="n">Posture</span><span class="o">.</span><span class="n">CPU</span><span class="p">,</span>
                 <span class="n">device_share</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
                 <span class="n">rationale</span><span class="o">=</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">"no share beats the host alone: one device job costs </span><span class="si">{</span><span class="n">device_fixed_seconds</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1e3</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms before its first row "</span>
@@ -847,7 +865,7 @@ window.runMermaid = runMermaid;</script>
             <span class="p">)</span>
         <span class="k">if</span> <span class="n">share</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">WorkSplit</span><span class="p">(</span>
-                <span class="n">posture</span><span class="o">=</span><span class="s2">"offload"</span><span class="p">,</span>
+                <span class="n">posture</span><span class="o">=</span><span class="n">Posture</span><span class="o">.</span><span class="n">OFFLOAD</span><span class="p">,</span>
                 <span class="n">device_share</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
                 <span class="n">rationale</span><span class="o">=</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">"no share beats the device alone: the host costs </span><span class="si">{</span><span class="n">host_fixed_seconds</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mf">1e3</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms before its first row "</span>
@@ -867,19 +885,17 @@ window.runMermaid = runMermaid;</script>
             <span class="n">predicted_speedup</span><span class="o">=</span><span class="n">cpu_seconds</span> <span class="o">/</span> <span class="n">wall</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">posture</span> <span class="o">==</span> <span class="s2">"adaptive"</span><span class="p">:</span>
-        <span class="c1"># A refusal, not an unfinished branch: adaptive chooses a BOUNDARY</span>
-        <span class="c1"># in the plan rather than a row share, so it cannot be expressed as</span>
-        <span class="c1"># a WorkSplit and needs inputs this signature does not carry</span>
-        <span class="c1"># (candidate cuts and a per-node cost). The consumer that holds the</span>
-        <span class="c1"># plan answers it; answering it here with a row split would silently</span>
-        <span class="c1"># substitute a different decision.</span>
-        <span class="k">raise</span> <span class="n">PostureError</span><span class="p">(</span>
-            <span class="s2">"adaptive is not a row split: it chooses where to cut the plan, which needs candidate cuts and a "</span>
-            <span class="s2">"profiled per-node cost rather than two whole-query figures; plan it where the plan is"</span>
-        <span class="p">)</span>
-
-    <span class="k">raise</span> <span class="n">PostureError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"unknown posture </span><span class="si">{</span><span class="n">posture</span><span class="si">!r}</span><span class="s2">; known: </span><span class="si">{</span><span class="n">POSTURES</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
+    <span class="c1"># What is left is adaptive.</span>
+    <span class="c1"># A refusal, not an unfinished branch: adaptive chooses a BOUNDARY</span>
+    <span class="c1"># in the plan rather than a row share, so it cannot be expressed as</span>
+    <span class="c1"># a WorkSplit and needs inputs this signature does not carry</span>
+    <span class="c1"># (candidate cuts and a per-node cost). The consumer that holds the</span>
+    <span class="c1"># plan answers it; answering it here with a row split would silently</span>
+    <span class="c1"># substitute a different decision.</span>
+    <span class="k">raise</span> <span class="n">PostureError</span><span class="p">(</span>
+        <span class="s2">"adaptive is not a row split: it chooses where to cut the plan, which needs candidate cuts and a "</span>
+        <span class="s2">"profiled per-node cost rather than two whole-query figures; plan it where the plan is"</span>
+    <span class="p">)</span></div>
 
 
 

@@ -23,6 +23,7 @@ Functions
 .. autoapisummary::
 
    test_posture.test_cpu_and_offload_need_no_estimates
+   test_posture.test_a_posture_is_an_enum_member_and_its_name_is_accepted
    test_posture.test_collaborative_balances_the_engines
    test_posture.test_the_closed_form_lands_on_a_measured_optimum
    test_posture.test_a_split_pays_least_when_one_engine_dominates
@@ -58,6 +59,8 @@ Module Contents
    The definitional postures are the point of offering them: a caller who
    will not pay for cost estimation can still state an intent.
 
+
+.. py:function:: test_a_posture_is_an_enum_member_and_its_name_is_accepted() -> None
 
 .. py:function:: test_collaborative_balances_the_engines() -> None
 

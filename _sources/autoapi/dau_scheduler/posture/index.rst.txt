@@ -47,7 +47,6 @@ Attributes
 
 .. autoapisummary::
 
-   dau_scheduler.posture.Posture
    dau_scheduler.posture.POSTURES
 
 
@@ -64,6 +63,7 @@ Classes
 
 .. autoapisummary::
 
+   dau_scheduler.posture.Posture
    dau_scheduler.posture.HostCost
    dau_scheduler.posture.WorkSplit
 
@@ -90,10 +90,40 @@ Module Contents
    Initialize self.  See help(type(self)) for accurate signature.
 
 
-.. py:data:: Posture
+.. py:class:: Posture
+
+   Bases: :py:obj:`enum.StrEnum`
+
+
+   How a query's work divides between the host and the second engine.
+   A member equals its value, so ``"adaptive"`` is accepted wherever a
+   posture is.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. py:attribute:: CPU
+      :value: 'cpu'
+
+
+
+   .. py:attribute:: OFFLOAD
+      :value: 'offload'
+
+
+
+   .. py:attribute:: COLLABORATIVE
+      :value: 'collaborative'
+
+
+
+   .. py:attribute:: ADAPTIVE
+      :value: 'adaptive'
+
+
 
 .. py:data:: POSTURES
-   :type:  tuple[str, ...]
+   :type:  tuple[Posture, ...]
 
 .. py:class:: HostCost
 
@@ -162,7 +192,7 @@ Module Contents
    .. py:method:: _share_is_a_fraction() -> WorkSplit
 
 
-.. py:function:: plan_split(posture: Posture = 'collaborative', *, cpu_seconds: float | None = None, device_seconds: float | None = None, profile: HostCost | None = None, rows: int | None = None, device_fixed_seconds: float = 0.0) -> WorkSplit
+.. py:function:: plan_split(posture: Posture | str = Posture.COLLABORATIVE, *, cpu_seconds: float | None = None, device_seconds: float | None = None, profile: HostCost | None = None, rows: int | None = None, device_fixed_seconds: float = 0.0) -> WorkSplit
 
    Resolve a posture into a row split.
 

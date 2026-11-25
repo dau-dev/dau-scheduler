@@ -138,13 +138,13 @@
     </a>
   </li>
   <li class="fd-tree-item">
-    <a class="fd-link" href="../test_merge/index.html">
-      <span class="fd-link-text">test_merge</span>
+    <a class="fd-link" href="../test_split/index.html">
+      <span class="fd-link-text">test_split</span>
     </a>
   </li>
   <li class="fd-tree-item">
-    <a class="fd-link" href="../test_split/index.html">
-      <span class="fd-link-text">test_split</span>
+    <a class="fd-link" href="../test_merge/index.html">
+      <span class="fd-link-text">test_merge</span>
     </a>
   </li>
   <li class="fd-tree-item">
@@ -318,6 +318,18 @@
   </li>
   <li class="fd-toc-item" data-depth="2">
     <a href="#dau_scheduler.Posture">Posture</a>
+  </li>
+  <li class="fd-toc-item" data-depth="3">
+    <a href="#dau_scheduler.Posture.CPU">Posture.CPU</a>
+  </li>
+  <li class="fd-toc-item" data-depth="3">
+    <a href="#dau_scheduler.Posture.OFFLOAD">Posture.OFFLOAD</a>
+  </li>
+  <li class="fd-toc-item" data-depth="3">
+    <a href="#dau_scheduler.Posture.COLLABORATIVE">Posture.COLLABORATIVE</a>
+  </li>
+  <li class="fd-toc-item" data-depth="3">
+    <a href="#dau_scheduler.Posture.ADAPTIVE">Posture.ADAPTIVE</a>
   </li>
   <li class="fd-toc-item" data-depth="2">
     <a href="#dau_scheduler.WorkSplit">WorkSplit</a>
@@ -666,10 +678,7 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.POSTURES" title="dau_scheduler.POSTURES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">POSTURES</span></code></a></p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.Posture" title="dau_scheduler.Posture"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Posture</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.SplitArm" title="dau_scheduler.SplitArm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SplitArm</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.SplitArm" title="dau_scheduler.SplitArm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SplitArm</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -698,34 +707,37 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.HostCost" title="dau_scheduler.HostCost"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HostCost</span></code></a></p></td>
 <td><p>Anything that can price a row count on the engine the caller is on.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.WorkSplit" title="dau_scheduler.WorkSplit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WorkSplit</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.Posture" title="dau_scheduler.Posture"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Posture</span></code></a></p></td>
+<td><p>How a query's work divides between the host and the second engine.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.WorkSplit" title="dau_scheduler.WorkSplit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WorkSplit</span></code></a></p></td>
 <td><p>How one query's rows divide between the two engines.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.LinkRate" title="dau_scheduler.LinkRate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LinkRate</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.LinkRate" title="dau_scheduler.LinkRate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LinkRate</span></code></a></p></td>
 <td><p>The measured host-to-device transfer rate of one link: the term the</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.NodeCost" title="dau_scheduler.NodeCost"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NodeCost</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.NodeCost" title="dau_scheduler.NodeCost"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NodeCost</span></code></a></p></td>
 <td><p>One plan node's measured cost, and whether it scales with rows.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.ProfileCache" title="dau_scheduler.ProfileCache"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProfileCache</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.ProfileCache" title="dau_scheduler.ProfileCache"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProfileCache</span></code></a></p></td>
 <td><p>Profiles on disk, keyed by plan and host, and link rates keyed by</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.QueryProfile" title="dau_scheduler.QueryProfile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QueryProfile</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.QueryProfile" title="dau_scheduler.QueryProfile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QueryProfile</span></code></a></p></td>
 <td><p>A measured host cost for one plan on one host.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.RowBatch" title="dau_scheduler.RowBatch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RowBatch</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.RowBatch" title="dau_scheduler.RowBatch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RowBatch</span></code></a></p></td>
 <td><p>Rows the caller has already materialized: the offsets AND the values.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.RowRange" title="dau_scheduler.RowRange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RowRange</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.RowRange" title="dau_scheduler.RowRange"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RowRange</span></code></a></p></td>
 <td><p>Rows named by their offsets in the table, and nothing else.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.RowSource" title="dau_scheduler.RowSource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RowSource</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.RowSource" title="dau_scheduler.RowSource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RowSource</span></code></a></p></td>
 <td><p>The rows one arm owns, named by offset and optionally by value.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.DeviceArm" title="dau_scheduler.DeviceArm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DeviceArm</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.DeviceArm" title="dau_scheduler.DeviceArm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DeviceArm</span></code></a></p></td>
 <td><p>The device's half of a split: a <a class="reference internal" href="#dau_scheduler.SplitArm" title="dau_scheduler.SplitArm"><code class="xref py py-data docutils literal notranslate"><span class="pre">SplitArm</span></code></a> that also states</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#dau_scheduler.SplitExecution" title="dau_scheduler.SplitExecution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SplitExecution</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#dau_scheduler.SplitExecution" title="dau_scheduler.SplitExecution"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SplitExecution</span></code></a></p></td>
 <td><p>One executed split: what each engine ran, how long, and the answer.</p></td>
 </tr>
 </tbody>
@@ -933,7 +945,7 @@ anything, and it would look exactly like a total.</p>
 
 <dl class="py data">
 <dt class="sig sig-object py" id="dau_scheduler.POSTURES">
-<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">POSTURES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dau_scheduler.POSTURES" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">POSTURES</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#dau_scheduler.Posture" title="dau_scheduler.Posture"><span class="pre">Posture</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#dau_scheduler.POSTURES" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py class">
@@ -951,10 +963,35 @@ instead.</p>
 
 </dd></dl>
 
-<dl class="py data">
+<dl class="py class">
 <dt class="sig sig-object py" id="dau_scheduler.Posture">
-<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">Posture</span></span><a class="headerlink" href="#dau_scheduler.Posture" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">Posture</span></span><a class="reference internal" href="../../_modules/dau_scheduler/posture.html#Posture"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.Posture" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">enum.StrEnum</span></code></p>
+<p>How a query’s work divides between the host and the second engine.
+A member equals its value, so <code class="docutils literal notranslate"><span class="pre">&quot;adaptive&quot;</span></code> is accepted wherever a
+posture is.</p>
+<p>Initialize self.  See help(type(self)) for accurate signature.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.Posture.CPU">
+<span class="sig-name descname"><span class="pre">CPU</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'cpu'</span></em><a class="headerlink" href="#dau_scheduler.Posture.CPU" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.Posture.OFFLOAD">
+<span class="sig-name descname"><span class="pre">OFFLOAD</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'offload'</span></em><a class="headerlink" href="#dau_scheduler.Posture.OFFLOAD" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.Posture.COLLABORATIVE">
+<span class="sig-name descname"><span class="pre">COLLABORATIVE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'collaborative'</span></em><a class="headerlink" href="#dau_scheduler.Posture.COLLABORATIVE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dau_scheduler.Posture.ADAPTIVE">
+<span class="sig-name descname"><span class="pre">ADAPTIVE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'adaptive'</span></em><a class="headerlink" href="#dau_scheduler.Posture.ADAPTIVE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="dau_scheduler.WorkSplit">
@@ -973,7 +1010,7 @@ validated to form a valid model.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dau_scheduler.WorkSplit.posture">
-<span class="sig-name descname"><span class="pre">posture</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Posture</span></em><a class="headerlink" href="#dau_scheduler.WorkSplit.posture" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">posture</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#dau_scheduler.Posture" title="dau_scheduler.Posture"><span class="pre">Posture</span></a></em><a class="headerlink" href="#dau_scheduler.WorkSplit.posture" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1053,7 +1090,7 @@ generalize and the measured knee is the honest thing to encode. At a
 
 <dl class="py function">
 <dt class="sig sig-object py" id="dau_scheduler.plan_split">
-<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">plan_split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">posture</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Posture</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'collaborative'</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpu_seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#dau_scheduler.HostCost" title="dau_scheduler.HostCost"><span class="pre">HostCost</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_fixed_seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.WorkSplit" title="dau_scheduler.WorkSplit"><span class="pre">WorkSplit</span></a></span></span><a class="reference internal" href="../../_modules/dau_scheduler/posture.html#plan_split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.plan_split" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">dau_scheduler.</span></span><span class="sig-name descname"><span class="pre">plan_split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">posture</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#dau_scheduler.Posture" title="dau_scheduler.Posture"><span class="pre">Posture</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Posture.COLLABORATIVE</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpu_seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#dau_scheduler.HostCost" title="dau_scheduler.HostCost"><span class="pre">HostCost</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device_fixed_seconds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#dau_scheduler.WorkSplit" title="dau_scheduler.WorkSplit"><span class="pre">WorkSplit</span></a></span></span><a class="reference internal" href="../../_modules/dau_scheduler/posture.html#plan_split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dau_scheduler.plan_split" title="Link to this definition">¶</a></dt>
 <dd><p>Resolve a posture into a row split.</p>
 <p><code class="docutils literal notranslate"><span class="pre">cpu_seconds</span></code> and <code class="docutils literal notranslate"><span class="pre">device_seconds</span></code> are whole-query estimates for each
 engine alone. Only <code class="docutils literal notranslate"><span class="pre">collaborative</span></code> needs them; the other postures are
@@ -1602,7 +1639,7 @@ validated to form a valid model.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="dau_scheduler.SplitExecution.posture">
-<span class="sig-name descname"><span class="pre">posture</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dau_scheduler.posture.Posture</span></em><a class="headerlink" href="#dau_scheduler.SplitExecution.posture" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">posture</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="posture/index.html#dau_scheduler.posture.Posture" title="dau_scheduler.posture.Posture"><span class="pre">dau_scheduler.posture.Posture</span></a></em><a class="headerlink" href="#dau_scheduler.SplitExecution.posture" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -1827,6 +1864,18 @@ chose, which is why it rides the arm rather than the
   </li>
   <li class="fd-toc-item" data-depth="2">
     <a href="#dau_scheduler.Posture">Posture</a>
+  </li>
+  <li class="fd-toc-item" data-depth="3">
+    <a href="#dau_scheduler.Posture.CPU">Posture.CPU</a>
+  </li>
+  <li class="fd-toc-item" data-depth="3">
+    <a href="#dau_scheduler.Posture.OFFLOAD">Posture.OFFLOAD</a>
+  </li>
+  <li class="fd-toc-item" data-depth="3">
+    <a href="#dau_scheduler.Posture.COLLABORATIVE">Posture.COLLABORATIVE</a>
+  </li>
+  <li class="fd-toc-item" data-depth="3">
+    <a href="#dau_scheduler.Posture.ADAPTIVE">Posture.ADAPTIVE</a>
   </li>
   <li class="fd-toc-item" data-depth="2">
     <a href="#dau_scheduler.WorkSplit">WorkSplit</a>
