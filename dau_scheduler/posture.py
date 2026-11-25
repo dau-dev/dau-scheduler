@@ -37,7 +37,8 @@ first rather than running beside it.
 from __future__ import annotations
 
 import math
-from typing import ClassVar, Literal, Protocol, get_args, runtime_checkable
+from enum import StrEnum
+from typing import ClassVar, Protocol, runtime_checkable
 
 from pydantic import BaseModel, model_validator
 
@@ -45,9 +46,19 @@ from .errors import PostureError
 
 __all__ = ("POSTURES", "HostCost", "Posture", "PostureError", "WorkSplit", "batch_count", "plan_split")
 
-Posture = Literal["cpu", "offload", "collaborative", "adaptive"]
 
-POSTURES: tuple[str, ...] = get_args(Posture)
+class Posture(StrEnum):
+    """How a query's work divides between the host and the second engine.
+    A member equals its value, so ``"adaptive"`` is accepted wherever a
+    posture is."""
+
+    CPU = "cpu"
+    OFFLOAD = "offload"
+    COLLABORATIVE = "collaborative"
+    ADAPTIVE = "adaptive"
+
+
+POSTURES: tuple[Posture, ...] = tuple(Posture)
 
 
 @runtime_checkable
@@ -92,7 +103,7 @@ class WorkSplit(BaseModel):
 
 
 def plan_split(
-    posture: Posture = "collaborative",
+    posture: Posture | str = Posture.COLLABORATIVE,
     *,
     cpu_seconds: float | None = None,
     device_seconds: float | None = None,
@@ -137,12 +148,16 @@ def plan_split(
     device job leaves the device the whole query.
     """
     host_fixed_seconds = 0.0
+    try:
+        posture = Posture(posture)
+    except ValueError:
+        raise PostureError(f"unknown posture {posture!r}; known: {[known.value for known in POSTURES]}") from None
     if cpu_seconds is None and profile is not None:
         if rows is None:
             raise ValueError("a profile prices a row count; pass rows= alongside profile=")
         cpu_seconds = profile.estimate(rows)
         host_fixed_seconds = min(profile.estimate(0), cpu_seconds)
-    if posture == "cpu":
+    if posture is Posture.CPU:
         return WorkSplit(
             posture=posture,
             device_share=0.0,
@@ -150,7 +165,7 @@ def plan_split(
             predicted_speedup=1.0,
         )
 
-    if posture == "offload":
+    if posture is Posture.OFFLOAD:
         # NOT the wall-clock optimum, and deliberately so: this posture
         # minimizes host occupancy, which is a different objective. It costs
         # real speedup against `collaborative` and buys back the whole host.
@@ -162,7 +177,7 @@ def plan_split(
             predicted_speedup=speedup,
         )
 
-    if posture == "collaborative":
+    if posture is Posture.COLLABORATIVE:
         if cpu_seconds is None or device_seconds is None:
             raise PostureError(
                 "collaborative needs whole-query estimates for both engines (cpu_seconds, device_seconds). "
@@ -176,7 +191,7 @@ def plan_split(
         share = (cpu_seconds - device_fixed_seconds) / (cpu_seconds - host_fixed_seconds + device_seconds)
         if share <= 0:
             return WorkSplit(
-                posture="cpu",
+                posture=Posture.CPU,
                 device_share=0.0,
                 rationale=(
                     f"no share beats the host alone: one device job costs {device_fixed_seconds * 1e3:.2f} ms before its first row "
@@ -186,7 +201,7 @@ def plan_split(
             )
         if share >= 1:
             return WorkSplit(
-                posture="offload",
+                posture=Posture.OFFLOAD,
                 device_share=1.0,
                 rationale=(
                     f"no share beats the device alone: the host costs {host_fixed_seconds * 1e3:.2f} ms before its first row "
@@ -206,19 +221,17 @@ def plan_split(
             predicted_speedup=cpu_seconds / wall,
         )
 
-    if posture == "adaptive":
-        # A refusal, not an unfinished branch: adaptive chooses a BOUNDARY
-        # in the plan rather than a row share, so it cannot be expressed as
-        # a WorkSplit and needs inputs this signature does not carry
-        # (candidate cuts and a per-node cost). The consumer that holds the
-        # plan answers it; answering it here with a row split would silently
-        # substitute a different decision.
-        raise PostureError(
-            "adaptive is not a row split: it chooses where to cut the plan, which needs candidate cuts and a "
-            "profiled per-node cost rather than two whole-query figures; plan it where the plan is"
-        )
-
-    raise PostureError(f"unknown posture {posture!r}; known: {POSTURES}")
+    # What is left is adaptive.
+    # A refusal, not an unfinished branch: adaptive chooses a BOUNDARY
+    # in the plan rather than a row share, so it cannot be expressed as
+    # a WorkSplit and needs inputs this signature does not carry
+    # (candidate cuts and a per-node cost). The consumer that holds the
+    # plan answers it; answering it here with a row split would silently
+    # substitute a different decision.
+    raise PostureError(
+        "adaptive is not a row split: it chooses where to cut the plan, which needs candidate cuts and a "
+        "profiled per-node cost rather than two whole-query figures; plan it where the plan is"
+    )
 
 
 def batch_count(payload_bytes: int, *, resident: bool, knee_bytes: int) -> int:

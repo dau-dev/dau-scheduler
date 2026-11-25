@@ -27,6 +27,13 @@ def test_cpu_and_offload_need_no_estimates() -> None:
     assert plan_split("offload").device_share == 1.0
 
 
+def test_a_posture_is_an_enum_member_and_its_name_is_accepted() -> None:
+    assert plan_split("cpu") == plan_split(Posture.CPU)
+    assert plan_split("cpu").posture is Posture.CPU
+    assert WorkSplit.model_validate({"posture": "offload", "device_share": 1.0, "rationale": "x"}).posture is Posture.OFFLOAD
+    assert POSTURES == (Posture.CPU, Posture.OFFLOAD, Posture.COLLABORATIVE, Posture.ADAPTIVE)
+
+
 def test_collaborative_balances_the_engines() -> None:
     """The share is where both finish together, so neither waits."""
     split = plan_split("collaborative", cpu_seconds=HOST_SECONDS, device_seconds=DEVICE_SECONDS)
@@ -142,7 +149,7 @@ def test_every_posture_is_reachable_or_refused_by_name() -> None:
     unknown-posture one."""
     for posture in POSTURES:
         try:
-            plan_split(cast(Posture, posture), cpu_seconds=0.02, device_seconds=0.01)
+            plan_split(posture, cpu_seconds=0.02, device_seconds=0.01)
         except PostureError as error:
             assert posture == "adaptive", f"posture {posture!r} is declared but unhandled: {error}"
             assert "unknown posture" not in str(error)
